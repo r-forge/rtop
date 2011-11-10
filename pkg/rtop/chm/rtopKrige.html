@@ -1,0 +1,148 @@
+<html><head><title>Spatial interpolation of data with spatial or line support</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" type="text/css" href="Rchm.css">
+</head>
+<body>
+
+<table width="100%"><tr><td>rtopKrige(rtop)</td><td align="right">R Documentation</td></tr></table><object type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+<param name="keyword" value="R:   rtopKrige">
+<param name="keyword" value="R:   rtopKrige.rtop">
+<param name="keyword" value="R:   rtopKrige.SpatialPolygonsDataFrame">
+<param name="keyword" value=" Spatial interpolation of data with spatial or line support">
+</object>
+
+
+<h2>Spatial interpolation of data with spatial or line support</h2>
+
+
+<h3>Description</h3>
+
+<p>
+rtopKrige perform spatial interpolation or cross validation of data with areal or a line support.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+## S3 method for class 'rtop':
+rtopKrige(object, cv, ...) 
+## S3 method for class 'SpatialPolygonsDataFrame':
+rtopKrige(object, predictionLocations = NULL,
+    varMatObs, varMatPred, varMatPredObs, varMat, params = list(), formulaString, 
+    cv, nmax, maxdist, wlim, debug.level, areas, ...) 
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>object</code></td>
+<td>
+object of class <code>rtop</code> or <code><a onclick="findlink('sp', 'SpatialPolygonsDataFrame.html')" style="text-decoration: underline; color: blue; cursor: hand">SpatialPolygonsDataFrame</a></code></td></tr>
+<tr valign="top"><td><code>predictionLocations</code></td>
+<td>
+<code><a onclick="findlink('sp', 'SpatialPolygons.html')" style="text-decoration: underline; color: blue; cursor: hand">SpatialPolygons</a></code> or <code><a onclick="findlink('sp', 'SpatialPolygonsDataFrame.html')" style="text-decoration: underline; color: blue; cursor: hand">SpatialPolygonsDataFrame</a></code>
+with prediction locations. NULL if cross validation is to be performed.</td></tr>
+<tr valign="top"><td><code>varMatObs</code></td>
+<td>
+covariance matrix of observations, where diagonal must consist 
+of internal variance, typically generated from call
+to <code><a href="varMat.html">varMat</a></code> </td></tr>
+<tr valign="top"><td><code>varMatPred</code></td>
+<td>
+covariance matrix between prediction locations, where diagonal must consist
+of internal variance, typically generated from call
+to <code><a href="varMat.html">varMat</a></code>. Can also be passed as an array of the diagonal. </td></tr>
+<tr valign="top"><td><code>varMatPredObs</code></td>
+<td>
+covariance matrix between observation locations and 
+prediction locations, typically generated from call
+to <code><a href="varMat.html">varMat</a></code></td></tr>
+<tr valign="top"><td><code>varMat</code></td>
+<td>
+list of all covariance matrices above</td></tr>
+<tr valign="top"><td><code>params</code></td>
+<td>
+a set of parameters, used to modify the standard parameters for 
+the <code>rtop</code> package, set in <code><a href="getRtopParams.html">getRtopParams</a></code>. Additionally,
+it is possible overrule some of the parameters in <code>object$params</code> by passing
+them as separate arguments.</td></tr>
+<tr valign="top"><td><code>formulaString</code></td>
+<td>
+</td></tr>
+<tr valign="top"><td><code>cv</code></td>
+<td>
+</td></tr>
+<tr valign="top"><td><code>nmax</code></td>
+<td>
+</td></tr>
+<tr valign="top"><td><code>maxdist</code></td>
+<td>
+</td></tr>
+<tr valign="top"><td><code>wlim</code></td>
+<td>
+</td></tr>
+<tr valign="top"><td><code>debug.level</code></td>
+<td>
+</td></tr>
+<tr valign="top"><td><code>areas</code></td>
+<td>
+array of area numbers, if only a limited number of areas are to be
+interpolated/crossvalidated</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+arguments to <code>rtopKrige.rtop</code> to be passed to 
+<code>rtopKrige.SpatialPolygonsDataFrame</code>. In <code>rtopKrige.SpatialPolygonsDataFrame</code>,
+possible other parameters for getRtopParams, if these have not been set.</td></tr>
+</table>
+
+<h3>Details</h3>
+
+<p>
+This function is the interpolation routine of the rtop-package.
+The simplest way of calling the function is with an rtop-object that 
+contains the fitted variogram model and all the other necessary data (see
+<code><a href="createRtopObject.html">createRtopObject</a></code> or <code><a href="rtopIntroduction.html">rtopIntroduction</a></code>). 
+</p>
+<p>
+The function will, if called with covariance matrices between observations
+and between observations and prediction locations, use these for the interpolation.
+If the function is called without these matrices, <code><a href="varMat.html">varMat</a></code> will be
+called to create them. These matrices can therefore be reused if necessary,
+an advantage as it is computationally expensive to create them.
+</p>
+
+
+<h3>Value</h3>
+
+<p>
+If called with <code><a onclick="findlink('sp', 'SpatialPolygonsDataFrame.html')" style="text-decoration: underline; color: blue; cursor: hand">SpatialPolygonsDataFrame</a></code>, the function returns 
+a <code><a onclick="findlink('sp', 'SpatialPolygonsDataFrame.html')" style="text-decoration: underline; color: blue; cursor: hand">SpatialPolygonsDataFrame</a></code> with predictions, either at the 
+locations defined in <code>predictionLocations</code>, or as leave-one-out
+cross-validation predicitons at the same locations as in object if 
+<code>cv = TRUE</code>
+<br>
+If called with an rtop-object, the function returns the same object with the
+predictions added to the object.</p>
+
+<h3>Author(s)</h3>
+
+<p>
+Jon Olav Skoien
+</p>
+
+<script Language="JScript">
+function findlink(pkg, fn) {
+var Y, link;
+Y = location.href.lastIndexOf("\\") + 1;
+link = location.href.substring(0, Y);
+link = link + "../../" + pkg + "/chtml/" + pkg + ".chm::/" + fn;
+location.href = link;
+}
+</script>
+
+
+<hr><div align="center">[Package <em>rtop</em> version 0.3-8 <a href="00Index.html">Index</a>]</div>
+
+</body></html>

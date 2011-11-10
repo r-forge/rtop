@@ -1,0 +1,106 @@
+<html><head><title>create SpatialPointsDataFrame with observations
+of data with a spatial support</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" type="text/css" href="Rchm.css">
+</head>
+<body>
+
+<table width="100%"><tr><td>readAreaInfo(rtop)</td><td align="right">R Documentation</td></tr></table><object type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+<param name="keyword" value="R:   readAreaInfo">
+<param name="keyword" value=" create SpatialPointsDataFrame with observations
+of data with a spatial support">
+</object>
+
+
+<h2>create SpatialPointsDataFrame with observations
+of data with a spatial support</h2>
+
+
+<h3>Description</h3>
+
+<p>
+readAreaInfo will read a text file with observations and descriptions of 
+data with a spatial support.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+readAreaInfo(fname = "ainfo.txt", id = "id",
+                          iobs = "iobs",obs="obs",unc="unc",filenames="filenames",
+                          sep = "\t", debug.level = 1, moreCols = list(NULL)) 
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>fname</code></td>
+<td>
+name of file with areal information</td></tr>
+<tr valign="top"><td><code>id</code></td>
+<td>
+name of column with observation id </td></tr>
+<tr valign="top"><td><code>iobs</code></td>
+<td>
+name of column with number of observations</td></tr>
+<tr valign="top"><td><code>obs</code></td>
+<td>
+name of column with observations </td></tr>
+<tr valign="top"><td><code>unc</code></td>
+<td>
+name of column with possible uncertainty of observation</td></tr>
+<tr valign="top"><td><code>filenames</code></td>
+<td>
+name of column with filenames of areas if different names than id should
+be used.</td></tr>
+<tr valign="top"><td><code>sep</code></td>
+<td>
+separator in csv-file</td></tr>
+<tr valign="top"><td><code>debug.level</code></td>
+<td>
+used for giving additional output</td></tr>
+<tr valign="top"><td><code>moreCols</code></td>
+<td>
+name of other column names the user wants included in ainfo</td></tr>
+</table>
+
+<h3>Details</h3>
+
+<p>
+The function is of particular use when data are not available as
+shape-files, or when the observations are not part of the shape-files
+The simplest way to read the data in that case is through <code><a onclick="findlink('maptools', 'readShapePoly.html')" style="text-decoration: underline; color: blue; cursor: hand">readShapePoly</a></code> 
+in the <code><a onclick="findlink('maptools', 'maptools.html')" style="text-decoration: underline; color: blue; cursor: hand">maptools</a></code>-package or <code><a onclick="findlink('rgdal', 'readOGR.html')" style="text-decoration: underline; color: blue; cursor: hand">readOGR</a></code> in 
+the <code><a onclick="findlink('rgdal', 'rgdal.html')" style="text-decoration: underline; color: blue; cursor: hand">rgdal</a></code>-package. See
+also <code><a href="rtopIntroduction.html">rtopIntroduction</a></code>.
+</p>
+
+
+<h3>Value</h3>
+
+<p>
+<code><a onclick="findlink('sp', 'SpatialPointDataFrame.html')" style="text-decoration: underline; color: blue; cursor: hand">SpatialPointDataFrame</a></code> with information about observations and/or
+predictionLocations.</p>
+
+<h3>Author(s)</h3>
+
+<p>
+Jon Olav Skoien
+</p>
+
+<script Language="JScript">
+function findlink(pkg, fn) {
+var Y, link;
+Y = location.href.lastIndexOf("\\") + 1;
+link = location.href.substring(0, Y);
+link = link + "../../" + pkg + "/chtml/" + pkg + ".chm::/" + fn;
+location.href = link;
+}
+</script>
+
+
+<hr><div align="center">[Package <em>rtop</em> version 0.3-3 <a href="00Index.html">Index</a>]</div>
+
+</body></html>

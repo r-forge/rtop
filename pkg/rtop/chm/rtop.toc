@@ -1,0 +1,207 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<HEAD></HEAD><HTML><BODY>
+<UL>
+<LI> <OBJECT type="text/sitemap">
+<param name="Name" value="Package rtop:  Contents">
+<param name="Local" value="00Index.html">
+</OBJECT>
+<LI> <OBJECT type="text/sitemap">
+<param name="Name" value="Package rtop:  R objects">
+</OBJECT>
+<UL>
+<LI> <OBJECT type="text/sitemap">
+<param name="Name" value="createRtopObject">
+<param name="Local" value="createRtopObject.html">
+</OBJECT>
+<LI> <OBJECT type="text/sitemap">
+<param name="Name" value="geoDist">
+<param name="Local" value="geoDist.html">
+</OBJECT>
+<LI> <OBJECT type="text/sitemap">
+<param name="Name" value="geoDist.list">
+<param name="Local" value="geoDist.html">
+</OBJECT>
+<LI> <OBJECT type="text/sitemap">
+<param name="Name" value="geoDist.rtop">
+<param name="Local" value="geoDist.html">
+</OBJECT>
+<LI> <OBJECT type="text/sitemap">
+<param name="Name" value="geoDist.SpatialPolygons">
+<param name="Local" value="geoDist.html">
+</OBJECT>
+<LI> <OBJECT type="text/sitemap">
+<param name="Name" value="geoDist.SpatialPolygonsDataFrame">
+<param name="Local" value="geoDist.html">
+</OBJECT>
+<LI> <OBJECT type="text/sitemap">
+<param name="Name" value="getRtopParams">
+<param name="Local" value="getRtopParams.html">
+</OBJECT>
+<LI> <OBJECT type="text/sitemap">
+<param name="Name" value="readAreaInfo">
+<param name="Local" value="readAreaInfo.html">
+</OBJECT>
+<LI> <OBJECT type="text/sitemap">
+<param name="Name" value="readAreas">
+<param name="Local" value="readAreas.html">
+</OBJECT>
+<LI> <OBJECT type="text/sitemap">
+<param name="Name" value="rtopDiscAreas">
+<param name="Local" value="rtopDiscAreas.html">
+</OBJECT>
+<LI> <OBJECT type="text/sitemap">
+<param name="Name" value="rtopDiscAreas.rtop">
+<param name="Local" value="rtopDiscAreas.html">
+</OBJECT>
+<LI> <OBJECT type="text/sitemap">
+<param name="Name" value="rtopDiscAreas.rtopVariogram">
+<param name="Local" value="rtopDiscAreas.html">
+</OBJECT>
+<LI> <OBJECT type="text/sitemap">
+<param name="Name" value="rtopDiscAreas.SpatialPolygons">
+<param name="Local" value="rtopDiscAreas.html">
+</OBJECT>
+<LI> <OBJECT type="text/sitemap">
+<param name="Name" value="rtopDiscAreas.SpatialPolygonsDataFrame">
+<param name="Local" value="rtopDiscAreas.html">
+</OBJECT>
+<LI> <OBJECT type="text/sitemap">
+<param name="Name" value="rtopFitVariogram">
+<param name="Local" value="rtopFitVariogram.html">
+</OBJECT>
+<LI> <OBJECT type="text/sitemap">
+<param name="Name" value="rtopFitVariogram.rtop">
+<param name="Local" value="rtopFitVariogram.html">
+</OBJECT>
+<LI> <OBJECT type="text/sitemap">
+<param name="Name" value="rtopFitVariogram.rtopVariogram">
+<param name="Local" value="rtopFitVariogram.html">
+</OBJECT>
+<LI> <OBJECT type="text/sitemap">
+<param name="Name" value="rtopFitVariogram.rtopVariogramCloud">
+<param name="Local" value="rtopFitVariogram.html">
+</OBJECT>
+<LI> <OBJECT type="text/sitemap">
+<param name="Name" value="rtopFitVariogram.SpatialLinesDataFrame">
+<param name="Local" value="rtopFitVariogram.html">
+</OBJECT>
+<LI> <OBJECT type="text/sitemap">
+<param name="Name" value="rtopFitVariogram.SpatialPointsDataFrame">
+<param name="Local" value="rtopFitVariogram.html">
+</OBJECT>
+<LI> <OBJECT type="text/sitemap">
+<param name="Name" value="rtopFitVariogram.SpatialPolygonsDataFrame">
+<param name="Local" value="rtopFitVariogram.html">
+</OBJECT>
+<LI> <OBJECT type="text/sitemap">
+<param name="Name" value="rtopIntroduction">
+<param name="Local" value="rtopIntroduction.html">
+</OBJECT>
+<LI> <OBJECT type="text/sitemap">
+<param name="Name" value="rtopKrige">
+<param name="Local" value="rtopKrige.html">
+</OBJECT>
+<LI> <OBJECT type="text/sitemap">
+<param name="Name" value="rtopKrige.rtop">
+<param name="Local" value="rtopKrige.html">
+</OBJECT>
+<LI> <OBJECT type="text/sitemap">
+<param name="Name" value="rtopKrige.SpatialPolygonsDataFrame">
+<param name="Local" value="rtopKrige.html">
+</OBJECT>
+<LI> <OBJECT type="text/sitemap">
+<param name="Name" value="rtopVariogram">
+<param name="Local" value="rtopVariogram.html">
+</OBJECT>
+<LI> <OBJECT type="text/sitemap">
+<param name="Name" value="rtopVariogram.rtop">
+<param name="Local" value="rtopVariogram.html">
+</OBJECT>
+<LI> <OBJECT type="text/sitemap">
+<param name="Name" value="rtopVariogram.SpatialLinesDataFrame">
+<param name="Local" value="rtopVariogram.html">
+</OBJECT>
+<LI> <OBJECT type="text/sitemap">
+<param name="Name" value="rtopVariogram.SpatialPointsDataFrame">
+<param name="Local" value="rtopVariogram.html">
+</OBJECT>
+<LI> <OBJECT type="text/sitemap">
+<param name="Name" value="rtopVariogram.SpatialPolygonsDataFrame">
+<param name="Local" value="rtopVariogram.html">
+</OBJECT>
+<LI> <OBJECT type="text/sitemap">
+<param name="Name" value="varMat">
+<param name="Local" value="varMat.html">
+</OBJECT>
+<LI> <OBJECT type="text/sitemap">
+<param name="Name" value="varMat.list">
+<param name="Local" value="varMat.html">
+</OBJECT>
+<LI> <OBJECT type="text/sitemap">
+<param name="Name" value="varMat.matrix">
+<param name="Local" value="varMat.html">
+</OBJECT>
+<LI> <OBJECT type="text/sitemap">
+<param name="Name" value="varMat.rtop">
+<param name="Local" value="varMat.html">
+</OBJECT>
+<LI> <OBJECT type="text/sitemap">
+<param name="Name" value="varMat.SpatialPolygons">
+<param name="Local" value="varMat.html">
+</OBJECT>
+<LI> <OBJECT type="text/sitemap">
+<param name="Name" value="varMat.SpatialPolygonsDataFrame">
+<param name="Local" value="varMat.html">
+</OBJECT>
+</UL>
+<LI> <OBJECT type="text/sitemap">
+<param name="Name" value="Package rtop:  Titles">
+</OBJECT>
+<UL>
+<LI> <OBJECT type="text/sitemap">
+<param name="Name" value="A package providing methods for analysis and spatial interpolation of data with an irregular support">
+<param name="Local" value="rtopIntroduction.html">
+</OBJECT>
+<LI> <OBJECT type="text/sitemap">
+<param name="Name" value="calculate geostatistical distances between areas">
+<param name="Local" value="geoDist.html">
+</OBJECT>
+<LI> <OBJECT type="text/sitemap">
+<param name="Name" value="create a semivariogram matrix between a set of locations, or semivariogram matrices between and within two sets of locations">
+<param name="Local" value="varMat.html">
+</OBJECT>
+<LI> <OBJECT type="text/sitemap">
+<param name="Name" value="Create an object for interpolation within the rtop package">
+<param name="Local" value="createRtopObject.html">
+</OBJECT>
+<LI> <OBJECT type="text/sitemap">
+<param name="Name" value="create SpatialPointsDataFrame with observations of data with a spatial support">
+<param name="Local" value="readAreaInfo.html">
+</OBJECT>
+<LI> <OBJECT type="text/sitemap">
+<param name="Name" value="create variogram for data with spatial support">
+<param name="Local" value="rtopVariogram.html">
+</OBJECT>
+<LI> <OBJECT type="text/sitemap">
+<param name="Name" value="Discretize areas given by polygons">
+<param name="Local" value="rtopDiscAreas.html">
+</OBJECT>
+<LI> <OBJECT type="text/sitemap">
+<param name="Name" value="Fit variogram model to sample variogram of data with spatial or line support">
+<param name="Local" value="rtopFitVariogram.html">
+</OBJECT>
+<LI> <OBJECT type="text/sitemap">
+<param name="Name" value="help file for creating SpatialPolygonsDataFrame with observations and/or predictionLocations of data with a spatial support">
+<param name="Local" value="readAreas.html">
+</OBJECT>
+<LI> <OBJECT type="text/sitemap">
+<param name="Name" value="Setting parameters for the intamap package">
+<param name="Local" value="getRtopParams.html">
+</OBJECT>
+<LI> <OBJECT type="text/sitemap">
+<param name="Name" value="Spatial interpolation of data with spatial or line support">
+<param name="Local" value="rtopKrige.html">
+</OBJECT>
+</UL>
+</UL>
+</BODY></HTML>

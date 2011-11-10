@@ -1,0 +1,139 @@
+<html><head><title>Fit variogram model to sample variogram of data with spatial or line support</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" type="text/css" href="Rchm.css">
+</head>
+<body>
+
+<table width="100%"><tr><td>rtopFitVariogram(rtop)</td><td align="right">R Documentation</td></tr></table><object type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+<param name="keyword" value="R:   rtopFitVariogram">
+<param name="keyword" value="R:   rtopFitVariogram.rtop">
+<param name="keyword" value="R:   rtopFitVariogram.SpatialPolygonsDataFrame">
+<param name="keyword" value="R:   rtopFitVariogram.SpatialLinesDataFrame">
+<param name="keyword" value="R:   rtopFitVariogram.SpatialPointsDataFrame">
+<param name="keyword" value="R:   rtopFitVariogram.rtopVariogram">
+<param name="keyword" value="R:   rtopFitVariogram.rtopVariogramCloud">
+<param name="keyword" value=" Fit variogram model to sample variogram of data with spatial or line support">
+</object>
+
+
+<h2>Fit variogram model to sample variogram of data with spatial or line support</h2>
+
+
+<h3>Description</h3>
+
+<p>
+rtopFitVariogram will fit a variogram model to the estimated binned variogram or cloud variogram of data
+with an areal or a line support.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+## S3 method for class 'rtop':
+rtopFitVariogram(object, ...) 
+## S3 method for class 'SpatialPolygonsDataFrame':
+rtopFitVariogram(object, params=list(), ...) 
+## S3 method for class 'SpatialLinesDataFrame':
+rtopFitVariogram(object, params=list(), ...) 
+## S3 method for class 'SpatialPointsDataFrame':
+rtopFitVariogram(object, params=list(), ...) 
+## S3 method for class 'rtopVariogram':
+rtopFitVariogram(object, observations, dists = NULL, params=list(), mr = FALSE, ...) 
+## S3 method for class 'rtopVariogramCloud':
+rtopFitVariogram(object, observations, dists = NULL, params=list(), mr = FALSE, ...) 
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>object</code></td>
+<td>
+object of class <code>rtopVariogram</code> or <code>rtopVariogramCloud</code>,
+or an object with class <code>rtop</code> that includes the sample variograms.
+<br>
+The object can also be of class <code><a onclick="findlink('sp', 'SpatialPolygonsDataFrame.html')" style="text-decoration: underline; color: blue; cursor: hand">SpatialPolygonsDataFrame</a></code>,
+<code><a onclick="findlink('sp', 'SpatialLinesDataFrame.html')" style="text-decoration: underline; color: blue; cursor: hand">SpatialLinesDataFrame</a></code>, or <code><a onclick="findlink('sp', 'SpatialPointsDataFrame.html')" style="text-decoration: underline; color: blue; cursor: hand">SpatialPointsDataFrame</a></code>
+with observations. If <code>object</code> is a <code><a onclick="findlink('sp', 'SpatialPointsDataFrame.html')" style="text-decoration: underline; color: blue; cursor: hand">SpatialPointsDataFrame</a></code>,
+it must have a column with name <code>area</code> (for areal observations) or
+<code>length</code> (for line observations).
+</td></tr>
+<tr valign="top"><td><code>observations</code></td>
+<td>
+the observations, passed as a Spatial*DataFrame object, if
+object is an <code>rtopVariogram</code> or <code>rtopVariogramCloud</code></td></tr>
+<tr valign="top"><td><code>params</code></td>
+<td>
+a set of parameters, used to modify the standard parameters for 
+the <code>rtop</code> package, set in <code><a href="getRtopParams.html">getRtopParams</a></code>. </td></tr>
+<tr valign="top"><td><code>dists</code></td>
+<td>
+either a matrix with geostatistical distances (created by a call
+to the function <code><a href="geoDist.html">geoDist</a></code> or a list with the
+areas or lines discretized (from a call to <code><a href="rtopDiscAreas.html">rtopDiscAreas</a></code>.</td></tr>
+<tr valign="top"><td><code>mr</code></td>
+<td>
+logical; defining whether the function should return a list with 
+discretized areas and geostatistical distances, even if it was not
+called with an rtop-object as argument.</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+Other parameters to functions called from <code>rtopFitVarigoram</code></td></tr>
+</table>
+
+<h3>Value</h3>
+
+<p>
+The function creates an object with the fitted variogram Model (<code>variogramModel</code>) 
+and a <code><a onclick="findlink('base', 'data.frame.html')" style="text-decoration: underline; color: blue; cursor: hand">data.frame</a></code> (<code>varFit</code>) with the 
+differences between the sample semivariances and the regularized semivariances.
+If <code>mr</code> = TRUE, the function also returns other objects (discretized areas
+and geostatistical distances, if created) as a part of the returned object.
+If the function is called with an rtop-object as argument, it will return an
+rtop-object with <code>variogramModel</code> and <code>varFit</code> added to the object,
+in addition to other objects created.</p>
+
+<h3>Note</h3>
+
+<p>
+There are several options for fitting of the variogramModel, where the parameters
+can be set in <code>params</code>, which is a list of parameters for modification
+of the standard parameters of the rtop-package given in a call to 
+<code><a href="getRtopParams.html">getRtopParams</a></code>. The first choice is between individual fitting and binned
+fitting. This is based on the type of variogram submitted, individual fitting is done
+if a cloud variogram (of class <code>rtopVariogramCloud</code>) is passed as argument, 
+and binned fitting if the submitted variogram is of class <code>rtopVariogram</code>.
+If the function is called with an object of class <code>rtop</code>, having both
+<code>variogram</code> and <code>variogramCloud</code> among its arguments, the variogram
+model is fitted to the variogram which is consistent with the parameter <code>cloud</code>.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>
+Jon Olav Skoien
+</p>
+
+
+<h3>References</h3>
+
+<p>
+<a href="http://www.intamap.org/">http://www.intamap.org/</a>
+</p>
+
+<script Language="JScript">
+function findlink(pkg, fn) {
+var Y, link;
+Y = location.href.lastIndexOf("\\") + 1;
+link = location.href.substring(0, Y);
+link = link + "../../" + pkg + "/chtml/" + pkg + ".chm::/" + fn;
+location.href = link;
+}
+</script>
+
+
+<hr><div align="center">[Package <em>rtop</em> version 0.3-3 <a href="00Index.html">Index</a>]</div>
+
+</body></html>

@@ -1,0 +1,147 @@
+<html><head><title>calculate geostatistical distances between areas</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" type="text/css" href="Rchm.css">
+</head>
+<body>
+
+<table width="100%"><tr><td>geoDist(rtop)</td><td align="right">R Documentation</td></tr></table><object type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+<param name="keyword" value="R:   geoDist">
+<param name="keyword" value="R:   geoDist.rtop">
+<param name="keyword" value="R:   geoDist.SpatialPolygonsDataFrame">
+<param name="keyword" value="R:   geoDist.SpatialPolygons">
+<param name="keyword" value="R:   geoDist.list">
+<param name="keyword" value=" calculate geostatistical distances between areas">
+</object>
+
+
+<h2>calculate geostatistical distances between areas</h2>
+
+
+<h3>Description</h3>
+
+<p>
+Calculate geostatistical distances (Ghosh-distances) between
+areas
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+## S3 method for class 'rtop':
+geoDist(object, ...) 
+## S3 method for class 'SpatialPolygonsDataFrame':
+geoDist(object, object2 = NULL, ...) 
+## S3 method for class 'SpatialPolygons':
+geoDist(object, object2 = NULL, ...) 
+## S3 method for class 'list':
+geoDist(object, object2 = NULL, diag = FALSE, ...) 
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>object</code></td>
+<td>
+object of class <code><a onclick="findlink('sp', 'SpatialPolygons.html')" style="text-decoration: underline; color: blue; cursor: hand">SpatialPolygons</a></code> or 
+<code><a onclick="findlink('sp', 'SpatialPolygonsDataFrame.html')" style="text-decoration: underline; color: blue; cursor: hand">SpatialPolygonsDataFrame</a></code> with boundaries of areas; or list
+of discretized areas, typically from a call to <code><a href="rtopDiscAreas.html">rtopDiscAreas</a></code>; or
+object of class <code>rtop</code> with such boundaries and/or discretized
+areas</td></tr>
+<tr valign="top"><td><code>object2</code></td>
+<td>
+a second <code><a onclick="findlink('sp', 'SpatialPolygons.html')" style="text-decoration: underline; color: blue; cursor: hand">SpatialPolygons</a></code> or 
+<code><a onclick="findlink('sp', 'SpatialPolygonsDataFrame.html')" style="text-decoration: underline; color: blue; cursor: hand">SpatialPolygonsDataFrame</a></code> or list of discretized areas; 
+for calculation of geostatistical
+distances also between the areas in the two different objects </td></tr>
+<tr valign="top"><td><code>diag</code></td>
+<td>
+logical; if TRUE only calculate the geostatistical distances between
+each area and itself, only when the objects are lists of discretized
+areas and object2 = object or object2 = NULL</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+other parameters, for <code>geoDist.list</code> when calling one of the 
+other methods, or for <code><a href="varMat.html">varMat</a></code>, in which the calculations take place</td></tr>
+</table>
+
+<h3>Value</h3>
+
+<p>
+If called with one list of discretized areas, a matrix with the geostatistical distances 
+between the areas within the list. If called with two lists of discretized areas, 
+a matrix with the geostatistical distances between the areas in the two lists.
+If called with <code>diag = TRUE</code>, the function returns an array of the geostatistical 
+within each of the areas in the list.
+<br>
+If called with one <code><a onclick="findlink('sp', 'SpatialPolygons.html')" style="text-decoration: underline; color: blue; cursor: hand">SpatialPolygons</a></code> or <code><a onclick="findlink('sp', 'SpatialPolygonsDataFrame.html')" style="text-decoration: underline; color: blue; cursor: hand">SpatialPolygonsDataFrame</a></code>
+the function returns a list with one matrix with geostatistical distances between 
+the areas of the polygons. If called with two objects, the list will also containt 
+a matrix of the geostatistical distances between the two objects, and an array
+of the geostatistical distances within the areas of the second object. 
+<br>
+If called with an rtop-object, the function will return the object, amended with the 
+list above.</p>
+
+<h3>Note</h3>
+
+<p>
+The geostatistical distance can be seen as the average distance between 
+points in two areas, or the average distance within points in a single area.
+The distance measure is also sometimes referred to as Ghosh-distance, from
+Ghosh (1951) who found analytical expressions for these distances between 
+blocks with regular geometry.
+</p>
+<p>
+The use of geostatistical distances within <code>rtop</code> is based on an idea 
+from Gottschalk (1993), who suggested
+to replace the traditional regularization of variograms within block-kriging
+(as done in the original top-kriging application of Skoien et al (2006))
+with covariances of the geostatistical distance. The covariance between two
+areas can then be found as <code>C(a1,a2) = cov(gd)</code> where <code>gd</code> is the geostatistical
+distance between the two areas <code>a1</code> and <code>a2</code>, instead of an integration 
+of the covariance function between the two areas.
+</p>
+<p>
+<code>rtop</code> is based on semivariograms
+instead of covariances, and the semivariogram value between the two areas
+can be found as <code>gamma(a1,a2) = g(gd) - 0.5 (g(gd1) + g(gd2))</code> where
+<code>g</code> is a semivariogram valid for point support, <code>gd1)</code> and <code>gd2</code>
+are the geostatistical distances within each of the two areas.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>
+Jon Olav Skoien
+</p>
+
+
+<h3>References</h3>
+
+<p>
+Ghosh, B. 1951. Random distances within a rectangle and between two rectangles. Bull. Calcutta Math. Soc., 43, 17-24.
+</p>
+<p>
+Gottschalk, L. 1993. Correlation and covariance of runoff. Stochastic Hydrology and Hydraulics, 7, 85-101.
+</p>
+<p>
+Skoien, J. O., R. Merz, and G. Bloschl. 2006. Top-kriging - geostatistics on stream networks. Hydrology and Earth System Sciences, 10, 277-287.
+</p>
+
+<script Language="JScript">
+function findlink(pkg, fn) {
+var Y, link;
+Y = location.href.lastIndexOf("\\") + 1;
+link = location.href.substring(0, Y);
+link = link + "../../" + pkg + "/chtml/" + pkg + ".chm::/" + fn;
+location.href = link;
+}
+</script>
+
+
+<hr><div align="center">[Package <em>rtop</em> version 0.3-5 <a href="00Index.html">Index</a>]</div>
+
+</body></html>

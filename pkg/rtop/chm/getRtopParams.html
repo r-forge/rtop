@@ -1,0 +1,153 @@
+<html><head><title>Setting parameters for the intamap package</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" type="text/css" href="Rchm.css">
+</head>
+<body>
+
+<table width="100%"><tr><td>getRtopParams(rtop)</td><td align="right">R Documentation</td></tr></table><object type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+<param name="keyword" value="R:   getRtopParams">
+<param name="keyword" value=" Setting parameters for the intamap package">
+</object>
+
+
+<h2>Setting parameters for the intamap package</h2>
+
+
+<h3>Description</h3>
+
+<p>
+This function sets a range of the parameters for the intamap package, 
+to be included in the object described in <code><a href="rtopIntroduction.html">rtopIntroduction</a></code>
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>getRtopParams(oldPar,newPar,...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>oldPar</code></td>
+<td>
+An existing set of parameters for the interpolation process, 
+of class <code>IntamapParams</code> or a list of parameters for modification
+of the default parameters</td></tr>
+<tr valign="top"><td><code>newPar</code></td>
+<td>
+A <code>list</code> of parameters for updating <code>oldPar</code> or for
+modification of the default parameters. 
+Possible parameters with their defaults are given below</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+Individual parameters for updating <code>oldPar</code> or for
+modification of the default parameters.
+Possible parameters with their defaults are given below 
+<ul>
+<dt>model = "Ex1"</dt><dd>variogram model type. Currently only "Ex1" is implemented,
+which is the same model as used in Skoien et al(2006).</dd>
+<dt>nugget = TRUE</dt><dd>variogram model type. Currently only "Ex1" is implemented,
+which is the same model as used in Skoien et al(2006).</dd>
+<dt>unc = TRUE</dt><dd>variogram model type. Currently only "Ex1" is implemented,
+which is the same model as used in Skoien et al(2006).</dd>
+<dt>rresol = 100</dt><dd>minimum number of discretization points in areas</dd>  
+<dt>hresol = 5</dt><dd>number of discretization points in one direction for areas in binned variograms</dd>
+<dt>cloud = FALSE</dt><dd>logical; if true use the cloud variogram</dd>
+<dt>amul = 1</dt><dd>defines the number of areal bins within one order of magnitude</dd>
+<dt>dmul = 5</dt><dd>defines the number of distance bins within one order of magnitude</dd>
+<dt>ils = 4</dt><dd>defines the type of Least Square method for fitting of variogram
+<ul>
+<dt>1</dt><dd>least squares difference  - err = yobs-ymod</dd>
+<dt>2</dt><dd>weighted least squares difference according to Cressie (1985) - err2=abs(yobs/ymod-1)</dd>
+<dt>3</dt><dd>opposite of Cressie - value overestimations more: err3 = abs(ymod/yobs-1)</dd>
+<dt>4</dt><dd>neutral WLS-method - err = min(err2,err3)</dd>
+</ul>
+</dd>
+<dt>geoDistEst = FALSE</dt><dd>use geostatistical distance when fitting variograms</dd>
+<dt>geoDistPred = FALSE</dt><dd>use geostatistical distance for semivariogram matrices</dd>
+<dt>geoDist</dt><dd>parameter to set jointly <code>geoDistEst = geoDistPred = geoDist</code></dd>
+<dt>maxdist = Inf</dt><dd>parameter to set jointly <code>geoDistEst = geoDistPred = geoDist</code></dd>
+<dt>nmax = 10</dt><dd>for local kriging: the number of nearest observations that
+should be used for a kriging prediction or simulation, where
+nearest is defined in terms of the space of the spatial locations.
+By default, 10 observations are used.</dd>
+<dt>hstype = "regular"</dt><dd>sampling type for binned variograms</dd>
+<dt>rstype = "rtop"</dt><dd>sampling type for real areas, see also <code><a href="rtopDiscAreas.html">rtopDiscAreas</a></code></dd>
+<dt>wlim = 1.5</dt><dd>an upper limit for the norm of the weights in kriging, see <code><a href="rtopKrige.html">rtopKrige</a></code></dd>
+<dt>cv = FALSE</dt><dd>logical; for cross-validation of observations</dd>
+<dt>debug.level = 1</dt><dd>Used in some functions for giving additional output. See 
+individual functions for more information.</dd>
+<dt>observations</dt><dd>observations, used for initial values of parameters if passed</dd>
+<dt>formulaString</dt><dd>formulaString, used for initial values of parameters if passed</dd>
+</ul>
+</td></tr>
+</table>
+
+<h3>Value</h3>
+
+<p>
+A list of the parameters with class <code>rtopParams</code> to be included in the 
+<code>object</code> described in <a href="rtopIntroduction.html">rtopIntroduction</a></p>
+
+<h3>Note</h3>
+
+<p>
+This function will mainly be called by <code><a href="createRtopObject.html">createRtopObject</a></code>, but 
+can also be called by the user to create a parameter set or update an 
+existing parameter set. If none of the arguments is a list of class
+<code>rtopParams</code>, the function will assume that the argument(s) are
+modifications to the default set of parameters. The function can also be called
+by other functions in the rtop-package if the users chooses not to work with
+an object of class <code>rtop</code>.
+</p>
+<p>
+If the function is called with two lists of parameters (but the first one is
+not of class <code>rtopParams</code>) they are both seen as modifications to the 
+default parameter set. If they share some parameters, the parameter values from
+the second list will be applied.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>
+Jon Olav Skoien
+</p>
+
+
+<h3>References</h3>
+
+<p>
+Cressie, N. 1985. Fitting variogram models by weighted least squares. Mathematical Geology, 17 (5), 563-586
+</p>
+<p>
+Skoien J. O., R. Merz, and G. Bloschl. Top-kriging - geostatistics on stream networks.
+Hydrology and Earth System Sciences, 10:277-287, 2006
+</p>
+
+
+<h3>See Also</h3>
+
+<p>
+<code><a href="createRtopObject.html">createRtopObject</a></code> and <code><a href="rtopIntroduction.html">rtopIntroduction</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+# Create a new set of intamapParameters, with default parameters:
+params = getRtopParams()
+# Make modifications to the default list of parameters
+params = getRtopParams(newPar=list(geoDist = TRUE,nugget = FALSE))
+# Make modifications to an existing list of parameters
+params = getRtopParams(oldPar = params,newPar = list(geoDist = TRUE,nugget = FALSE))
+</pre>
+
+
+
+<hr><div align="center">[Package <em>rtop</em> version 0.3-3 <a href="00Index.html">Index</a>]</div>
+
+</body></html>

@@ -1,0 +1,134 @@
+<html><head><title>A package providing methods for analysis and spatial interpolation
+of data with an irregular support</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" type="text/css" href="Rchm.css">
+</head>
+<body>
+
+<table width="100%"><tr><td>rtopIntroduction(rtop)</td><td align="right">R Documentation</td></tr></table><object type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+<param name="keyword" value="R:   rtopIntroduction">
+<param name="keyword" value=" A package providing methods for analysis and spatial interpolation
+of data with an irregular support">
+</object>
+
+
+<h2>A package providing methods for analysis and spatial interpolation
+of data with an irregular support</h2>
+
+
+<h3>Description</h3>
+
+<p>
+This package provides geostatistical methods for analysis and
+interpolation of data that has an irregular support, such as as runoff
+characteristics or population health data.
+The methods in this package are based on the top-kriging approach
+suggested in Skoien et al (2006), with some extensions from Gottschalk (1993).
+This package can be used as an add-on package for the automatic interpolation
+package developed within the intamap project (www.intamap.org).
+</p>
+
+
+<h3>Workflow</h3>
+
+<p>
+The work flow within the package suggests that the user is interested in
+a prediction of a process at a series of locations where observations have not been made.
+The example below shows a regionalization of mean annual runoff in Austria.
+</p>
+<p>
+Although it is possible to perform each step with all necessary arguments, 
+the easiest interface to
+the method is to store all variables (such as observations, prediction locations
+and parameters) in an rtop-object, which is created by a call to
+<code><a href="createRtopObject.html">createRtopObject</a></code>. The element <code>params</code> below consists of
+changes to the default parameters. A further description can be found
+in <code><a href="getRtopParams.html">getRtopParams</a></code>. The changes below means that
+the functions will use geostatistical distance instead of full regularization,
+and that the variogram model will be fitted to the variogram cloud.
+Most other functions in the <code>rtop</code>-package can take this object as an argument,
+and will add the results as one or more new element(s) to this object.
+</p>
+<p>
+The data in the example below are stored as shape-files
+in the data-directory of the rtop-pacakge, use <code>\setwd</code> to set the
+directory of your own data. The observations consist of mean annual
+runoff of 18 catchments in south of Austria. The predictionLocations are 3 catchments
+in the same region. observations and predictionLocations are stored as
+<code><a onclick="findlink('sp', 'SpatialPolygonsDataFrame.html')" style="text-decoration: underline; color: blue; cursor: hand">SpatialPolygonsDataFrame</a></code>-objects.
+</p>
+<pre>
+rpath = system.file("data",package="rtop")
+setwd(rpath)   
+observations = readOGR(".","observations")
+predictionLocations = readOGR(".","predictionLocations")
+params = list(geoDist = TRUE, cloud = TRUE)
+rtopObj = createRtopObject(observations,predictionLocations, params = params)
+</pre>
+</p>
+<p>
+There are help-methods available in cases when data are not available as
+shape-files, or when the observations are not part of the shape-files.
+See <code><a href="readAreaInfo.html">readAreaInfo</a></code> and <code><a href="readAreas.html">readAreas</a></code>.
+</p>
+<p>
+A call to <code><a href="rtopVariogram.html">rtopVariogram</a></code> adds the sample variogram to the object,
+whereas <code><a href="rtopFitVariogram.html">rtopFitVariogram</a></code> fits a variogram model. The last function
+will call <code><a href="rtopVariogram.html">rtopVariogram</a></code> if <code>rtopObj</code> does not contain a sample variogram.
+</p>
+<pre>
+rtopObj = rtopVariogram(rtopObj)
+rtopObj = rtopFitVariogram(rtopObj)
+</pre>
+</p>
+<p>
+It is possible to check the fit of the variogram by plotting the
+regularized variogram values against the sample variogram values:
+</p>
+<pre>
+plot(rtopObj$varFit$gamma,rtopObj$varFit$gammar)
+</pre>
+</p>
+<p>
+The interpolation function (<code><a href="rtopKrige.html">rtopKrige</a></code>) solves the kriging system based on the
+computed regularized semivariances. The covariance matrices are created in a
+separate regularization function (<code><a href="varMat.html">varMat</a></code>), and are stored in
+the rtop-object for easier access if it is necessary to redo parts of the
+analysis, as this is the computationally expensive part of the interpolation.
+Cross-validation can be called with the argument <code>cv=TRUE</code>, either in
+<code>params</code> or in the call to <code><a href="rtopKrige.html">rtopKrige</a></code>.
+</p>
+<pre>
+rtopObj = rtopKrige(rtopObj)
+spplot(rtopObj$predictions,col.regions = bpy.colors(), c("var1.pred","var1.var"))
+rtopObj = rtopKrige(rtopObj, cv = TRUE)
+spplot(rtopObj$predictions,col.regions = bpy.colors(), c("var1.pred","var1.var"))
+</pre>
+</p>
+
+
+<h3>References</h3>
+
+<p>
+L. Gottschalk. Interpolation of runoff applying objective methods.
+Stochastic Hydrology and Hydraulics, 7:269-281, 1993.
+</p>
+<p>
+Skoien J. O., R. Merz, and G. Bloschl. Top-kriging - geostatistics on stream networks.
+Hydrology and Earth System Sciences, 10:277-287, 2006.
+</p>
+
+<script Language="JScript">
+function findlink(pkg, fn) {
+var Y, link;
+Y = location.href.lastIndexOf("\\") + 1;
+link = location.href.substring(0, Y);
+link = link + "../../" + pkg + "/chtml/" + pkg + ".chm::/" + fn;
+location.href = link;
+}
+</script>
+
+
+<hr><div align="center">[Package <em>rtop</em> version 0.3-8 <a href="00Index.html">Index</a>]</div>
+
+</body></html>

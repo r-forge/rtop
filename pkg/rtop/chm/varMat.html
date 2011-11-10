@@ -1,0 +1,130 @@
+<html><head><title>create a semivariogram matrix between a set of locations, or semivariogram 
+matrices between and within two sets of locations</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" type="text/css" href="Rchm.css">
+</head>
+<body>
+
+<table width="100%"><tr><td>varMat(rtop)</td><td align="right">R Documentation</td></tr></table><object type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+<param name="keyword" value="R:   varMat">
+<param name="keyword" value="R:   varMat.rtop">
+<param name="keyword" value="R:   varMat.SpatialPolygonsDataFrame">
+<param name="keyword" value="R:   varMat.SpatialPolygons">
+<param name="keyword" value="R:   varMat.matrix">
+<param name="keyword" value="R:   varMat.list">
+<param name="keyword" value=" create a semivariogram matrix between a set of locations or semivariogram 
+matrices between and within two sets of locations">
+</object>
+
+
+<h2>create a semivariogram matrix between a set of locations or semivariogram 
+matrices between and within two sets of locations</h2>
+
+
+<h3>Description</h3>
+
+<p>
+varMat will create a semivariogram matrix between all the supports in a set of 
+locations (observations or prediction locations) or semivariogram matrices
+between all the supports in one or two sets of locations, and also between them.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+## S3 method for class 'rtop':
+varMat(object, ...) 
+## S3 method for class 'SpatialPolygonsDataFrame':
+varMat(object,object2 = NULL,...) 
+## S3 method for class 'SpatialPolygons':
+varMat(object,object2 = NULL,variogramModel,
+     params = list(), overlapObs, overlapPredObs, ...) 
+## S3 method for class 'matrix':
+varMat(object, variogramModel,  ...) 
+## S3 method for class 'list':
+varMat(object, object2=NULL, coor1, coor2, maxdist = Inf, 
+              variogramModel, diag=FALSE, sub1, sub2, ...) 
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>object</code></td>
+<td>
+object of class <code>rtop</code> (see <a href="rtopIntroduction.html">rtopIntroduction</a>) or a <code><a onclick="findlink('sp', 'SpatialPolygonsDataFrame.html')" style="text-decoration: underline; color: blue; cursor: hand">SpatialPolygonsDataFrame</a></code>,
+<code><a onclick="findlink('sp', 'SpatialPolygons.html')" style="text-decoration: underline; color: blue; cursor: hand">SpatialPolygons</a></code>, or <code><a onclick="findlink('base', 'matrix.html')" style="text-decoration: underline; color: blue; cursor: hand">matrix</a></code> or <code><a onclick="findlink('base', 'list.html')" style="text-decoration: underline; color: blue; cursor: hand">list</a></code>
+with information about the observation supports.</td></tr>
+<tr valign="top"><td><code>object2</code></td>
+<td>
+information about support of prediction locations</td></tr>
+<tr valign="top"><td><code>variogramModel</code></td>
+<td>
+variogramModel to be used in calculation of the 
+semivariogram matrix (matrices)</td></tr>
+<tr valign="top"><td><code>params</code></td>
+<td>
+typical parameters to modify from the default parameters of the
+rtop-package (or modifications of the previously set parameters). Typical 
+parameters to modify for this function:
+<ul>
+<dt>rresol = 100</dt><dd>miminum number of discretization points, in call to 
+<code><a href="rtopDiscAreas.html">rtopDiscAreas</a></code> if necessary</dd>
+<dt>rstype = "rtop"</dt><dd>sampling type from areas, in call to 
+<code><a href="rtopDiscAreas.html">rtopDiscAreas</a></code> if necessary</dd>
+<dt>geoDistPred = FALSE</dt><dd>use geostatistical distance for semivariogram matrices</dd>
+<dt>geoDist</dt><dd>parameter to set jointly <code>geoDistEst = geoDistPred = geoDist</code></dd>
+</ul>
+</td></tr>
+<tr valign="top"><td><code>overlapObs</code></td>
+<td>
+matrix with observations that overlap each other</td></tr>
+<tr valign="top"><td><code>overlapPredObs</code></td>
+<td>
+matrix with <code>observations</code> and <code>predictionLocations</code>
+that overlap each other</td></tr>
+<tr valign="top"><td><code>coor1</code></td>
+<td>
+coordinates of centroids of <code>object</code></td></tr>
+<tr valign="top"><td><code>coor2</code></td>
+<td>
+coordinates of centre-of-gravity of <code>object2</code></td></tr>
+<tr valign="top"><td><code>maxdist</code></td>
+<td>
+maximum distance between areas for inclusion in semivariogrma matrix</td></tr>
+<tr valign="top"><td><code>diag</code></td>
+<td>
+logical; if TRUE only the semivariogram values along the diagonal 
+will be calculated, typical for semivariogram matrix of prediction locations</td></tr>
+<tr valign="top"><td><code>sub1</code></td>
+<td>
+semivariogram array for subtraction of inner variances of areas</td></tr>
+<tr valign="top"><td><code>sub2</code></td>
+<td>
+semivariogram array for subtraction of inner variances of areas</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+Other parameters to params</td></tr>
+</table>
+
+<h3>Author(s)</h3>
+
+<p>
+Jon Olav Skoien
+</p>
+
+<script Language="JScript">
+function findlink(pkg, fn) {
+var Y, link;
+Y = location.href.lastIndexOf("\\") + 1;
+link = location.href.substring(0, Y);
+link = link + "../../" + pkg + "/chtml/" + pkg + ".chm::/" + fn;
+location.href = link;
+}
+</script>
+
+
+<hr><div align="center">[Package <em>rtop</em> version 0.3-3 <a href="00Index.html">Index</a>]</div>
+
+</body></html>

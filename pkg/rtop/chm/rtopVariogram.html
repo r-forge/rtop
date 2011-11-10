@@ -1,0 +1,126 @@
+<html><head><title>create variogram for data with spatial support</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" type="text/css" href="Rchm.css">
+</head>
+<body>
+
+<table width="100%"><tr><td>rtopVariogram(rtop)</td><td align="right">R Documentation</td></tr></table><object type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+<param name="keyword" value="R:   rtopVariogram">
+<param name="keyword" value="R:   rtopVariogram.rtop">
+<param name="keyword" value="R:   rtopVariogram.SpatialPolygonsDataFrame">
+<param name="keyword" value="R:   rtopVariogram.SpatialLinesDataFrame">
+<param name="keyword" value="R:   rtopVariogram.SpatialPointsDataFrame">
+<param name="keyword" value=" create variogram for data with spatial support">
+</object>
+
+
+<h2>create variogram for data with spatial support</h2>
+
+
+<h3>Description</h3>
+
+<p>
+rtopVariogram will create binned variogram or cloud variogram of data
+with an areal or a line support.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+## S3 method for class 'rtop':
+rtopVariogram(object, ...) 
+## S3 method for class 'SpatialPolygonsDataFrame':
+rtopVariogram(object, ...) 
+## S3 method for class 'SpatialLinesDataFrame':
+rtopVariogram(object, ...) 
+## S3 method for class 'SpatialPointsDataFrame':
+rtopVariogram(object, formulaString, params=list(), cloud, abins, dbins, ...) 
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>object</code></td>
+<td>
+object of class <code>rtop</code> (see <a href="rtopIntroduction.html">rtopIntroduction</a>) or a <code><a onclick="findlink('sp', 'SpatialPolygonsDataFrame.html')" style="text-decoration: underline; color: blue; cursor: hand">SpatialPolygonsDataFrame</a></code>,
+<code><a onclick="findlink('sp', 'SpatialLinesDataFrame.html')" style="text-decoration: underline; color: blue; cursor: hand">SpatialLinesDataFrame</a></code>, or <code><a onclick="findlink('sp', 'SpatialPointsDataFrame.html')" style="text-decoration: underline; color: blue; cursor: hand">SpatialPointsDataFrame</a></code>
+with information about observations. If <code>object</code> is a <code><a onclick="findlink('sp', 'SpatialPointsDataFrame.html')" style="text-decoration: underline; color: blue; cursor: hand">SpatialPointsDataFrame</a></code>,
+it must have a column with name <code>area</code> (for areal observations) or
+<code>length</code> (for line observations).
+</td></tr>
+<tr valign="top"><td><code>formulaString</code></td>
+<td>
+formula that defines the dependent variable as a linear model 
+of independent variables; suppose the dependent variable has name <code>z</code>, 
+for ordinary and simple kriging use the formula <code>z~1</code>; 
+for universal kriging, suppose <code>z</code> is linearly dependent on 
+<code>x</code> and <code>y</code>, use the formula <code>z~x+y</code>. The formulaString defaults
+to <code>"value~1"</code> if <code>value</code> is a part of the data set. 
+If not, the first column of the data set is used.</td></tr>
+<tr valign="top"><td><code>params</code></td>
+<td>
+a set of parameters, used to modify the standard parameters for 
+the <code>rtop</code> package, set in <code><a href="getRtopParams.html">getRtopParams</a></code>. </td></tr>
+<tr valign="top"><td><code>cloud</code></td>
+<td>
+logical; if TRUE, calculate the semivariogram cloud, can be used
+to overrule the cloud parameter in params. </td></tr>
+<tr valign="top"><td><code>abins</code></td>
+<td>
+possibility to set areal bins (not yet implemented)</td></tr>
+<tr valign="top"><td><code>dbins</code></td>
+<td>
+possibility to set distance bins (not yet implemented)</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+parameters to other functions called, e.g. gstat's 
+<code><a onclick="findlink('gstat', 'variogram.html')" style="text-decoration: underline; color: blue; cursor: hand">variogram</a></code>-function and to <code><a href="rtopVariogram.html">rtopVariogram.SpatialPointsDataFrame</a></code>
+when the method is called with an object of a different class</td></tr>
+</table>
+
+<h3>Value</h3>
+
+<p>
+The function creates a variogram, either of type <code>rtopVariogram</code> or 
+<code>rtopVariogramCloud</code>. This variogram is based on the <code><a onclick="findlink('gstat', 'variogram.html')" style="text-decoration: underline; color: blue; cursor: hand">variogram</a></code>
+function from gstat, but has additional information about the spatial size or
+length of the observations. An rtop-object with the variogram added is 
+returned if the function is called with an rtop-object as argument.</p>
+
+<h3>Note</h3>
+
+<p>
+The variogram cloud is similar to the variogram cloud from <code><a onclick="findlink('gstat', 'gstat.html')" style="text-decoration: underline; color: blue; cursor: hand">gstat</a></code>,
+with the area/length added to the resulting data.frame. The binned variogram is 
+also based on the area or length, in addition to the distance between observations.
+The bins equally distanced in the log10-space of the distances and areas (lengths).
+The size of the bins is decided from the parameters <code>amul</code> and <code>dmul</code>, 
+defining the number of bins per order of magnitude (1:10, 10:100, and so on).
+</p>
+<p>
+The distances between areas/lines are at this function based on the centre of gravity.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>
+Jon Olav Skoien
+</p>
+
+<script Language="JScript">
+function findlink(pkg, fn) {
+var Y, link;
+Y = location.href.lastIndexOf("\\") + 1;
+link = location.href.substring(0, Y);
+link = link + "../../" + pkg + "/chtml/" + pkg + ".chm::/" + fn;
+location.href = link;
+}
+</script>
+
+
+<hr><div align="center">[Package <em>rtop</em> version 0.3-3 <a href="00Index.html">Index</a>]</div>
+
+</body></html>
