@@ -136,6 +136,7 @@ rtopKrige.default = function(object, predictionLocations = NULL,
     }
     c0arr[nneigh+1] = 1
     lambda = varInv %*% c0arr
+    krigingError = sum(lambda*c0arr) 
     slambda = sum(abs(lambda[1:nneigh]))
     while (slambda > wlim) {
       if (wlimMethod == "all") {
@@ -158,7 +159,7 @@ rtopKrige.default = function(object, predictionLocations = NULL,
          print(paste("optimizing lambdas",oslambda, slambda,sum(lambda[1:nneigh]),lambda[nneigh+1]))
     }
     predictions$var1.pred[inew] = sum(lambda[1:nneigh] * obs)
-    predictions$var1.var[inew] = sum(lambda*c0arr) 
+    predictions$var1.var[inew] = krigingError
     predictions$sumWeights[inew] = slambda
     if (wret) weight[inew,neigh] = lambda[1:nneigh]    
     if (debug.level >1) {

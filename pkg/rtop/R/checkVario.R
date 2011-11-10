@@ -167,7 +167,7 @@ if (is.null(acomp) | length(acomp) == 1) {
   }
 }
 
-vmats = matrix(NA, ncol = length(dists)-1, nrow = dim(acomp)[1])
+vmats = matrix(0, ncol = length(dists), nrow = dim(acomp)[1])
 for (iplot in 1:dim(acomp)[1]) {
   i1 = acomp[iplot,2]
   i2 = acomp[iplot,1]
@@ -185,13 +185,13 @@ for (iplot in 1:dim(acomp)[1]) {
   vmat = varMat(lobject, cv = TRUE)$varMatObs
 #  vmat = varMat(poly1,variogramModel = variogramModel, params = params)
 #  vmat = vmat-diag(vmat)
-    vmats[iplot,] = vmat[1,2:ld]
+#    vmats[iplot,] = vmat[1,2:ld]
 #
-#  if (i1 == i2) {
-#    vmats[iplot,] = vmat[1,1:ld]
-#  } else {
-#    vmats[iplot,] = vmat[1,2:(ld+1)]
-#  }   
+  if (i1 == i2) {
+    vmats[iplot,2:ld] = vmat[1,2:ld]
+  } else {
+    vmats[iplot,] = vmat[1,2:(ld+1)]
+  }   
 }
 
 pvar = apply(as.matrix(adists),1,rtop:::varioEx, variogramModel = variogramModel)

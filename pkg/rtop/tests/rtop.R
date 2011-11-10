@@ -17,14 +17,10 @@ params = list(gDist = TRUE, cloud = TRUE)
 rtopObj = createRtopObject(observations,predictionLocations, params = params)
 # Fit a variogram (function also creates it)
 rtopObj = rtopFitVariogram(rtopObj, iprint = -1)
-#checkVario(rtopObj, identify = TRUE)
 rtopObj$variogramModel                                                                        
-# Check the fit of the variogram 
-#xyplot(gamma~dist | as.factor(acl2)+as.factor(acl1), rtopObj$varFit[rtopObj$varFit$np > 5,], cex = sqrt(vff$np)/10, pch = 16)
-#plot(rtopObj$varFit$gamma,rtopObj$varFit$gammar)
-# Predicting at prediction locations
-rtopObj = rtopKrige(rtopObj,cv=TRUE, debug.level = 3)
-rtopObj2 = rtopKrige(rtopObj, cv = TRUE,debug.level = 1)
+rtopObj = rtopKrige(rtopObj)
+rtopObj2 = rtopKrige(rtopObj, cv = TRUE)
+summary(rtopObj$predictions)
 summary(rtopObj2$predictions)
 #spplot(rtopObj$predictions,col.regions = bpy.colors(), c("var1.pred","var1.var"))
 
@@ -49,7 +45,8 @@ predictionLocations = readOGR(".","predictionLocations")
 ploc = spChFIDs(predictionLocations,as.character(c(21:23)))
 observations = rbind(observations,ploc[1:2,])
 predictionLocations = predictionLocations[-c(1:2),]
-output = interpolate(observations,predictionLocations,optList = list(formulaString = obs~1),
+output = interpolate(observations,predictionLocations,
+   optList = list(formulaString = obs~1, gDist = TRUE), 
       methodName = "rtop")
 
 output$predictions@data
