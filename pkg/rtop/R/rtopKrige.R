@@ -83,10 +83,15 @@ rtopKrige.default = function(object, predictionLocations = NULL,
   for (inew in sel) {         
 #  for (inew in 1:20) {         
     if (cv) {
-      if (debug.level >=1) print(paste("Cross-validating location", inew, " out of ",npred," observation locations")) 
+      if (debug.level >=1) print(paste("Cross-validating location", inew, 
+           " out of ",npred," observation locations"))
+      if (debug.level > 1) print(observations@data[inew,] )
 #      if (cv == inew && inew > 1) browser()
     } else {
-      if (debug.level >=1) print(paste("Predicting location ",inew," out of ", npred," prediction locations" ))
+      if (debug.level >=1) print(paste("Predicting location ",inew,
+           " out of ", npred," prediction locations" ))
+      if (debug.level > 1 && is(predictionLocations, "SpatialPolygonsDataFrame")) 
+                print(predictionLocations@data[inew,] )
     }
     newcor = newcors[inew,]
     c0arr = varMatPredObs[,inew]
@@ -163,14 +168,17 @@ rtopKrige.default = function(object, predictionLocations = NULL,
     predictions$sumWeights[inew] = slambda
     if (wret) weight[inew,neigh] = lambda[1:nneigh]    
     if (debug.level >1) {
-      print("neighbours")
-      print(observations@data[neigh,],3)
-      print("covariance matrix ")
-      print(varMat,3)    
-      print("c0 and weights")
-      print(data.frame(id = c(neigh, 0), lambda = lambda, c0 = c0arr, 
+      distm = spDistsN1(obscors,newcor)[neigh]
+      lobs = observations@data[neigh,]
+      lobs = rbind(lobs, mu =  rep(0, (dim(lobs)[2])))
+      lobs = cbind(lobs, data.frame(id = c(neigh, 0), 
+                   edist = c(distm, 0), lambda = lambda, c0 = c0arr, 
                   obs = c(obs, 1), unc = c(unc, 0), 
-                  lambda_times_obs = lambda*c(obs, 0)))
+                  lambda_times_obs = lambda*c(obs, 0))) 
+      print("neighbours")
+      print(lobs, 3)
+      print("covariance matrix ")
+      print(varMat,3)     
     }
     if (cv) {
       predictions$residual[inew] = observations[[depVar]][inew]-predictions$var1.pred[inew]
@@ -192,7 +200,7 @@ rtopKrige.default = function(object, predictionLocations = NULL,
     predictionLocations@data = cbind(predictionLocations@data, predictions)
     predictions = predictionLocations
   } else {
-    predictions = SpatialDataFrame(predictionLocations,data = predictions, match.ID = FALSE)
+    predictions = addAttrToGeom(predictionLocations, predictions, match.ID = FALSE)
   }
   if (wret) {
     return(weight)

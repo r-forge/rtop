@@ -5,21 +5,6 @@ bbArea = function(bb) {
 }
 
 
-   SpatialDataFrame = function(spobj,data,...) {
-     if (inherits(spobj,"SpatialPoints")) {
-       SpatialPointsDataFrame(spobj,data = data,...)
-     } else if (inherits(spobj,"SpatialGrid")) {
-       SpatialGridDataFrame(spobj,data = data,...)
-     } else if (inherits(spobj,"SpatialPixels")) {
-       SpatialPixelsDataFrame(spobj,data = data,...)
-     } else if (inherits(spobj,"SpatialLines")) {
-       SpatialLinesDataFrame(spobj,data = data,...)
-     } else if (inherits(spobj,"SpatialPolygons")) {
-       SpatialPolygonsDataFrame(spobj,data = data,...)
-     }
-   }
-
-
 summary.rtop = function(object,...) {
   summary.default(object,...)
 }

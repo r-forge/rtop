@@ -1,8 +1,8 @@
 Package: rtop
 Type: Package
 Title: Interpolation of data with variable spatial support
-Version: 0.3-24
-Date: 2011-11-10
+Version: 0.3-25
+Date: 2011-12-05
 Author: Jon Olav Skoien
 Maintainer: Jon Olav Skoien <j.skoien@geo.uu.nl>
 Depends: sp, gstat, rgdal
