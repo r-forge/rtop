@@ -73,11 +73,12 @@ export(checkVario,
  S3method(updateRtopVariogram, rtopVariogramModel)
 
 #if("intamap" %in% rownames(utils:::installed.packages()) ) {
+#   import(intamap)
 #   importFrom(intamap,estimateParameters,spatialPredict,methodParameters)
 #   S3method(estimateParameters, rtop)
 #   S3method(spatialPredict, rtop)
 #   S3method(methodParameters, rtop)
-# }
+#}
 
  S3method(summary,rtop)
  S3method(plot, rtopVariogramCloud)

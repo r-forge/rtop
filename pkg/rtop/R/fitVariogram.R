@@ -91,7 +91,7 @@ rtopFitVariogram.rtopVariogramCloud = function(object, observations, dists = NUL
          dists = dists, aOver = aOver, gDist = params$gDistEst,model = params$model, fit.method = params$fit.method, ...)
   bestPar = scres$par
   vf = objfunc(bestPar,varioIn = vario, dists = dists, aOver = aOver,
-                     gDist = params$gDistEst,last = TRUE,model = params$model,...)
+                     gDistEst = params$gDistEst,last = TRUE,model = params$model,...)
   varFit = vf$varFit
   errSum = vf$errSum
   variogramModel = list(model = params$model,params = bestPar)

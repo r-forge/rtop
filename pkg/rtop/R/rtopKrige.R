@@ -81,6 +81,7 @@ rtopKrige.default = function(object, predictionLocations = NULL,
 #
   if (wret) weight = matrix(0,nrow = npred,ncol = nobs)
   for (inew in sel) {         
+    if (debug.level > 1) print("\n")
 #  for (inew in 1:20) {         
     if (cv) {
       if (debug.level >=1) print(paste("Cross-validating location", inew, 

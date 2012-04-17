@@ -165,8 +165,9 @@ if (is.null(acomp) | length(acomp) == 1) {
     if (acomp > dim(aacomp)[1]) acomp = dim(aacomp)[1]
     acomp = aacomp[sample(dim(aacomp)[1],acomp),]
   }
+} else {
+  acomp = acomp[acomp$acl1 < length(areas) & acomp$acl2 < length(areas),]
 }
-
 vmats = matrix(0, ncol = length(dists), nrow = dim(acomp)[1])
 for (iplot in 1:dim(acomp)[1]) {
   i1 = acomp[iplot,2]
@@ -194,13 +195,16 @@ for (iplot in 1:dim(acomp)[1]) {
   }   
 }
 
-pvar = apply(as.matrix(adists),1,rtop:::varioEx, variogramModel = variogramModel)
+pvar = apply(as.matrix(adists),1,rtop:::varioEx, variogramModel = variogramModel)+ nuggEx(1,variogramModel)
 ymin = max(min(vmats[vmats > 0]),min(sampleVariogram$gamma))
 ymax = max(pvar)
-xmin = min(sampleVariogram$dist[sampleVariogram$np > 2]/1.3)
+if (inherits(sampleVariogram, "rtopVariogramCloud")) {
+  xmin = min(sampleVariogram$dist)/1.3
+} else {
+  xmin = min(sampleVariogram$dist[sampleVariogram$np > 2]/1.3)
+}
 xmax = max(adists)
 if (acor != 1) {
-
   Rver = R.Version()
   if (as.numeric(Rver$major)*100 + as.numeric(Rver$minor) >= 214) {
     xTicks = axTicks(1,c(xmin,xmax,3),usr = c(log10(xmin),log10(xmax)), 
@@ -211,14 +215,16 @@ if (acor != 1) {
   xTicks = NULL
   xlabs = TRUE
 }
-plot(adists,pvar,ylim = c(ymin, ymax), xlim = c(xmin, xmax), log = "xy", 
+plot(adists,pvar,ylim = c(ymin, ymax), xlim = c(xmin, xmax), log = log, 
     type="l", col = "black", lwd = 2, ylab = "gamma", 
     xlab = "distance", xaxt = "n", ann = FALSE)
 axis(1,at = xTicks, labels = xlabs)
 
 legende = list(text = "point", col = c("black"), lty = c(1), pch = 16)
-cols1 = bpy.colors(length(areas))
-cols2 = bpy.colors(dim(acomp)[1])
+
+bcols = c("red", "blue", "green", "orange", "brown", "violet", "yellow", "salmon")
+cols1 = bcols[1:length(areas)]
+cols2 = bcols[1:dim(acomp)[1]]
 for (iplot in 1:dim(acomp)[1]) {
   i1 = acomp[iplot,2]
   i2 = acomp[iplot,1]

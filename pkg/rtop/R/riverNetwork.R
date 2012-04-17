@@ -3,7 +3,7 @@ netProp = function(network, from = "FROMJCT", to = "TOJCT", pred = "pred") {
   if (require(igraph)) {
 
     rndf = data.frame(FROMJCT = network$FROMJCT, TOJCT = network$TOJCT, 
-               OBJECTIT = network$OBJECTID, pred = network$pred)
+               OBJECTIT = network$OBJECTID, pred = network@data[,pred])
     igr = graph.data.frame(rndf)
     igrs = topological.sort(igr, mode = "out")
     rndf$to = match(as.character(rndf$TOJCT), V(igr)$name[igrs+1])
@@ -15,7 +15,7 @@ netProp = function(network, from = "FROMJCT", to = "TOJCT", pred = "pred") {
       while(is.na(rndf$pred[lcon[1]])) lcon = c(neighbors(igr,lcon[1]-1)+1, lcon)
       rndf$pred[lcon] = rndf$pred[lcon[1]]
     }
-    network$pred = rndf$pred
+    network@data[,pred] = rndf$pred
   } else {
     warning("This function will perform faster with igraph installed")
     ichange = 1

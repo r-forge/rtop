@@ -41,12 +41,16 @@ to be included in the object described in \code{\link{rtop-package}}}
            lower limit, the second column is the upper limit and the third column
            are starting values.}
      \item{nugget = TRUE}{ - logical; if TRUE nugget effect should be estimated}
-     \item{unc = TRUE}{ - logical; if TRUE the }
+     \item{unc = TRUE}{ - logical; if TRUE the standard deviation of observations are in column \code{unc}}
      \item{rresol = 100}{ - minimum number of discretization points in each element (area or line)}  
      \item{hresol = 5}{ - number of discretization points in one direction for elements in binned variograms}
      \item{cloud = FALSE}{ - logical; if TRUE use the cloud variogram for variogram fitting}
-     \item{amul = 1}{ - defines the number of areal bins within one order of magnitude}
-     \item{dmul = 5}{ - defines the number of distance bins within one order of magnitude}
+     \item{amul = 1}{ - defines the number of areal bins within one order of magnitude. Numbers between 1 and 3 
+                      are possible, as this parameter refers to the \code{axp} parameter of
+                      \code{\link[graphics]{axTicks}}.}
+     \item{dmul = 3}{ - defines the number of distance bins within one order of magnitude. Numbers between 1 and 3 
+                      are possible, as this parameter refers to the \code{axp} parameter of
+                      \code{\link[graphics]{axTicks}}.}
      \item{fit.method = 8}{ - defines the type of Least Square method for fitting of variogram. 
                   The methods 1-7 correspond to the similar methods in \code{\link{gstat}}.
        \itemize{
@@ -71,6 +75,7 @@ to be included in the object described in \code{\link{rtop-package}}}
      \item{hstype = "regular"}{ - sampling type for binned variograms}
      \item{rstype = "rtop"}{ - sampling type for the elements, see also \code{\link{rtopDisc}}}
      \item{wlim = 1.5}{ - an upper limit for the norm of the weights in kriging, see \code{\link{rtopKrige}}}
+     \item{wlimMethod = "all"}{which method to use for reducing the norm of the weights if necessary. Either "all", which modifies all weights equally or "neg" which reduces negative weights and large weights more than the smallest weights }
      \item{cv = FALSE}{ - logical; for cross-validation of observations}
      \item{debug.level = 1}{ - used in some functions for giving additional output. See 
                 individual functions for more information.}
