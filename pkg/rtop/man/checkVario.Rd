@@ -13,7 +13,7 @@ to sample variograms of data with support
 \method{checkVario}{rtopVariogramModel}(variogramModel = NULL, 
            sampleVariogram = NULL, observations = NULL, areas = NULL, dists = NULL, acomp = NULL,
            log = "xy", params = list(), compVars = list(), acor = 1,
-           legx = NULL, legy = NULL, ...) 
+           legx = NULL, legy = NULL, plotNugg = TRUE, ...) 
 }
 
 
@@ -42,11 +42,13 @@ to sample variograms of data with support
         be used in the key.}
 \item{acor}{unit correction factor in the key, e.g. to see numbers more easily 
         interpretable for large areas. As an example, ucor = 0.000001 when area
-        is given in square meters and should rather be shown as square kilometers.}
+        is given in square meters and should rather be shown as square kilometers.
+        Note that this parameter also changes the value of the nugget to the new unit.}
 \item{legx}{x-coordinate of the legend for fine-tuning of position, see x-argument of 
 \code{\link[graphics]{legend}}}
 \item{legy}{y-coordinate of the legend for fine-tuning of position, see y-argument of
 \code{\link[graphics]{legend}}}
+\item(plotNugg){logical; whether the nugget effect should be added to the plot or not}
 \item{...}{arguments to lower level functions}
 
 } 
@@ -60,6 +62,7 @@ variance and area size and a scatter plot of the fit of the observed and
 regularized variogram values. The sizes of the dots are relative to the number
 of pairs in each group.
 }
+
 
 
 \author{ Jon Olav Skoien }

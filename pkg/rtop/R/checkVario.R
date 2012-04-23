@@ -112,7 +112,8 @@ checkVario.rtop = function(object,  acor = 1, log = "xy", cloud = FALSE, gDist =
 
 checkVario.rtopVariogramModel = function(object, 
            sampleVariogram = NULL, observations = NULL, areas = NULL, dists = NULL, acomp = NULL, 
-           params = list(), compVars = list(), acor = 1, log = "xy", legx = NULL, legy = NULL, ...) {
+           params = list(), compVars = list(), acor = 1, log = "xy", legx = NULL, legy = NULL, 
+           plotNugg = TRUE, ...) {
 variogramModel = object
 params = getRtopParams(params, ...)
 askpar = par("ask")
@@ -195,7 +196,9 @@ for (iplot in 1:dim(acomp)[1]) {
   }   
 }
 
-pvar = apply(as.matrix(adists),1,rtop:::varioEx, variogramModel = variogramModel)+ nuggEx(1,variogramModel)
+
+pvar = apply(as.matrix(adists),1,rtop:::varioEx, variogramModel = variogramModel)+ 
+   ifelse(plotNugg, nuggEx(1,variogramModel)*acor, 0)
 ymin = max(min(vmats[vmats > 0]),min(sampleVariogram$gamma))
 ymax = max(pvar)
 if (inherits(sampleVariogram, "rtopVariogramCloud")) {

@@ -7,15 +7,21 @@ netProp = function(network, from = "FROMJCT", to = "TOJCT", pred = "pred") {
     igr = graph.data.frame(rndf)
     igrs = topological.sort(igr, mode = "out")
     rndf$to = match(as.character(rndf$TOJCT), V(igr)$name[igrs+1])
-
     while (TRUE) {
       lcon = which(rndf$to == min(rndf$to[is.na(rndf$pred)]))
-      if (length(lcon)==0) break()
+      if (length(lcon) == 0) 
+        break()
       print(lcon)
-      while(is.na(rndf$pred[lcon[1]])) lcon = c(neighbors(igr,lcon[1]-1)+1, lcon)
+      while (is.na(rndf$pred[lcon[1]])) {
+        ncon = neighbors(igr, lcon[1] - 1) + 1
+        if (length(ncon) == 0 || ncon > dim(rndf)[1]) {rndf$pred[lcon[1]] = -9999; break}
+        lcon = c(ncon, lcon)
+        print(lcon)
+      }
       rndf$pred[lcon] = rndf$pred[lcon[1]]
     }
-    network@data[,pred] = rndf$pred
+    rndf$pred[rndf$pred < -9998] = NA
+    network@data[, pred] = rndf$pred
   } else {
     warning("This function will perform faster with igraph installed")
     ichange = 1
