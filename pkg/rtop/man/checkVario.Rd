@@ -48,7 +48,7 @@ to sample variograms of data with support
 \code{\link[graphics]{legend}}}
 \item{legy}{y-coordinate of the legend for fine-tuning of position, see y-argument of
 \code{\link[graphics]{legend}}}
-\item(plotNugg){logical; whether the nugget effect should be added to the plot or not}
+\item{plotNugg}{logical; whether the nugget effect should be added to the plot or not}
 \item{...}{arguments to lower level functions}
 
 } 
