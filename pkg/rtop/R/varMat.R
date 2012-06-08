@@ -10,7 +10,8 @@ varMat.rtop = function(object, varMatUpdate = FALSE, ...) {
   lgDistPred = params$gDistPred
   maxDist = params$maxDist
   debug.level = params$debug.level
-  
+  aObs = sapply(slot(observations, "polygons"), function(i) slot(i, "area"))
+
   obsComp = FALSE
   predComp = FALSE
   if (params$cv && "varMatObs" %in% names(object) && !varMatUpdate) return(object)      
@@ -43,6 +44,8 @@ varMat.rtop = function(object, varMatUpdate = FALSE, ...) {
   }
   if (!params$cv && !"varMatPredObs" %in% names(object) && !varMatUpdate) {
 #    ftype = ifelse(inherits(predictionLocations,"SpatialPolygons"),"polygons","lines")
+    varMatObs = object$varMatObs
+    vDiagObs = diag(varMatObs)
     ftype = "polygons"
     nPred = length(sapply(slot(predictionLocations, ftype), function(i) slot(i, "ID")))
     if (!"dPred" %in% names(object) && !(lgDistPred && "gDistPred" %in% names(object))) 
@@ -87,28 +90,21 @@ varMat.rtop = function(object, varMatUpdate = FALSE, ...) {
       if ("overlapObs" %in% names(object)) {
         overlapObs = object$overlapObs
       } else object$overlapObs = overlapObs = findOverlap(observations,observations)
-      if (inherits(observations,"SpatialPolygons")) {
-        fObs = matrix(rep(observations$area,nObs),ncol=nObs)
-#      } else if (inherits(predictionLocations,"SpatialLines")) {
-#        fObs = matrix(rep(observations$length,nObs),ncol=nObs)
-      }
+      fObs = matrix(rep(aObs,nObs),ncol=nObs)
       sObs = t(fObs)
       nuggObs = matrix(mapply(FUN = nuggEx,
             (1/fObs + 1/sObs -2*overlapObs/(fObs*sObs))/2,
              MoreArgs = list(variogramModel = variogramModel)),ncol = nObs)
+      diag(nuggObs) = 0
       object$varMatObs = object$varMatObs + nuggObs
     }
     if (predComp) {
       if ("overlapPredObs" %in% names(object)) {
         overlapPredObs = object$overlapPredObs
       } else object$overlapPredObs = overlapPredObs = findOverlap(observations,predictionLocations)
-      if (inherits(predictionLocations,"SpatialPolygons")) {
-        fPredObs = matrix(rep(observations$area,nPred),ncol=nPred)
-        sPredObs = t(matrix(rep(predictionLocations$area,nObs),ncol = nObs))
-#      } else if (inherits(predictionLocations,"SpatialLines")) {
-#        fPredObs = matrix(rep(observations$length,nPred),ncol=nPred)
-#        sPredObs = t(matrix(rep(predictionLocations$length,nObs),ncol = nObs))
-      }
+      aPred = sapply(slot(predictionLocations, "polygons"), function(i) slot(i, "area"))
+      fPredObs = matrix(rep(aObs,nPred),ncol=nPred)
+      sPredObs = t(matrix(rep(aPred,nObs),ncol = nObs))
       nuggPredObs = matrix(mapply(FUN = nuggEx,
             (1/fPredObs + 1/sPredObs -2*overlapPredObs/(fPredObs*sPredObs))/2,
             MoreArgs = list(variogramModel = variogramModel)),ncol= nPred)
@@ -172,13 +168,8 @@ varMatDefault = function(object1,object2 = NULL,variogramModel,
     if (missing(overlapPredObs))
       overlapPredObs = findOverlap(object1,object2)
     
-    if (inherits(object1,"SpatialPolygons")) {
-      aObs = sapply(slot(object1, "polygons"), function(i) slot(i, "area"))
-      aPred = sapply(slot(object2, "polygons"), function(i) slot(i, "area"))
-#    } else if (inherits(object1,"SpatialLines")) {
-#      aObs = SpatialLinesLengths(object1)
-#      aPred = SpatialLinesLengths(object2)
-    }    
+    aObs = sapply(slot(object1, "polygons"), function(i) slot(i, "area"))
+    aPred = sapply(slot(object2, "polygons"), function(i) slot(i, "area"))
     
     nObs = length(aObs)
     nPred = length(aPred)

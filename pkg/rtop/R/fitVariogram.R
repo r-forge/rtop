@@ -6,7 +6,10 @@ rtopFitVariogram.rtop = function(object,...) {
      !params$cloud && !"variogram" %in% names(object))
     object = rtopVariogram(object,...)
 
-  aOver = NULL
+  if (params$nugget) {
+    if (!"overlapObs" %in% names(object)) 
+      object$overlapObs = overlapObs = findOverlap(observations,observations)
+  }  
   if (params$cloud) {
     vario = object$variogramCloud
     observations = object$observations
@@ -24,6 +27,7 @@ rtopFitVariogram.rtop = function(object,...) {
     } else if ("dBin" %in% names(object)){
       dists = object$dBin
     } else dists = NULL
+    if (params$nugget) aOver = findVarioOverlap(vario) else aOver = NULL
   }
   varioFit = rtopFitVariogram(object = vario, observations = observations,
              dists = dists, aOver = aOver, params = params, mr = TRUE, ...)

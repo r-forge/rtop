@@ -213,10 +213,11 @@ findParInit = function(formulaString,observations,model) {
   parInit = data.frame(parl=c(1:5),paru=1,par0 = 1)
   parInit[1,1] = min(vario$gamma)/10
   parInit[1,2] = max(vario$gamma)*500 
-  parInit[2,1] = ifelse(inherits(observations,"SpatialPolygons"),sqrt(min(observations$area))/4,min(observations$length)/4)
+  aObs = sapply(slot(observations, "polygons"), function(i) slot(i, "area"))
+  parInit[2,1] = sqrt(min(aObs))/4
   parInit[2,2] = max(vario$dist)*10
-  minla = ifelse(inherits(observations,"SpatialPolygons"),min(observations$area),min(observations$length))
-  maxla = ifelse(inherits(observations,"SpatialPolygons"),(max(observations$area)^1.5)*max(vario$gamma),max(observations$length))
+  minla = min(aObs)
+  maxla = (max(aObs)^1.5)*max(vario$gamma)
   parInit[3,1] = min(vario$gamma)*minla/100
   parInit[3,2] = max(vario$gamma)*maxla
   parInit[4,1] = 1e-5

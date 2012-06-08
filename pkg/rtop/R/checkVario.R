@@ -11,7 +11,7 @@ checkVario.rtop = function(object,  acor = 1, log = "xy", cloud = FALSE, gDist =
   params = getRtopParams(object$params, ...)
   dots = list(...)
   askpar = par("ask")
-  if (dev.interactive()) par("ask" = TRUE)
+  if (dev.interactive()) par("ask" = TRUE) else par("ask" = FALSE)
   variogramModel = object$variogramModel
 # variogram preferred as sampleVariogram, if not variogramCloud (if exisiting, NULL otherwise)  
   sampleVariogram = object$variogram
@@ -117,7 +117,7 @@ checkVario.rtopVariogramModel = function(object,
 variogramModel = object
 params = getRtopParams(params, ...)
 askpar = par("ask")
-par("ask" = TRUE)
+if (dev.interactive()) par("ask" = TRUE) else par("ask" = FALSE)
 
 if (is.null(areas)) areas = params$amul
 if (is.null(dists)) dists = params$dmul
