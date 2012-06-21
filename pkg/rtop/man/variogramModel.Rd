@@ -56,6 +56,8 @@ library(rgdal)
 rpath = system.file("extdata",package="rtop")
 setwd(rpath)
 observations = readOGR(".","observations")
+# Create a column with the specific runoff:
+observations$obs = observations$QSUMMER_OB/observations$AREASQKM
 predictionLocations = readOGR(".","predictionLocations")
 rtopObj = createRtopObject(observations,predictionLocations)
  # Fit a variogram (function also creates it)

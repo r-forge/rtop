@@ -103,6 +103,8 @@ predictionLocations = readOGR(".","predictionLocations")
 
 # Setting some parameters 
 params = list(gDist = TRUE, cloud = TRUE)
+# Create a column with the specific runoff:
+observations$obs = observations$QSUMMER_OB/observations$AREASQKM
 # Build an object
 rtopObj = createRtopObject(observations,predictionLocations, params = params)
 # Fit a variogram (function also creates it)
