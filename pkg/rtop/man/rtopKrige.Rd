@@ -3,17 +3,13 @@
 \alias{rtopKrige.rtop}
 \alias{rtopKrige.SpatialPolygonsDataFrame}
 \alias{rtopKrige.default}
-\alias{rtopKrige.SpatialLinesDataFrame}
-\title{Spatial interpolation of data with spatial or line support}
+\title{Spatial interpolation of data with spatial support}
 \description{
-rtopKrige perform spatial interpolation or cross validation of data with areal or a line support.
+rtopKrige perform spatial interpolation or cross validation of data with areal support.
 }
 \usage{
 \method{rtopKrige}{rtop}(object, varMatUpdate = FALSE, ...) 
 \method{rtopKrige}{SpatialPolygonsDataFrame}(object, predictionLocations = NULL,
-    varMatObs, varMatPredObs, varMat, params = list(), formulaString, 
-    sel, ...) 
-\method{rtopKrige}{SpatialLinesDataFrame}(object, predictionLocations = NULL,
     varMatObs, varMatPredObs, varMat, params = list(), formulaString, 
     sel, ...) 
 \method{rtopKrige}{default}(object, predictionLocations = NULL,

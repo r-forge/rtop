@@ -2,7 +2,7 @@
 R version 2.15.0 (2012-03-30)
 Copyright (C) 2012 The R Foundation for Statistical Computing
 ISBN 3-900051-07-0
-Platform: i386-pc-mingw32/i386 (32-bit)
+Platform: x86_64-pc-mingw32/x64 (64-bit)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
 You are welcome to redistribute it under certain conditions.
@@ -53,7 +53,7 @@ Feature type: wkbPolygon with 2 dimensions
 > predictionLocations = readOGR(".","predictionLocations")
 OGR data source with driver: ESRI Shapefile 
 Source: ".", layer: "predictionLocations"
-with 912 features and 6 fields
+with 863 features and 5 fields
 Feature type: wkbPolygon with 2 dimensions
 > #Finding a few prediction locations of them
 > 
@@ -341,20 +341,20 @@ Data attributes:
  Mean   : 99.10   Mean   : 99.10   Mean   :17.899   Mean   :449395  
  3rd Qu.:109.75   3rd Qu.:109.75   3rd Qu.:25.011   3rd Qu.:478889  
  Max.   :139.00   Max.   :139.00   Max.   :38.487   Max.   :490602  
-    YSTATION        QSUMMER_OB      area            var1.pred       
- Min.   :456658   Min.   :0    Min.   : 1025069   Min.   :0.008775  
- 1st Qu.:470733   1st Qu.:0    1st Qu.: 7216629   1st Qu.:0.010654  
- Median :509315   Median :0    Median :18147411   Median :0.011734  
- Mean   :495645   Mean   :0    Mean   :17898568   Mean   :0.012852  
- 3rd Qu.:514959   3rd Qu.:0    3rd Qu.:25010760   3rd Qu.:0.013755  
- Max.   :523496   Max.   :0    Max.   :38487054   Max.   :0.022936  
-    var1.var           sumWeights   
- Min.   :0.0005422   Min.   :1.000  
- 1st Qu.:0.0012748   1st Qu.:1.002  
- Median :0.0016463   Median :1.115  
- Mean   :0.0015264   Mean   :1.178  
- 3rd Qu.:0.0018143   3rd Qu.:1.406  
- Max.   :0.0021532   Max.   :1.493  
+    YSTATION           area            var1.pred           var1.var        
+ Min.   :456658   Min.   : 1025069   Min.   :0.008775   Min.   :0.0005422  
+ 1st Qu.:470733   1st Qu.: 7216629   1st Qu.:0.010654   1st Qu.:0.0012748  
+ Median :509315   Median :18147411   Median :0.011734   Median :0.0016463  
+ Mean   :495645   Mean   :17898568   Mean   :0.012852   Mean   :0.0015264  
+ 3rd Qu.:514959   3rd Qu.:25010760   3rd Qu.:0.013755   3rd Qu.:0.0018143  
+ Max.   :523496   Max.   :38487054   Max.   :0.022936   Max.   :0.0021532  
+   sumWeights   
+ Min.   :1.000  
+ 1st Qu.:1.002  
+ Median :1.115  
+ Mean   :1.178  
+ 3rd Qu.:1.406  
+ Max.   :1.493  
 > summary(rtopObj4$predictions)
 Object of class SpatialPolygonsDataFrame
 Coordinates:
@@ -373,20 +373,20 @@ Data attributes:
  Mean   : 99.10   Mean   : 99.10   Mean   :17.899   Mean   :449395  
  3rd Qu.:109.75   3rd Qu.:109.75   3rd Qu.:25.011   3rd Qu.:478889  
  Max.   :139.00   Max.   :139.00   Max.   :38.487   Max.   :490602  
-    YSTATION        QSUMMER_OB      area            var1.pred       
- Min.   :456658   Min.   :0    Min.   : 1025069   Min.   :0.008775  
- 1st Qu.:470733   1st Qu.:0    1st Qu.: 7216629   1st Qu.:0.010654  
- Median :509315   Median :0    Median :18147411   Median :0.011734  
- Mean   :495645   Mean   :0    Mean   :17898568   Mean   :0.012852  
- 3rd Qu.:514959   3rd Qu.:0    3rd Qu.:25010760   3rd Qu.:0.013755  
- Max.   :523496   Max.   :0    Max.   :38487054   Max.   :0.022936  
-    var1.var           sumWeights   
- Min.   :0.0005422   Min.   :1.000  
- 1st Qu.:0.0012748   1st Qu.:1.002  
- Median :0.0016463   Median :1.115  
- Mean   :0.0015264   Mean   :1.178  
- 3rd Qu.:0.0018143   3rd Qu.:1.406  
- Max.   :0.0021532   Max.   :1.493  
+    YSTATION           area            var1.pred           var1.var        
+ Min.   :456658   Min.   : 1025069   Min.   :0.008775   Min.   :0.0005422  
+ 1st Qu.:470733   1st Qu.: 7216629   1st Qu.:0.010654   1st Qu.:0.0012748  
+ Median :509315   Median :18147411   Median :0.011734   Median :0.0016463  
+ Mean   :495645   Mean   :17898568   Mean   :0.012852   Mean   :0.0015264  
+ 3rd Qu.:514959   3rd Qu.:25010760   3rd Qu.:0.013755   3rd Qu.:0.0018143  
+ Max.   :523496   Max.   :38487054   Max.   :0.022936   Max.   :0.0021532  
+   sumWeights   
+ Min.   :1.000  
+ 1st Qu.:1.002  
+ Median :1.115  
+ Mean   :1.178  
+ 3rd Qu.:1.406  
+ Max.   :1.493  
 > all.equal(rtopObj4$predictions, rtopObj3$predictions)
 [1] TRUE
 > #spplot(rtopObj$predictions,col.regions = bpy.colors(), c("var1.pred","var1.var"))
@@ -402,7 +402,7 @@ Data attributes:
 > output = interpolate(observations,predictionLocations,
 +    optList = list(formulaString = obs~1, gDist = TRUE, cloud = TRUE, nmax = 10), 
 +       methodName = "rtop")
-R 2012-06-07 16:34:45 interpolating 30 observations, 20 prediction locations
+R 2012-06-21 12:00:19 interpolating 30 observations, 20 prediction locations
 Checking object ... OK
 [1] "Sampling from area number 1 containing 154 points"
 [1] "Sampling from area number 2 containing 191 points"
@@ -531,4 +531,4 @@ Warning messages:
 > 
 > proc.time()
    user  system elapsed 
-  71.63    0.40   72.52 
+  74.78    0.28   75.09 

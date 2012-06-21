@@ -2,28 +2,25 @@
 \alias{rtopVariogram}
 \alias{rtopVariogram.rtop}
 \alias{rtopVariogram.SpatialPolygonsDataFrame}
-\alias{rtopVariogram.SpatialLinesDataFrame}
 \alias{rtopVariogram.SpatialPointsDataFrame}
 \title{ create variogram for data with spatial support }
 \description{
 rtopVariogram will create binned variogram or cloud variogram of data
-with an areal or a line support.
+with an areal support.
 }
 \usage{
 \method{rtopVariogram}{rtop}(object, ...) 
 \method{rtopVariogram}{SpatialPolygonsDataFrame}(object, ...) 
-\method{rtopVariogram}{SpatialLinesDataFrame}(object, ...) 
 \method{rtopVariogram}{SpatialPointsDataFrame}(object, formulaString, params=list(), cloud, abins, dbins, ...) 
 }
 \synopsis{ rtopVariogram(object, ...) }
 
 \arguments{
 \item{object}{ object of class \code{rtop} (see \link{rtop-package}) or a 
-\code{\link[sp:SpatialPolygons]{SpatialPolygonsDataFrame}},
-\code{\link[sp:SpatialLines]{SpatialLinesDataFrame}}, or \code{\link[sp:SpatialPoints]{SpatialPointsDataFrame}}
+\code{\link[sp:SpatialPolygons]{SpatialPolygonsDataFrame}}
+or \code{\link[sp:SpatialPoints]{SpatialPointsDataFrame}}
 with information about observations. If \code{object} is a \code{\link[sp:SpatialPoints]{SpatialPointsDataFrame}},
-it must have a column with name \code{area} (for areal observations) or
-\code{length} (for line observations).
+it must have a column with name \code{area}.
 }
 \item{formulaString}{formula that defines the dependent variable as a linear model 
       of independent variables; suppose the dependent variable has name \code{z}, 
@@ -60,7 +57,7 @@ The bins equally distanced in the log10-space of the distances and areas (length
 The size of the bins is decided from the parameters \code{amul} and \code{dmul}, 
 defining the number of bins per order of magnitude (1:10, 10:100, and so on).
 
-The distances between areas/lines are at this function based on the centre of gravity.
+The distances between areas are in this function based on the centre of gravity.
 
 }
 \author{ Jon Olav Skoien }

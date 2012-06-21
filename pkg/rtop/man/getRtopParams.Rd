@@ -13,8 +13,7 @@ to be included in the object described in \code{\link{rtop-package}}}
 \item{newPar}{A \code{list} of parameters for updating \code{params} or for
               modification of the default parameters. 
               Possible parameters with their defaults are given below}
-\item{observations}{\code{\link[sp]{SpatialLinesDataFrame}} or
-                 \code{\link[sp]{SpatialPolygonsDataFrame}} with observations,
+\item{observations}{\code{\link[sp]{SpatialPolygonsDataFrame}} with observations,
                  used for setting some of the default parameters}
 \item{formulaString}{formula that defines the dependent variable as a linear model 
       of independent variables, see e.g. \code{\link{createRtopObject}} for more details.}
@@ -42,7 +41,7 @@ to be included in the object described in \code{\link{rtop-package}}}
            are starting values.}
      \item{nugget = TRUE}{ - logical; if TRUE nugget effect should be estimated}
      \item{unc = TRUE}{ - logical; if TRUE the standard deviation of observations are in column \code{unc}}
-     \item{rresol = 100}{ - minimum number of discretization points in each element (area or line)}  
+     \item{rresol = 100}{ - minimum number of discretization points in each area}  
      \item{hresol = 5}{ - number of discretization points in one direction for elements in binned variograms}
      \item{cloud = FALSE}{ - logical; if TRUE use the cloud variogram for variogram fitting}
      \item{amul = 1}{ - defines the number of areal bins within one order of magnitude. Numbers between 1 and 3 

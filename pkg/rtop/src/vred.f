@@ -239,9 +239,9 @@ c     Function to return nugget of variogram model
       epar = (xd/c)**par(4)
       exp1 = par(1)*xfrac*(1-exp(-epar)) + par(5)
 
-      write(99,'(i5, 5f13.4)') 0, xd,xfrac,epar,par(5),exp1
+c      write(99,'(i5, 5f13.4)') 0, xd,xfrac,epar,par(5),exp1
 
-      write(99,'(i5,5f13.4,a7,f20.4)') ip,(par(i),i=1,ip),model,res
+c      write(99,'(i5,5f13.4,a7,f20.4)') ip,(par(i),i=1,ip),model,res
       end
 
 

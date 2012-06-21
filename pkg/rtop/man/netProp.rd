@@ -8,7 +8,7 @@ Pass values along a river network when the river network has more segments
 than the prediction polygons.
 }
 \usage{
-netProp(network, from = "FROMJCT", to = "TOJCT", pred = "pred")
+netProp(network, from = "FROMJCT", to = "TOJCT", pred = "pred", iprint = 1)
 }
 \arguments{
 \item{network}{ object of class \code{\link[sp:SpatialLines]{SpatialLinesDataFrame}}
@@ -16,6 +16,8 @@ netProp(network, from = "FROMJCT", to = "TOJCT", pred = "pred")
 \item{from}{ name of the column giving the endpoint ID of each line segment }
 \item{to}{ name of the column giving the start ID of each line segment }
 \item{pred}{ name of column with predictions }
+\item{iprint}{if iprint >= 1 the function will give some information about 
+         the convergence of the value propagation. Use iprint = 0 to suppress this output.}
 }
 \value{
 The function will propagate the predictions upwards along the river network. 

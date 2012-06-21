@@ -11,8 +11,7 @@ createRtopObject(observations, predictionLocations,
 }
 
 \arguments{
-\item{observations}{\code{\link[sp]{SpatialLinesDataFrame}} or
-                 \code{\link[sp]{SpatialPolygonsDataFrame}} with observations}
+\item{observations}{\code{\link[sp]{SpatialPolygonsDataFrame}} with observations}
 \item{predictionLocations}{a \code{\link[sp]{SpatialPolygons}} or a 
       \code{\link[sp]{SpatialPolygonsDataFrame}}-object with 
                  prediction locations}

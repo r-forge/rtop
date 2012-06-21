@@ -1,4 +1,4 @@
-netProp = function(network, from = "FROMJCT", to = "TOJCT", pred = "pred") {
+netProp = function(network, from = "FROMJCT", to = "TOJCT", pred = "pred", iprint = 1) {
 
   if (require(igraph)) {
 
@@ -11,7 +11,7 @@ netProp = function(network, from = "FROMJCT", to = "TOJCT", pred = "pred") {
       lcon = which(rndf$to == min(rndf$to[is.na(rndf$pred)]))
       if (length(lcon) == 0) 
         break()
-      print(lcon)
+      if (iprint > 0) print(lcon)
       while (is.na(rndf$pred[lcon[1]])) {
         ncon = neighbors(igr, lcon[1] - 1) + 1
         if (length(ncon) == 0 || ncon > dim(rndf)[1]) {rndf$pred[lcon[1]] = -9999; break}
@@ -36,7 +36,7 @@ netProp = function(network, from = "FROMJCT", to = "TOJCT", pred = "pred") {
           }
         }
       }
-      print(paste("ichange",ichange))
+      if (iprint > 0) print(paste("ichange",ichange))
     }
   }
   network

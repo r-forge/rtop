@@ -2,19 +2,17 @@
 \alias{rtopFitVariogram}
 \alias{rtopFitVariogram.rtop}
 \alias{rtopFitVariogram.SpatialPolygonsDataFrame}
-\alias{rtopFitVariogram.SpatialLinesDataFrame}
 \alias{rtopFitVariogram.SpatialPointsDataFrame}
 \alias{rtopFitVariogram.rtopVariogram}
 \alias{rtopFitVariogram.rtopVariogramCloud}
-\title{Fit variogram model to sample variogram of data with spatial or line support}
+\title{Fit variogram model to sample variogram of data with spatial support}
 \description{
 rtopFitVariogram will fit a variogram model to the estimated binned variogram or cloud variogram of data
-with an areal or a line support.
+with an areal support.
 }
 \usage{
 \method{rtopFitVariogram}{rtop}(object, ...) 
 \method{rtopFitVariogram}{SpatialPolygonsDataFrame}(object, params=list(), ...) 
-\method{rtopFitVariogram}{SpatialLinesDataFrame}(object, params=list(), ...) 
 \method{rtopFitVariogram}{SpatialPointsDataFrame}(object, params=list(), ...) 
 \method{rtopFitVariogram}{rtopVariogram}(object, observations, dists = NULL, params=list(), mr = FALSE, ...) 
 \method{rtopFitVariogram}{rtopVariogramCloud}(object, observations, dists = NULL, params=list(), mr = FALSE, ...) 
@@ -25,11 +23,10 @@ with an areal or a line support.
 \item{object}{object of class \code{rtopVariogram} or \code{rtopVariogramCloud},
 or an object with class \code{rtop} that includes the sample variograms.
 
-The object can also be of class \code{\link[sp]{SpatialPolygonsDataFrame}},
-\code{\link[sp]{SpatialLinesDataFrame}}, or \code{\link[sp]{SpatialPointsDataFrame}}
+The object can also be of class \code{\link[sp]{SpatialPolygonsDataFrame}}
+or \code{\link[sp]{SpatialPointsDataFrame}}
 with observations. If \code{object} is a \code{\link[sp]{SpatialPointsDataFrame}},
-it must have a column with name \code{area} (for areal observations) or
-\code{length} (for line observations).
+it must have a column with name \code{area}.
 }
 \item{observations}{the observations, passed as a Spatial*DataFrame object, if
    object is an \code{rtopVariogram} or \code{rtopVariogramCloud}}
@@ -37,7 +34,7 @@ it must have a column with name \code{area} (for areal observations) or
       the \code{rtop} package, set in \code{\link{getRtopParams}}. }
 \item{dists}{either a matrix with geostatistical distances (created by a call
              to the function \code{\link{gDist}} or a list with the
-             elements (areas or lines) discretized (from a call to \code{\link{rtopDisc}}.}
+             areas  discretized (from a call to \code{\link{rtopDisc}}.}
 \item{mr}{logical; defining whether the function should return a list with 
           discretized elements and geostatistical distances, even if it was not
           called with an rtop-object as argument.}

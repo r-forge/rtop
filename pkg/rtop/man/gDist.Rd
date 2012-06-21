@@ -3,10 +3,8 @@
 \alias{gDist.rtop}
 \alias{gDist.SpatialPolygonsDataFrame}
 \alias{gDist.SpatialPolygons}
-\alias{gDist.SpatialLinesDataFrame}
-\alias{gDist.SpatialLines}
 \alias{gDist.list}
-\title{calculate geostatistical distances between areas or lines}
+\title{calculate geostatistical distances between areas}
 \description{Calculate geostatistical distances (Ghosh-distances) between
 areas
 }
@@ -14,19 +12,16 @@ areas
 \method{gDist}{rtop}(object, ...) 
 \method{gDist}{SpatialPolygonsDataFrame}(object, object2 = NULL, ...) 
 \method{gDist}{SpatialPolygons}(object, object2 = NULL, ...) 
-\method{gDist}{SpatialLinesDataFrame}(object, object2 = NULL, ...) 
-\method{gDist}{SpatialLines}(object, object2 = NULL, ...) 
 \method{gDist}{list}(object, object2 = NULL, diag = FALSE, debug.level = 0, ...) 
 }
 
 \arguments{
 \item{object}{object of class \code{\link[sp]{SpatialPolygons}} or 
-\code{\link[sp:SpatialPolygons]{SpatialPolygonsDataFrame}} with boundaries of areas
-or \code{\link[sp]{SpatialLines}} or 
-\code{\link[sp:SpatialLines]{SpatialLinesDataFrame}} with lines; or list
-of discretized areas/lines, typically from a call to \code{\link{rtopDisc}}; or
+\code{\link[sp:SpatialPolygons]{SpatialPolygonsDataFrame}} with boundaries of areas;
+or list
+of discretized areas, typically from a call to \code{\link{rtopDisc}}; or
 object of class \code{rtop} with such boundaries and/or discretized
-elements (the individual areas/lines)}
+elements (the individual areas)}
 \item{object2}{an object of same type as \code{object}, except for \code{rtop};
 for calculation of geostatistical
 distances also between the elements in the two different objects }
@@ -47,8 +42,7 @@ If called with \code{diag = TRUE}, the function returns an array of the geostati
 distance within each of the elements in the list.
 
 If called with one \code{\link[sp]{SpatialPolygons}} or \code{\link[sp]{SpatialPolygonsDataFrame}}
-or \code{\link[sp]{SpatialLines}} or \code{\link[sp:SpatialLines]{SpatialLinesDataFrame}}
-the function returns a list with one matrix with geostatistical distances between 
+or the function returns a list with one matrix with geostatistical distances between 
 the elements of the object. If called with two objects, the list will also containt 
 a matrix of the geostatistical distances between the elements of the two objects, and an array
 of the geostatistical distances within the elements of the second object. 
@@ -78,7 +72,6 @@ instead of covariances, and the semivariogram value between the two areas
 can be found as \code{gamma(a1,a2) = g(gd) - 0.5 (g(gd1) + g(gd2))} where
 \code{g} is a semivariogram valid for point support, \code{gd1)} and \code{gd2}
 are the geostatistical distances within each of the two areas.
-Similar is valid for lines.
 
 }
 
