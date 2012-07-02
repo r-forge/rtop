@@ -88,12 +88,13 @@ Skoien, J. O., R. Merz, and G. Bloschl. 2006. Top-kriging - geostatistics on str
 }
 \author{ Jon Olav Skoien }
 \examples{
+\dontrun{
 library(rgdal)
 rpath = system.file("extdata",package="rtop")
 setwd(rpath)   
 observations = readOGR(".","observations")
 gDist = gDist(observations)
-
+}
 
 }
 \keyword{spatial}
