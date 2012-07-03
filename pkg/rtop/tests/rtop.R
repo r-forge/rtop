@@ -1,9 +1,8 @@
 set.seed(1501)
 #-----------------------------
 library(rtop)
-library(rgdal)
 options(error = recover)
-
+if (require(rgdal)) {
 # Read directly from shape-files in data directory
 rpath = system.file("extdata",package="rtop")
 setwd(rpath)
@@ -49,3 +48,4 @@ output = interpolate(observations,predictionLocations,
 all.equal(rtopObj4$predictions@data$var1.pred, output$predictions@data$var1.pred)
 all.equal(rtopObj4$predictions@data$var1.var, output$predictions@data$var1.var)
 
+}
