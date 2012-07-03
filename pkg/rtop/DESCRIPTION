@@ -6,7 +6,7 @@ Date: 2012-07-03
 Author: Jon Olav Skoien
 Maintainer: Jon Olav Skoien <jon.skoien@jrc.ec.europa.eu>
 Depends: sp, gstat
-Suggests: igraph
+Suggests: igraph, rgdal
 Enhances: intamap
 Description: Geostatistical methods for estimating when the support has an area
 License: GPL (>= 2)
