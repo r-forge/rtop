@@ -99,8 +99,8 @@ rtopKrige.default = function(object, predictionLocations = NULL,
     nneigh = nobs
     obs = obs0
     unc = unc0
+    neigh = c(1:nobs)
     if (!singMat) {
-      neigh = c(1:nobs)
       if (nobs < nmax && mdist < maxdist) {
 #  cross-validation, but no limits on distance or numbers
         varMat = varMatObs[-inew,-inew]

@@ -31,46 +31,70 @@ The following object(s) are masked from 'package:base':
     as.Date, as.Date.numeric
 
 Loading required package: xts
+Loading optional package: intamap 
+
+> options(error = recover)
+> if (require(rgdal)) {
++   # Read directly from shape-files in data directory
++   rpath = system.file("extdata",package="rtop")
++   setwd(rpath)
++   observations = readOGR(".","observations")
++   predictionLocations = readOGR(".","predictionLocations")
++   #Finding a few prediction locations of them
++   
++   observations = observations[1:30,]
++   predictionLocations = predictionLocations[1:20,]
++   
++   observations$obs = observations$QSUMMER_OB/observations$AREASQKM
++   
++   # Setting some parameters 
++   params = list(gDist = TRUE, cloud = TRUE)
++   # Build an object
++   rtopObj = createRtopObject(observations,predictionLocations, params = params)
++   # Fit a variogram (function also creates it)
++   rtopObj = rtopFitVariogram(rtopObj)
++   #rtopObj = checkVario(rtopObj)
++   rtopObj$variogramModel                                                                        
++   rtopObj2 = rtopKrige(rtopObj, cv = TRUE)
++   rtopObj3 = rtopKrige(rtopObj)
++   rtopObj4 = rtopKrige(rtopObj2)
++   
++   
++   print(summary(rtopObj2$predictions))
++   print(summary(rtopObj3$predictions))
++   print(summary(rtopObj4$predictions))
++   print(all.equal(rtopObj4$predictions, rtopObj3$predictions))
++   #spplot(rtopObj$predictions,col.regions = bpy.colors(), c("var1.pred","var1.var"))
++   
++   # Cross-validation
++   #spplot(rtopObj2$predictions,col.regions = bpy.colors(), c("observed","var1.pred"))
++   print(cor(rtopObj2$predictions$observed,rtopObj2$predictions$var1.pred))
++   
++   
++   #Combining with intamap - have to be at least 20 location:
++   set.seed(1501)
++   output = interpolate(observations,predictionLocations,
++      optList = list(formulaString = obs~1, gDist = TRUE, cloud = TRUE, nmax = 10), 
++         methodName = "rtop")
++   
++   print(all.equal(rtopObj4$predictions@data$var1.pred, output$predictions@data$var1.pred))
++   print(all.equal(rtopObj4$predictions@data$var1.var, output$predictions@data$var1.var))
++ 
++ }
 Loading required package: rgdal
 Geospatial Data Abstraction Library extensions to R successfully loaded
 Loaded GDAL runtime: GDAL 1.9.0, released 2011/12/29
 Path to GDAL shared files: C:/Program Files/R/R-2.15.0/library/rgdal/gdal
 Loaded PROJ.4 runtime: Rel. 4.7.1, 23 September 2009, [PJ_VERSION: 470]
 Path to PROJ.4 shared files: C:/Program Files/R/R-2.15.0/library/rgdal/proj
-Loading optional package: intamap 
-
-> library(rgdal)
-> options(error = recover)
-> 
-> # Read directly from shape-files in data directory
-> rpath = system.file("extdata",package="rtop")
-> setwd(rpath)
-> observations = readOGR(".","observations")
 OGR data source with driver: ESRI Shapefile 
 Source: ".", layer: "observations"
 with 138 features and 6 fields
 Feature type: wkbPolygon with 2 dimensions
-> predictionLocations = readOGR(".","predictionLocations")
 OGR data source with driver: ESRI Shapefile 
 Source: ".", layer: "predictionLocations"
 with 863 features and 5 fields
 Feature type: wkbPolygon with 2 dimensions
-> #Finding a few prediction locations of them
-> 
-> observations = observations[1:30,]
-> predictionLocations = predictionLocations[1:20,]
-> 
-> observations$obs = observations$QSUMMER_OB/observations$AREASQKM
-> 
-> # Setting some parameters 
-> params = list(gDist = TRUE, cloud = TRUE)
-> # Build an object
-> rtopObj = createRtopObject(observations,predictionLocations, params = params)
-Warning message:
-In createRtopObject(observations, predictionLocations, params = params) :
-  formulaString missing, using obs ~ 1
-> # Fit a variogram (function also creates it)
-> rtopObj = rtopFitVariogram(rtopObj)
 [1] "Sampling from area number 1 containing 154 points"
 [1] "Sampling from area number 2 containing 191 points"
 [1] "Sampling from area number 3 containing 162 points"
@@ -155,19 +179,6 @@ In createRtopObject(observations, predictionLocations, params = params) :
 1546 best 0.713 function convergence 0 parameter convergence 1.254913 
 1573 best 0.713 function convergence 0 parameter convergence 1.01156 
 1598 best 0.713 function convergence 0 parameter convergence 0.7689831 
-> #rtopObj = checkVario(rtopObj)
-> rtopObj$variogramModel                                                                        
-$model
-[1] "Ex1"
-
-$params
-[1] 2.913156e-03 1.614076e+04 1.350169e+02 2.068194e-02 5.821247e-01
-
-attr(,"class")
-[1] "rtopVariogramModel"
-attr(,"SSErr")
-[1] 1.885739
-> rtopObj2 = rtopKrige(rtopObj, cv = TRUE)
 [1] "Cross-validating location 1  out of  30  observation locations"
 [1] "Cross-validating location 2  out of  30  observation locations"
 [1] "Cross-validating location 3  out of  30  observation locations"
@@ -198,7 +209,6 @@ attr(,"SSErr")
 [1] "Cross-validating location 28  out of  30  observation locations"
 [1] "Cross-validating location 29  out of  30  observation locations"
 [1] "Cross-validating location 30  out of  30  observation locations"
-> rtopObj3 = rtopKrige(rtopObj)
 [1] "Sampling from area number 1 containing 210 points"
 [1] "Sampling from area number 2 containing 217 points"
 [1] "Sampling from area number 3 containing 236 points"
@@ -240,7 +250,6 @@ attr(,"SSErr")
 [1] "Predicting location  18  out of  20  prediction locations"
 [1] "Predicting location  19  out of  20  prediction locations"
 [1] "Predicting location  20  out of  20  prediction locations"
-> rtopObj4 = rtopKrige(rtopObj2)
 [1] "Sampling from area number 1 containing 210 points"
 [1] "Sampling from area number 2 containing 217 points"
 [1] "Sampling from area number 3 containing 236 points"
@@ -282,9 +291,6 @@ attr(,"SSErr")
 [1] "Predicting location  18  out of  20  prediction locations"
 [1] "Predicting location  19  out of  20  prediction locations"
 [1] "Predicting location  20  out of  20  prediction locations"
-> 
-> 
-> summary(rtopObj2$predictions)
 Object of class SpatialPolygonsDataFrame
 Coordinates:
        min      max
@@ -323,7 +329,6 @@ Data attributes:
  Mean   : 0.001603   Mean   : 0.03200  
  3rd Qu.: 0.002059   3rd Qu.: 0.10198  
  Max.   : 0.140098   Max.   : 3.41431  
-> summary(rtopObj3$predictions)
 Object of class SpatialPolygonsDataFrame
 Coordinates:
        min      max
@@ -355,7 +360,6 @@ Data attributes:
  Mean   :1.178  
  3rd Qu.:1.406  
  Max.   :1.493  
-> summary(rtopObj4$predictions)
 Object of class SpatialPolygonsDataFrame
 Coordinates:
        min      max
@@ -387,22 +391,9 @@ Data attributes:
  Mean   :1.178  
  3rd Qu.:1.406  
  Max.   :1.493  
-> all.equal(rtopObj4$predictions, rtopObj3$predictions)
 [1] TRUE
-> #spplot(rtopObj$predictions,col.regions = bpy.colors(), c("var1.pred","var1.var"))
-> 
-> # Cross-validation
-> #spplot(rtopObj2$predictions,col.regions = bpy.colors(), c("observed","var1.pred"))
-> cor(rtopObj2$predictions$observed,rtopObj2$predictions$var1.pred)
 [1] 0.4647572
-> 
-> 
-> #Combining with intamap - have to be at least 20 location:
-> set.seed(1501)
-> output = interpolate(observations,predictionLocations,
-+    optList = list(formulaString = obs~1, gDist = TRUE, cloud = TRUE, nmax = 10), 
-+       methodName = "rtop")
-R 2012-06-21 12:00:19 interpolating 30 observations, 20 prediction locations
+R 2012-07-03 11:19:11 interpolating 30 observations, 20 prediction locations
 Checking object ... OK
 [1] "Sampling from area number 1 containing 154 points"
 [1] "Sampling from area number 2 containing 191 points"
@@ -509,26 +500,24 @@ Checking object ... OK
 [1] "Sampling from area number 19 containing 101 points"
 [1] "Sampling from area number 20 containing 152 points"
 [1] "Creating prediction semivariance matrix. This can take some time."
+[1] TRUE
+[1] TRUE
 Warning messages:
-1: In predictTime(nObs = dim(observations)[1], nPred = dim(coordinates(predictionLocations))[1],  :
+1: In createRtopObject(observations, predictionLocations, params = params) :
+  formulaString missing, using obs ~ 1
+2: In predictTime(nObs = dim(observations)[1], nPred = dim(coordinates(predictionLocations))[1],  :
   
  using standard model for estimating time. For better 
  platform spesific predictions, please run 
  timeModels <- generateTimeModels()
   and save the workspace
-2: In predictTime(nObs = dim(observations)[1], nPred = dim(coordinates(predictionLocations))[1],  :
+3: In predictTime(nObs = dim(observations)[1], nPred = dim(coordinates(predictionLocations))[1],  :
   Could not find time model for method spatialPredict_rtop
-3: In interpolate(observations, predictionLocations, optList = list(formulaString = obs ~  :
+4: In interpolate(observations, predictionLocations, optList = list(formulaString = obs ~  :
   was not able to estimate prediction time for methodName rtop
-4: In methodParameters.default(krigingObject) :
+5: In methodParameters.default(krigingObject) :
   Not able to create methodParameters for variogram of class rtopVariogramModel
-> 
-> all.equal(rtopObj4$predictions@data$var1.pred, output$predictions@data$var1.pred)
-[1] TRUE
-> all.equal(rtopObj4$predictions@data$var1.var, output$predictions@data$var1.var)
-[1] TRUE
-> 
 > 
 > proc.time()
    user  system elapsed 
-  74.78    0.28   75.09 
+  74.55    0.31   75.05 
