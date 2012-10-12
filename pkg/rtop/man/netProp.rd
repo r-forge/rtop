@@ -25,6 +25,12 @@ The result is a \code{\link[sp:SpatialLines]{SpatialLinesDataFrame}} with
 predictions for all line segments, which can easier be plotted.
 }
 
+\note{
+This function works when the topology of the river network is similar to the 
+example here, that the \code{from}-column is always the upstream part of a river
+segment, and that all segments are actually connected.
+}
+
 \author{ Jon Olav Skoien }
 \examples{
 \dontrun{
