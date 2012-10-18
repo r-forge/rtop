@@ -41,6 +41,7 @@ if (require(rgdal)) {
   
   #Combining with intamap - have to be at least 20 location:
   set.seed(1501)
+  useRtopWithIntamap()
   library(intamap)
   output = interpolate(observations,predictionLocations,
      optList = list(formulaString = obs~1, gDist = TRUE, cloud = TRUE, nmax = 10), 
