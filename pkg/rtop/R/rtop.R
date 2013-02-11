@@ -134,7 +134,7 @@ getRtopParams = function(params = list(), newPar = list(), observations, formula
 
 getRtopDefaultParams = function(parInit,
    model="Ex1",
-   nugget = TRUE,
+   nugget = FALSE,
    unc = TRUE,
    rresol = 100,  # Resolution real areas
    hresol = 5,    # Resolution in x-direction rectangles

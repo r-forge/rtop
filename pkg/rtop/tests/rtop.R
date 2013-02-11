@@ -1,8 +1,8 @@
 set.seed(1501)
 #-----------------------------
 library(rtop)
+library(rgdal)
 options(error = recover)
-if (require(rgdal)) {
   # Read directly from shape-files in data directory
   rpath = system.file("extdata",package="rtop")
   setwd(rpath)
@@ -24,6 +24,8 @@ if (require(rgdal)) {
   #rtopObj = checkVario(rtopObj)
   rtopObj$variogramModel                                                                        
   rtopObj2 = rtopKrige(rtopObj, cv = TRUE)
+  print(attr(rtopObj2$varMatObs,"variogramModel"))
+  
   rtopObj3 = rtopKrige(rtopObj)
   rtopObj4 = rtopKrige(rtopObj2)
   
@@ -39,7 +41,7 @@ if (require(rgdal)) {
   print(cor(rtopObj2$predictions$observed,rtopObj2$predictions$var1.pred))
   
   
-  #Combining with intamap - have to be at least 20 location:
+
   set.seed(1501)
   useRtopWithIntamap()
   library(intamap)
@@ -50,4 +52,9 @@ if (require(rgdal)) {
   print(all.equal(rtopObj4$predictions@data$var1.pred, output$predictions@data$var1.pred))
   print(all.equal(rtopObj4$predictions@data$var1.var, output$predictions@data$var1.var))
 
-}
+# Updating variogramModel
+  
+  rtopObj5 = varMat(rtopObj4)
+  rtopObj6 = updateRtopVariogram(rtopObj5, exp = 1.5, action = "mult")
+  rtopObj7 = varMat(rtopObj6)
+

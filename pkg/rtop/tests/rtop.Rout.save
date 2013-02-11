@@ -1,8 +1,8 @@
 
-R version 2.15.1 (2012-06-22) -- "Roasted Marshmallows"
+R version 2.15.2 (2012-10-26) -- "Trick or Treat"
 Copyright (C) 2012 The R Foundation for Statistical Computing
 ISBN 3-900051-07-0
-Platform: x86_64-pc-mingw32/x64 (64-bit)
+Platform: x86_64-redhat-linux-gnu (64-bit)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
 You are welcome to redistribute it under certain conditions.
@@ -21,80 +21,44 @@ Type 'q()' to quit R.
 > library(rtop)
 Loading required package: sp
 Loading required package: gstat
-Loading required package: spacetime
-Loading required package: zoo
-
-Attaching package: 'zoo'
-
-The following object(s) are masked from 'package:base':
-
-    as.Date, as.Date.numeric
-
-Loading required package: xts
-> options(error = recover)
-> if (require(rgdal)) {
-+   # Read directly from shape-files in data directory
-+   rpath = system.file("extdata",package="rtop")
-+   setwd(rpath)
-+   observations = readOGR(".","observations")
-+   predictionLocations = readOGR(".","predictionLocations")
-+   #Finding a few prediction locations of them
-+   
-+   observations = observations[1:30,]
-+   predictionLocations = predictionLocations[1:20,]
-+   
-+   observations$obs = observations$QSUMMER_OB/observations$AREASQKM
-+   
-+   # Setting some parameters 
-+   params = list(gDist = TRUE, cloud = TRUE)
-+   # Build an object
-+   rtopObj = createRtopObject(observations,predictionLocations, params = params)
-+   # Fit a variogram (function also creates it)
-+   rtopObj = rtopFitVariogram(rtopObj)
-+   #rtopObj = checkVario(rtopObj)
-+   rtopObj$variogramModel                                                                        
-+   rtopObj2 = rtopKrige(rtopObj, cv = TRUE)
-+   rtopObj3 = rtopKrige(rtopObj)
-+   rtopObj4 = rtopKrige(rtopObj2)
-+   
-+   
-+   print(summary(rtopObj2$predictions))
-+   print(summary(rtopObj3$predictions))
-+   print(summary(rtopObj4$predictions))
-+   print(all.equal(rtopObj4$predictions, rtopObj3$predictions))
-+   #spplot(rtopObj$predictions,col.regions = bpy.colors(), c("var1.pred","var1.var"))
-+   
-+   # Cross-validation
-+   #spplot(rtopObj2$predictions,col.regions = bpy.colors(), c("observed","var1.pred"))
-+   print(cor(rtopObj2$predictions$observed,rtopObj2$predictions$var1.pred))
-+   
-+   
-+   #Combining with intamap - have to be at least 20 location:
-+   set.seed(1501)
-+   useRtopWithIntamap()
-+   library(intamap)
-+   output = interpolate(observations,predictionLocations,
-+      optList = list(formulaString = obs~1, gDist = TRUE, cloud = TRUE, nmax = 10), 
-+         methodName = "rtop")
-+   
-+   print(all.equal(rtopObj4$predictions@data$var1.pred, output$predictions@data$var1.pred))
-+   print(all.equal(rtopObj4$predictions@data$var1.var, output$predictions@data$var1.var))
-+ 
-+ }
-Loading required package: rgdal
+> library(rgdal)
+rgdal: version: 0.8.1, (SVN revision 415)
 Geospatial Data Abstraction Library extensions to R successfully loaded
-Loaded GDAL runtime: GDAL 1.9.1, released 2012/05/15
-Path to GDAL shared files: C:/Program Files/R/R-2.15.1/library/rgdal/gdal
+Loaded GDAL runtime: GDAL 1.8.1, released 2011/07/09
+Path to GDAL shared files: /usr/share/gdal
+GDAL does not use iconv for recoding strings.
 Loaded PROJ.4 runtime: Rel. 4.7.1, 23 September 2009, [PJ_VERSION: 470]
-Path to PROJ.4 shared files: C:/Program Files/R/R-2.15.1/library/rgdal/proj
+Path to PROJ.4 shared files: (autodetected)
+> options(error = recover)
+>   # Read directly from shape-files in data directory
+>   rpath = system.file("extdata",package="rtop")
+>   setwd(rpath)
+>   observations = readOGR(".","observations")
 OGR data source with driver: ESRI Shapefile 
 Source: ".", layer: "observations"
 with 57 features and 7 fields
 Feature type: wkbPolygon with 2 dimensions
+>   predictionLocations = readOGR(".","predictionLocations")
 OGR data source with driver: ESRI Shapefile 
 Source: ".", layer: "predictionLocations"
 with 235 features and 5 fields
 Feature type: wkbPolygon with 2 dimensions
+>   #Finding a few prediction locations of them
+>   
+>   observations = observations[1:30,]
+>   predictionLocations = predictionLocations[1:20,]
+>   
+>   observations$obs = observations$QSUMMER_OB/observations$AREASQKM
+>   
+>   # Setting some parameters 
+>   params = list(gDist = TRUE, cloud = TRUE)
+>   # Build an object
+>   rtopObj = createRtopObject(observations,predictionLocations, params = params)
+Warning message:
+In createRtopObject(observations, predictionLocations, params = params) :
+  formulaString missing, using obs ~ 1
+>   # Fit a variogram (function also creates it)
+>   rtopObj = rtopFitVariogram(rtopObj)
 [1] "Sampling from area number 1 containing 292 points"
 [1] "Sampling from area number 2 containing 366 points"
 [1] "Sampling from area number 3 containing 251 points"
@@ -125,46 +89,57 @@ Feature type: wkbPolygon with 2 dimensions
 [1] "Sampling from area number 28 containing 160 points"
 [1] "Sampling from area number 29 containing 324 points"
 [1] "Sampling from area number 30 containing 211 points"
-51 best 0.545 function convergence 200 parameter convergence 6929.283 
-79 best 0.545 function convergence 200 parameter convergence 5426.86 
-113 best 0.545 function convergence 200 parameter convergence 5887.418 
-158 best 0.532 function convergence 200 parameter convergence 5061.408 
-197 best 0.532 function convergence 200 parameter convergence 4155.52 
-236 best 0.532 function convergence 2.5 parameter convergence 3414.267 
-278 best 0.477 function convergence 13.4 parameter convergence 2860.925 
-316 best 0.477 function convergence 13.4 parameter convergence 1823.868 
-351 best 0.473 function convergence 11.7 parameter convergence 1843.323 
-383 best 0.469 function convergence 12.5 parameter convergence 1073.917 
-419 best 0.469 function convergence 12.5 parameter convergence 957.3293 
-459 best 0.469 function convergence 1.7 parameter convergence 661.817 
-499 best 0.469 function convergence 1.7 parameter convergence 432.158 
-530 best 0.468 function convergence 1 parameter convergence 300.1238 
-560 best 0.468 function convergence 0.3 parameter convergence 193.7208 
-585 best 0.468 function convergence 0.4 parameter convergence 128.4351 
-612 best 0.467 function convergence 0.3 parameter convergence 117.2994 
-637 best 0.467 function convergence 0.3 parameter convergence 84.30212 
-662 best 0.467 function convergence 0.2 parameter convergence 70.35664 
-687 best 0.467 function convergence 0.1 parameter convergence 74.1154 
-714 best 0.467 function convergence 0.1 parameter convergence 55.88475 
-745 best 0.467 function convergence 0 parameter convergence 46.7206 
-773 best 0.467 function convergence 0 parameter convergence 33.70572 
-798 best 0.467 function convergence 0 parameter convergence 33.61509 
-826 best 0.467 function convergence 0 parameter convergence 22.26709 
-851 best 0.467 function convergence 0 parameter convergence 19.3281 
-876 best 0.467 function convergence 0 parameter convergence 20.70939 
-903 best 0.467 function convergence 0 parameter convergence 18.14986 
-932 best 0.467 function convergence 0 parameter convergence 10.46408 
-957 best 0.467 function convergence 0 parameter convergence 8.767825 
-983 best 0.467 function convergence 0 parameter convergence 6.344796 
-1008 best 0.467 function convergence 0 parameter convergence 6.423785 
-1033 best 0.467 function convergence 0 parameter convergence 4.195381 
-1059 best 0.467 function convergence 0 parameter convergence 2.514962 
-1085 best 0.467 function convergence 0 parameter convergence 2.50355 
-1110 best 0.467 function convergence 0 parameter convergence 1.622618 
-1135 best 0.467 function convergence 0 parameter convergence 1.729188 
-1160 best 0.467 function convergence 0 parameter convergence 1.541335 
-1186 best 0.467 function convergence 0 parameter convergence 1.46815 
-1211 best 0.467 function convergence 0 parameter convergence 0.9499496 
+51 best 0.537 function convergence 200 parameter convergence 6929.283 
+78 best 0.537 function convergence 200 parameter convergence 5600.334 
+115 best 0.537 function convergence 200 parameter convergence 4895.545 
+146 best 0.531 function convergence 200 parameter convergence 4306.349 
+181 best 0.497 function convergence 200 parameter convergence 3416.438 
+223 best 0.495 function convergence 8.2 parameter convergence 3059.871 
+263 best 0.495 function convergence 8.2 parameter convergence 2611.343 
+300 best 0.466 function convergence 14.2 parameter convergence 1905.987 
+337 best 0.466 function convergence 13 parameter convergence 1579.426 
+373 best 0.466 function convergence 6.5 parameter convergence 1115.252 
+415 best 0.466 function convergence 6 parameter convergence 912.8463 
+448 best 0.466 function convergence 6 parameter convergence 663.4484 
+478 best 0.466 function convergence 0.1 parameter convergence 522.538 
+507 best 0.466 function convergence 0.1 parameter convergence 361.6211 
+540 best 0.466 function convergence 0.1 parameter convergence 251.0051 
+571 best 0.465 function convergence 0.2 parameter convergence 176.3568 
+601 best 0.465 function convergence 0.2 parameter convergence 123.2714 
+631 best 0.465 function convergence 0.2 parameter convergence 104.1638 
+660 best 0.465 function convergence 0.2 parameter convergence 80.31786 
+689 best 0.465 function convergence 0.2 parameter convergence 65.08542 
+717 best 0.465 function convergence 0.1 parameter convergence 51.91487 
+743 best 0.465 function convergence 0 parameter convergence 31.88996 
+768 best 0.465 function convergence 0 parameter convergence 24.33827 
+793 best 0.465 function convergence 0 parameter convergence 24.27354 
+818 best 0.465 function convergence 0 parameter convergence 21.66988 
+843 best 0.465 function convergence 0 parameter convergence 18.83293 
+868 best 0.465 function convergence 0 parameter convergence 14.69239 
+894 best 0.465 function convergence 0 parameter convergence 11.44241 
+921 best 0.465 function convergence 0 parameter convergence 7.5187 
+946 best 0.465 function convergence 0 parameter convergence 6.764173 
+973 best 0.465 function convergence 0 parameter convergence 6.055125 
+1002 best 0.465 function convergence 0 parameter convergence 3.995914 
+1028 best 0.465 function convergence 0 parameter convergence 2.340692 
+1053 best 0.465 function convergence 0 parameter convergence 2.490842 
+1079 best 0.465 function convergence 0 parameter convergence 1.95815 
+1105 best 0.465 function convergence 0 parameter convergence 1.837746 
+1130 best 0.465 function convergence 0 parameter convergence 1.458408 
+1155 best 0.465 function convergence 0 parameter convergence 0.9714079 
+>   #rtopObj = checkVario(rtopObj)
+>   rtopObj$variogramModel                                                                        
+$model
+[1] "Ex1"
+
+$params
+[1] 3.712748e-05 1.541790e+03 2.594736e+02 9.951236e-03 3.245193e-01
+
+attr(,"class")
+[1] "rtopVariogramModel"
+attr(,"SSErr")
+[1] 17.44291
+>   rtopObj2 = rtopKrige(rtopObj, cv = TRUE)
 [1] "Cross-validating location 1  out of  30  observation locations"
 [1] "Cross-validating location 2  out of  30  observation locations"
 [1] "Cross-validating location 3  out of  30  observation locations"
@@ -195,6 +170,19 @@ Feature type: wkbPolygon with 2 dimensions
 [1] "Cross-validating location 28  out of  30  observation locations"
 [1] "Cross-validating location 29  out of  30  observation locations"
 [1] "Cross-validating location 30  out of  30  observation locations"
+>   print(attr(rtopObj2$varMatObs,"variogramModel"))
+$model
+[1] "Ex1"
+
+$params
+[1] 3.712748e-05 1.541790e+03 2.594736e+02 9.951236e-03 3.245193e-01
+
+attr(,"class")
+[1] "rtopVariogramModel"
+attr(,"SSErr")
+[1] 17.44291
+>   
+>   rtopObj3 = rtopKrige(rtopObj)
 [1] "Sampling from area number 1 containing 355 points"
 [1] "Sampling from area number 2 containing 385 points"
 [1] "Sampling from area number 3 containing 159 points"
@@ -236,6 +224,7 @@ Feature type: wkbPolygon with 2 dimensions
 [1] "Predicting location  18  out of  20  prediction locations"
 [1] "Predicting location  19  out of  20  prediction locations"
 [1] "Predicting location  20  out of  20  prediction locations"
+>   rtopObj4 = rtopKrige(rtopObj2)
 [1] "Sampling from area number 1 containing 355 points"
 [1] "Sampling from area number 2 containing 385 points"
 [1] "Sampling from area number 3 containing 159 points"
@@ -277,6 +266,9 @@ Feature type: wkbPolygon with 2 dimensions
 [1] "Predicting location  18  out of  20  prediction locations"
 [1] "Predicting location  19  out of  20  prediction locations"
 [1] "Predicting location  20  out of  20  prediction locations"
+>   
+>   
+>   print(summary(rtopObj2$predictions))
 Object of class SpatialPolygonsDataFrame
 Coordinates:
        min      max
@@ -298,23 +290,24 @@ Data attributes:
  Min.   :458036   Min.   :0.1415   Min.   :0.005397   Min.   : 13643136  
  1st Qu.:475353   1st Qu.:0.3305   1st Qu.:0.009116   1st Qu.: 26471133  
  Median :487692   Median :0.4789   Median :0.011203   Median : 51143819  
- Mean   :489633   Mean   :0.5283   Mean   :0.011727   Mean   : 48574940  
+ Mean   :489632   Mean   :0.5283   Mean   :0.011727   Mean   : 48574940  
  3rd Qu.:500377   3rd Qu.:0.6475   3rd Qu.:0.012502   3rd Qu.: 62123200  
  Max.   :535299   Max.   :1.3004   Max.   :0.030287   Max.   :127900610  
    var1.pred           var1.var           sumWeights       observed       
- Min.   :0.007133   Min.   :8.285e-07   Min.   :1.021   Min.   :0.005397  
- 1st Qu.:0.009660   1st Qu.:3.405e-06   1st Qu.:1.067   1st Qu.:0.009116  
- Median :0.010012   Median :4.437e-06   Median :1.136   Median :0.011203  
- Mean   :0.011116   Mean   :4.958e-06   Mean   :1.174   Mean   :0.011727  
- 3rd Qu.:0.011080   3rd Qu.:6.220e-06   3rd Qu.:1.189   3rd Qu.:0.012502  
- Max.   :0.018417   Max.   :1.184e-05   Max.   :1.495   Max.   :0.030287  
+ Min.   :0.007335   Min.   :1.057e-06   Min.   :1.000   Min.   :0.005397  
+ 1st Qu.:0.009599   1st Qu.:3.209e-06   1st Qu.:1.087   1st Qu.:0.009116  
+ Median :0.010187   Median :4.207e-06   Median :1.205   Median :0.011203  
+ Mean   :0.011152   Mean   :4.707e-06   Mean   :1.240   Mean   :0.011727  
+ 3rd Qu.:0.011602   3rd Qu.:5.767e-06   3rd Qu.:1.455   3rd Qu.:0.012502  
+ Max.   :0.017654   Max.   :1.089e-05   Max.   :1.499   Max.   :0.030287  
     residual              zscore       
- Min.   :-0.0100614   Min.   :-3.8609  
- 1st Qu.:-0.0010934   1st Qu.:-0.6911  
- Median : 0.0003383   Median : 0.1465  
- Mean   : 0.0006113   Mean   : 0.1608  
- 3rd Qu.: 0.0018743   3rd Qu.: 1.1083  
- Max.   : 0.0209280   Max.   : 6.0824  
+ Min.   :-0.0090732   Min.   :-3.3216  
+ 1st Qu.:-0.0014584   1st Qu.:-0.9319  
+ Median : 0.0002094   Median : 0.1283  
+ Mean   : 0.0005755   Mean   : 0.1494  
+ 3rd Qu.: 0.0019188   3rd Qu.: 1.1230  
+ Max.   : 0.0211036   Max.   : 6.3941  
+>   print(summary(rtopObj3$predictions))
 Object of class SpatialPolygonsDataFrame
 Coordinates:
        min      max
@@ -328,24 +321,25 @@ Data attributes:
        ID             EZGID           AREASQKM         XSTATION     
  Min.   : 76.00   Min.   : 76.00   Min.   : 1.025   Min.   :399955  
  1st Qu.: 92.75   1st Qu.: 92.75   1st Qu.: 8.100   1st Qu.:442227  
- Median :100.50   Median :100.50   Median :18.147   Median :458277  
+ Median :100.50   Median :100.50   Median :18.147   Median :458276  
  Mean   :109.55   Mean   :109.55   Mean   :20.141   Mean   :459688  
  3rd Qu.:113.50   3rd Qu.:113.50   3rd Qu.:29.151   3rd Qu.:483364  
  Max.   :182.00   Max.   :182.00   Max.   :47.121   Max.   :503340  
     YSTATION           area            var1.pred           var1.var        
- Min.   :468883   Min.   : 1025069   Min.   :0.007960   Min.   :1.578e-06  
- 1st Qu.:477877   1st Qu.: 8099725   1st Qu.:0.008723   1st Qu.:3.371e-06  
- Median :509315   Median :18147411   Median :0.009448   Median :7.101e-06  
- Mean   :498897   Mean   :20141229   Mean   :0.009995   Mean   :1.222e-05  
- 3rd Qu.:514959   3rd Qu.:29150798   3rd Qu.:0.010092   3rd Qu.:1.379e-05  
- Max.   :523496   Max.   :47120691   Max.   :0.015738   Max.   :8.538e-05  
+ Min.   :468883   Min.   : 1025069   Min.   :0.007199   Min.   :3.871e-07  
+ 1st Qu.:477877   1st Qu.: 8099725   1st Qu.:0.008449   1st Qu.:1.999e-06  
+ Median :509314   Median :18147411   Median :0.009354   Median :6.441e-06  
+ Mean   :498897   Mean   :20141229   Mean   :0.009722   Mean   :5.946e-06  
+ 3rd Qu.:514959   3rd Qu.:29150798   3rd Qu.:0.010143   3rd Qu.:8.361e-06  
+ Max.   :523496   Max.   :47120691   Max.   :0.015462   Max.   :1.331e-05  
    sumWeights   
- Min.   :1.036  
- 1st Qu.:1.082  
- Median :1.103  
- Mean   :1.138  
- 3rd Qu.:1.170  
- Max.   :1.288  
+ Min.   :1.000  
+ 1st Qu.:1.081  
+ Median :1.270  
+ Mean   :1.270  
+ 3rd Qu.:1.449  
+ Max.   :1.496  
+>   print(summary(rtopObj4$predictions))
 Object of class SpatialPolygonsDataFrame
 Coordinates:
        min      max
@@ -359,29 +353,44 @@ Data attributes:
        ID             EZGID           AREASQKM         XSTATION     
  Min.   : 76.00   Min.   : 76.00   Min.   : 1.025   Min.   :399955  
  1st Qu.: 92.75   1st Qu.: 92.75   1st Qu.: 8.100   1st Qu.:442227  
- Median :100.50   Median :100.50   Median :18.147   Median :458277  
+ Median :100.50   Median :100.50   Median :18.147   Median :458276  
  Mean   :109.55   Mean   :109.55   Mean   :20.141   Mean   :459688  
  3rd Qu.:113.50   3rd Qu.:113.50   3rd Qu.:29.151   3rd Qu.:483364  
  Max.   :182.00   Max.   :182.00   Max.   :47.121   Max.   :503340  
     YSTATION           area            var1.pred           var1.var        
- Min.   :468883   Min.   : 1025069   Min.   :0.007960   Min.   :1.578e-06  
- 1st Qu.:477877   1st Qu.: 8099725   1st Qu.:0.008723   1st Qu.:3.371e-06  
- Median :509315   Median :18147411   Median :0.009448   Median :7.101e-06  
- Mean   :498897   Mean   :20141229   Mean   :0.009995   Mean   :1.222e-05  
- 3rd Qu.:514959   3rd Qu.:29150798   3rd Qu.:0.010092   3rd Qu.:1.379e-05  
- Max.   :523496   Max.   :47120691   Max.   :0.015738   Max.   :8.538e-05  
+ Min.   :468883   Min.   : 1025069   Min.   :0.007199   Min.   :3.871e-07  
+ 1st Qu.:477877   1st Qu.: 8099725   1st Qu.:0.008449   1st Qu.:1.999e-06  
+ Median :509314   Median :18147411   Median :0.009354   Median :6.441e-06  
+ Mean   :498897   Mean   :20141229   Mean   :0.009722   Mean   :5.946e-06  
+ 3rd Qu.:514959   3rd Qu.:29150798   3rd Qu.:0.010143   3rd Qu.:8.361e-06  
+ Max.   :523496   Max.   :47120691   Max.   :0.015462   Max.   :1.331e-05  
    sumWeights   
- Min.   :1.036  
- 1st Qu.:1.082  
- Median :1.103  
- Mean   :1.138  
- 3rd Qu.:1.170  
- Max.   :1.288  
+ Min.   :1.000  
+ 1st Qu.:1.081  
+ Median :1.270  
+ Mean   :1.270  
+ 3rd Qu.:1.449  
+ Max.   :1.496  
+>   print(all.equal(rtopObj4$predictions, rtopObj3$predictions))
 [1] TRUE
-[1] 0.2351997
+>   #spplot(rtopObj$predictions,col.regions = bpy.colors(), c("var1.pred","var1.var"))
+>   
+>   # Cross-validation
+>   #spplot(rtopObj2$predictions,col.regions = bpy.colors(), c("observed","var1.pred"))
+>   print(cor(rtopObj2$predictions$observed,rtopObj2$predictions$var1.pred))
+[1] 0.240504
+>   
+>   
+> 
+>   set.seed(1501)
+>   useRtopWithIntamap()
 Loading optional package: intamap 
 
-R 2012-10-17 17:58:30 interpolating 30 observations, 20 prediction locations
+>   library(intamap)
+>   output = interpolate(observations,predictionLocations,
++      optList = list(formulaString = obs~1, gDist = TRUE, cloud = TRUE, nmax = 10), 
++         methodName = "rtop")
+R 2013-02-11 11:15:36 interpolating 30 observations, 20 prediction locations
 Checking object ... OK
 [1] "Sampling from area number 1 containing 292 points"
 [1] "Sampling from area number 2 containing 366 points"
@@ -413,46 +422,44 @@ Checking object ... OK
 [1] "Sampling from area number 28 containing 160 points"
 [1] "Sampling from area number 29 containing 324 points"
 [1] "Sampling from area number 30 containing 211 points"
-51 best 0.545 function convergence 200 parameter convergence 6929.283 
-79 best 0.545 function convergence 200 parameter convergence 5426.86 
-113 best 0.545 function convergence 200 parameter convergence 5887.418 
-158 best 0.532 function convergence 200 parameter convergence 5061.408 
-197 best 0.532 function convergence 200 parameter convergence 4155.52 
-236 best 0.532 function convergence 2.5 parameter convergence 3414.267 
-278 best 0.477 function convergence 13.4 parameter convergence 2860.925 
-316 best 0.477 function convergence 13.4 parameter convergence 1823.868 
-351 best 0.473 function convergence 11.7 parameter convergence 1843.323 
-383 best 0.469 function convergence 12.5 parameter convergence 1073.917 
-419 best 0.469 function convergence 12.5 parameter convergence 957.3293 
-459 best 0.469 function convergence 1.7 parameter convergence 661.817 
-499 best 0.469 function convergence 1.7 parameter convergence 432.158 
-530 best 0.468 function convergence 1 parameter convergence 300.1238 
-560 best 0.468 function convergence 0.3 parameter convergence 193.7208 
-585 best 0.468 function convergence 0.4 parameter convergence 128.4351 
-612 best 0.467 function convergence 0.3 parameter convergence 117.2994 
-637 best 0.467 function convergence 0.3 parameter convergence 84.30212 
-662 best 0.467 function convergence 0.2 parameter convergence 70.35664 
-687 best 0.467 function convergence 0.1 parameter convergence 74.1154 
-714 best 0.467 function convergence 0.1 parameter convergence 55.88475 
-745 best 0.467 function convergence 0 parameter convergence 46.7206 
-773 best 0.467 function convergence 0 parameter convergence 33.70572 
-798 best 0.467 function convergence 0 parameter convergence 33.61509 
-826 best 0.467 function convergence 0 parameter convergence 22.26709 
-851 best 0.467 function convergence 0 parameter convergence 19.3281 
-876 best 0.467 function convergence 0 parameter convergence 20.70939 
-903 best 0.467 function convergence 0 parameter convergence 18.14986 
-932 best 0.467 function convergence 0 parameter convergence 10.46408 
-957 best 0.467 function convergence 0 parameter convergence 8.767825 
-983 best 0.467 function convergence 0 parameter convergence 6.344796 
-1008 best 0.467 function convergence 0 parameter convergence 6.423785 
-1033 best 0.467 function convergence 0 parameter convergence 4.195381 
-1059 best 0.467 function convergence 0 parameter convergence 2.514962 
-1085 best 0.467 function convergence 0 parameter convergence 2.50355 
-1110 best 0.467 function convergence 0 parameter convergence 1.622618 
-1135 best 0.467 function convergence 0 parameter convergence 1.729188 
-1160 best 0.467 function convergence 0 parameter convergence 1.541335 
-1186 best 0.467 function convergence 0 parameter convergence 1.46815 
-1211 best 0.467 function convergence 0 parameter convergence 0.9499496 
+51 best 0.537 function convergence 200 parameter convergence 6929.283 
+78 best 0.537 function convergence 200 parameter convergence 5600.334 
+115 best 0.537 function convergence 200 parameter convergence 4895.545 
+146 best 0.531 function convergence 200 parameter convergence 4306.349 
+181 best 0.497 function convergence 200 parameter convergence 3416.438 
+223 best 0.495 function convergence 8.2 parameter convergence 3059.871 
+263 best 0.495 function convergence 8.2 parameter convergence 2611.343 
+300 best 0.466 function convergence 14.2 parameter convergence 1905.987 
+337 best 0.466 function convergence 13 parameter convergence 1579.426 
+373 best 0.466 function convergence 6.5 parameter convergence 1115.252 
+415 best 0.466 function convergence 6 parameter convergence 912.8463 
+448 best 0.466 function convergence 6 parameter convergence 663.4484 
+478 best 0.466 function convergence 0.1 parameter convergence 522.538 
+507 best 0.466 function convergence 0.1 parameter convergence 361.6211 
+540 best 0.466 function convergence 0.1 parameter convergence 251.0051 
+571 best 0.465 function convergence 0.2 parameter convergence 176.3568 
+601 best 0.465 function convergence 0.2 parameter convergence 123.2714 
+631 best 0.465 function convergence 0.2 parameter convergence 104.1638 
+660 best 0.465 function convergence 0.2 parameter convergence 80.31786 
+689 best 0.465 function convergence 0.2 parameter convergence 65.08542 
+717 best 0.465 function convergence 0.1 parameter convergence 51.91487 
+743 best 0.465 function convergence 0 parameter convergence 31.88996 
+768 best 0.465 function convergence 0 parameter convergence 24.33827 
+793 best 0.465 function convergence 0 parameter convergence 24.27354 
+818 best 0.465 function convergence 0 parameter convergence 21.66988 
+843 best 0.465 function convergence 0 parameter convergence 18.83293 
+868 best 0.465 function convergence 0 parameter convergence 14.69239 
+894 best 0.465 function convergence 0 parameter convergence 11.44241 
+921 best 0.465 function convergence 0 parameter convergence 7.5187 
+946 best 0.465 function convergence 0 parameter convergence 6.764173 
+973 best 0.465 function convergence 0 parameter convergence 6.055125 
+1002 best 0.465 function convergence 0 parameter convergence 3.995914 
+1028 best 0.465 function convergence 0 parameter convergence 2.340692 
+1053 best 0.465 function convergence 0 parameter convergence 2.490842 
+1079 best 0.465 function convergence 0 parameter convergence 1.95815 
+1105 best 0.465 function convergence 0 parameter convergence 1.837746 
+1130 best 0.465 function convergence 0 parameter convergence 1.458408 
+1155 best 0.465 function convergence 0 parameter convergence 0.9714079 
 [1] "Sampling from area number 1 containing 355 points"
 [1] "Sampling from area number 2 containing 385 points"
 [1] "Sampling from area number 3 containing 159 points"
@@ -474,24 +481,32 @@ Checking object ... OK
 [1] "Sampling from area number 19 containing 337 points"
 [1] "Sampling from area number 20 containing 116 points"
 [1] "Creating prediction semivariance matrix. This can take some time."
-[1] TRUE
-[1] TRUE
 Warning messages:
-1: In createRtopObject(observations, predictionLocations, params = params) :
-  formulaString missing, using obs ~ 1
-2: In predictTime(nObs = dim(observations)[1], nPred = dim(coordinates(predictionLocations))[1],  :
+1: In predictTime(nObs = dim(observations)[1], nPred = dim(coordinates(predictionLocations))[1],  :
   
  using standard model for estimating time. For better 
  platform spesific predictions, please run 
  timeModels <- generateTimeModels()
   and save the workspace
-3: In predictTime(nObs = dim(observations)[1], nPred = dim(coordinates(predictionLocations))[1],  :
+2: In predictTime(nObs = dim(observations)[1], nPred = dim(coordinates(predictionLocations))[1],  :
   Could not find time model for method spatialPredict_rtop
-4: In interpolate(observations, predictionLocations, optList = list(formulaString = obs ~  :
+3: In interpolate(observations, predictionLocations, optList = list(formulaString = obs ~  :
   was not able to estimate prediction time for methodName rtop
-5: In methodParameters.default(krigingObject) :
+4: In methodParameters.default(krigingObject) :
   Not able to create methodParameters for variogram of class rtopVariogramModel
+>   
+>   print(all.equal(rtopObj4$predictions@data$var1.pred, output$predictions@data$var1.pred))
+[1] TRUE
+>   print(all.equal(rtopObj4$predictions@data$var1.var, output$predictions@data$var1.var))
+[1] TRUE
+> 
+> # Updating variogramModel
+>   
+>   rtopObj5 = varMat(rtopObj4)
+>   rtopObj6 = updateRtopVariogram(rtopObj5, exp = 1.5, action = "mult")
+>   rtopObj7 = varMat(rtopObj6)
+> 
 > 
 > proc.time()
    user  system elapsed 
-  61.80    0.18   62.15 
+ 92.710   0.131  93.108 

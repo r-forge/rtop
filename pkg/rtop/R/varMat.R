@@ -14,6 +14,13 @@ varMat.rtop = function(object, varMatUpdate = FALSE, ...) {
 
   obsComp = FALSE
   predComp = FALSE
+  if ("varMatObs" %in% names(object) && !varMatUpdate) 
+    if (!identical(attr(object$varMatObs, "variogramModel"),variogramModel) | 
+        !nObs == dim(object$varMatObs)[1] |  
+         ("varMatPredObs" %in% names(object) && (
+            dim(object$varMatPredObs)[2] != dim(predictionLocations)[1] |
+            !identical(attr(object$varMatObs, "variogramModel"),variogramModel))))
+               varMatUpdate = TRUE
   if (params$cv && "varMatObs" %in% names(object) && !varMatUpdate) return(object)      
   if (!"varMatObs" %in% names(object) | varMatUpdate) {
     if (!"dObs" %in% names(object) && !(lgDistPred && "gDistObs" %in% names(object))) 
@@ -40,6 +47,7 @@ varMat.rtop = function(object, varMatUpdate = FALSE, ...) {
       object$varMatObs = varMat(dObs,coor1 = coordinates(observations), 
           variogramModel = variogramModel, debug.level = debug.level, newPar = params)
     }
+    attr(object$varMatObs, "variogramModel") = variogramModel
     obsComp = TRUE
   }
   if (!params$cv && !"varMatPredObs" %in% names(object) && !varMatUpdate) {
@@ -75,6 +83,7 @@ varMat.rtop = function(object, varMatUpdate = FALSE, ...) {
            varMatPredObs[ia,ib] = varMatPredObs[ia,ib] - 0.5*(vDiagObs[ia] + vDiagPred[ib])
       }
       object$varMatPredObs = varMatPredObs    
+
     } else {
    # Do full integration over variograms
       object$varMatPred = varMat(dPred,coor1 = coordinates(predictionLocations), 
@@ -111,6 +120,8 @@ varMat.rtop = function(object, varMatUpdate = FALSE, ...) {
       object$varMatPredObs = object$varMatPredObs + nuggPredObs
     }
   }
+  if ("varMatPredObs" %in% names(object)) attr(object$varMatPredObs, "variogramModel") = variogramModel
+  if ("varMatPred" %in% names(object)) attr(object$varMatPred, "variogramModel") = variogramModel
   object
 }
     
@@ -187,6 +198,9 @@ varMatDefault = function(object1,object2 = NULL,variogramModel,
     object$varMatObs = object$varMatObs - nuggObs
     object$varMatPredObs = object$varMatPredObs - nuggPredObs
   }
+  attr(varMatObs, "variogramModel") = variogramModel
+  attr(varMatPredObs, "variogramModel") = variogramModel
+  attr(varMatPred, "variogramModel") = variogramModel
   return(list(varMatObs = varMatObs,varMatPred = varMatPred,varMatPredObs = varMatPredObs))  
 }
 
@@ -246,6 +260,7 @@ varMat.list = function(object, object2=NULL, coor1, coor2, maxdist = Inf,
       for (ib in 1:mdim) varMatrix[ia,ib] = varMatrix[ia,ib] - 0.5*(sub1[ia] + sub2[ib])
     }
   }     
+  attr(varMatrix, "variogramModel") = variogramModel
   varMatrix
 }
   

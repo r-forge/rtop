@@ -18,7 +18,7 @@ rtopFitVariogram.rtop = function(object,...) {
     } else if ("dObs" %in% names(object)) {
       dists = object$dObs
     } else dists = NULL
-    if ("overlapObs" %in% names(object)) aOver = object$overlapObs
+    if (params$nugget) aOver = object$overlapObs else aOver = NULL
   } else {
     vario = object$variogram
     observations = NULL
@@ -53,7 +53,7 @@ rtopFitVariogram.rtopVariogram = function(object, observations, dists = NULL, pa
     obj$dBin = dists = rtopDisc(object,params)
   }
   if (params$gDistEst && !is.matrix(dists)) obj$gDistBin = dists = gDist(dists)
-  if (params$nugget) aOver = findVarioOverlap(vario) else aOver = NULL
+  if (params$nugget & is.null(aOver)) aOver = findVarioOverlap(vario) 
 
   scres = sceua(objfunc,params$parInit[,3],params$parInit[,1],params$parInit[,2],varioIn = object,
        dists = dists, aOver = aOver, gDistEst = params$gDistEst,model = params$model,resol = params$hresol,
@@ -69,6 +69,7 @@ rtopFitVariogram.rtopVariogram = function(object, observations, dists = NULL, pa
   class(variogramModel) = "rtopVariogramModel"
   attr(variogramModel,"SSErr") = errSum
   attr(variogramModel,"criterion") = fit
+  if (!params$nugget) variogramModel$params[3] = 0
   if (mr) {
 # Here adding to the object created further up
     obj$variogramModel = variogramModel

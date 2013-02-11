@@ -200,50 +200,6 @@ c      write(*,*) skor,ip,(par(i),i=1,ip),model,res
 
 
 
-      subroutine nuggex(res,ip,pa,model)
-c     Function to return nugget of variogram model
-      implicit double precision (a-h,o-z)
-      character*3 model
-      dimension pa(ip),par(20)
-      do i = 1,ip
-        par(i) = pa(i)
-      enddo
-      skor = 0.
-      res = vario(skor,par,model)
-      end
-
-
-
-
-      subroutine nuggexold(res,ip,pa,model)
-c     Function to return nugget of variogram model
-      implicit double precision (a-h,o-z)
-      character*3 model
-      dimension pa(ip),par(20)
-      do i = 1,ip
-        par(i) = pa(i)
-      enddo
-      skor = 0.
-      res = vario(skor,par,model)
-
-      skor = 0.
-      xd = skor
-      rlim = 1e-9
-
-      c = par(3)
-      if (xd > rlim) then
-        xfrac = (xd+rlim)**par(2)
-      else 
-        xfrac = 0
-      endif
-      epar = (xd/c)**par(4)
-      exp1 = par(1)*xfrac*(1-exp(-epar)) + par(5)
-
-c      write(99,'(i5, 5f13.4)') 0, xd,xfrac,epar,par(5),exp1
-
-c      write(99,'(i5,5f13.4,a7,f20.4)') ip,(par(i),i=1,ip),model,res
-      end
-
 
 
 
@@ -341,7 +297,7 @@ c      write(*,*) skor,(par(i),i=1,5),model
       endif
       c = par(2)
       epar = (xd**2)/(c**2)
-      gaussian = par(1)*xfrac*(1-exp(-epar))
+      gau1 = par(1)*xfrac*(1-exp(-epar))
       end
 
 

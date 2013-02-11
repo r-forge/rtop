@@ -220,7 +220,7 @@ if (acor != 1) {
 }
 plot(adists,pvar,ylim = c(ymin, ymax), xlim = c(xmin, xmax), log = log, 
     type="l", col = "black", lwd = 2, ylab = "gamma", 
-    xlab = "distance", xaxt = "n", ann = FALSE)
+    xlab = "distance", xaxt = "n")
 axis(1,at = xTicks, labels = xlabs)
 
 legende = list(text = "point", col = c("black"), lty = c(1), pch = 16)

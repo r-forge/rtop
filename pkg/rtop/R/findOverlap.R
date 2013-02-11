@@ -31,8 +31,8 @@ findOverlap = function(areas1,areas2, debug.level = 1) {
     poly1 = areas1@polygons[[ia]]
     SP1 = SpatialPolygons(list(poly1))
     a1 = SP1@polygons[[1]]@Polygons[[1]]@area
-    pls_SP1 = slot(SP1, "polygons")
-    lb_SP1 <- lapply(pls_SP1, function(x) as.double(bbox(x)))
+#    pls_SP1 = slot(SP1, "polygons")
+#    lb_SP1 <- lapply(pls_SP1, function(x) as.double(bbox(x)))
 
     pt1 = pts1[ia,]
     ifi = ifelse(sym,ia+1,1)
@@ -40,16 +40,18 @@ findOverlap = function(areas1,areas2, debug.level = 1) {
     for (ib in ifi:mdim) {
       SP2 = plist2[[ib]]
       a2 = areas2@polygons[[ib]]@Polygons[[1]]@area
-      pls_SP2 = slot(SP2, "polygons")
-      lb_SP2 <- lapply(pls_SP2, function(x) as.double(bbox(x)))
+   #   pls_SP2 = slot(SP2, "polygons")
+#      lb_SP2 <- lapply(pls_SP2, function(x) as.double(bbox(x)))
       if (max(unlist(commonArea(SP1,SP2))) > 0.1) {
         if (a2 < a1) {
           pt2 = pts2[ib,]
-          nover = pointsInSpatialPolygons_local(pt2, SP1, pls_SP1, lb_SP1)
+#          nover = pointsInSpatialPolygons_local(pt2, SP1, pls_SP1, lb_SP1)
+          nover = sp:::pointsInSpatialPolygons(pt2, SP1)
           if (!is.na(nover)) overlap[ia,ib] = min(a1,a2)
           nnover = nnover + 1
         } else {
-          nover = pointsInSpatialPolygons_local(pt1, SP2, pls_SP2, lb_SP2)
+#          nover = pointsInSpatialPolygons_local(pt1, SP2, pls_SP2, lb_SP2)
+          nover = sp:::pointsInSpatialPolygons(pt1, SP2)
           if (!is.na(nover)) overlap[ia,ib] = min(a1,a2)
           nnover = nnover + 1
         }
@@ -64,18 +66,6 @@ findOverlap = function(areas1,areas2, debug.level = 1) {
   overlap
 }
 
-pointsInSpatialPolygons_local <- function(pts, SpPolygons, pls, lb) {
-#    pls = slot(SpPolygons, "polygons")
-#    lb <- lapply(pls, function(x) as.double(bbox(x)))
-    cpts <- coordinates(pts)
-    storage.mode(cpts) <- "double"
-    mode.checked <- storage.mode(cpts) == "double"
-    cand0 <- .Call("pointsInBox", lb, cpts[,1], cpts[,2], PACKAGE="sp")
-    m <- length(pls)
-    cand <- .Call("tList", cand0, as.integer(m), PACKAGE="sp")
-    res <- sp:::pointsInPolys2(pls, cand, cpts, mode.checked=mode.checked)
-    res
-}
 
 
 

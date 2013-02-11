@@ -9,7 +9,7 @@ This gives an easier interface to the parameters of the variogram model
 }
 \usage{
 rtopVariogramModel(model = "Ex1", sill = NULL, range = NULL, exp = NULL,
-    nugget = NULL, angle = NULL,
+    nugget = NULL, exp0 = NULL,
     observations = NULL, formulaString = obs~1) 
 \method{updateRtopVariogram}{rtop}(rtopObject, ...)
 \method{updateRtopVariogram}{rtopVariogramModel}(variogramModel, action = "mult", ..., checkVario = FALSE, 
@@ -24,7 +24,7 @@ sampleVariogram = NULL, observations = NULL)
 \item{sill}{sill of variogram}
 \item{range}{range of variogram}
 \item{exp}{the exponent of the fractal part of the variogram, see Skoien et al (2006)}
-\item{angle}{gives the angle of the first part of the variogram in a log-log plot, 
+\item{exp0}{gives the angle of the first part of the variogram in a log-log plot (weibull type), 
       should be between 0 and 2. See Skoien et al (2006)}
 \item{nugget}{nugget of point variogram}
 \item{formulaString}{formula that defines the dependent variable as a linear model 
@@ -62,7 +62,7 @@ predictionLocations = readOGR(".","predictionLocations")
 rtopObj = createRtopObject(observations,predictionLocations)
  # Fit a variogram (function also creates it)
 rtopObj = rtopFitVariogram(rtopObj)
-rtopObj = update(rtopObj, exp = 1.5, action = "mult", checkVario = TRUE)
+rtopObj = updateRtopVariogram(rtopObj, exp = 1.5, action = "mult", checkVario = TRUE)
 }
 }
 \keyword{spatial}
