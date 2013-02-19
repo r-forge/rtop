@@ -17,7 +17,6 @@ with an areal support.
 \method{rtopFitVariogram}{rtopVariogram}(object, observations, dists = NULL, params=list(), mr = FALSE, ...) 
 \method{rtopFitVariogram}{rtopVariogramCloud}(object, observations, dists = NULL, params=list(), mr = FALSE, ...) 
 }
-\synopsis{ rtopFitVariogram(object, ...) }
 
 \arguments{
 \item{object}{object of class \code{rtopVariogram} or \code{rtopVariogramCloud},

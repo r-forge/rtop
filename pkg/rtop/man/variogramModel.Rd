@@ -16,7 +16,6 @@ rtopVariogramModel(model = "Ex1", sill = NULL, range = NULL, exp = NULL,
 sampleVariogram = NULL, observations = NULL) 
 
 }
-\synopsis{updateRtopVariogram(object,...)}
 
 
 \arguments{

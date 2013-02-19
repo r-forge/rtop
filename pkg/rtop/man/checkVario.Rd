@@ -7,7 +7,6 @@
 The function will create diagnostic plots for analysis of the variograms fitted
 to sample variograms of data with support
 }
-\synopsis{ checkVario(object, ...) }
 \usage{
 \method{checkVario}{rtop}(object, acor = 1, ...) 
 \method{checkVario}{rtopVariogramModel}(variogramModel = NULL, 

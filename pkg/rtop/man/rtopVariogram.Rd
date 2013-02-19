@@ -13,7 +13,6 @@ with an areal support.
 \method{rtopVariogram}{SpatialPolygonsDataFrame}(object, ...) 
 \method{rtopVariogram}{SpatialPointsDataFrame}(object, formulaString, params=list(), cloud, abins, dbins, ...) 
 }
-\synopsis{ rtopVariogram(object, ...) }
 
 \arguments{
 \item{object}{ object of class \code{rtop} (see \link{rtop-package}) or a 
