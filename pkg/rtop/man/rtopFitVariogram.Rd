@@ -14,7 +14,7 @@ with an areal support.
 \method{rtopFitVariogram}{rtop}(object, ...) 
 \method{rtopFitVariogram}{SpatialPolygonsDataFrame}(object, params=list(), ...) 
 \method{rtopFitVariogram}{SpatialPointsDataFrame}(object, params=list(), ...) 
-\method{rtopFitVariogram}{rtopVariogram}(object, observations, dists = NULL, params=list(), mr = FALSE, ...) 
+\method{rtopFitVariogram}{rtopVariogram}(object, observations, dists = NULL, params=list(), mr = FALSE, aOver = NULL, ...) 
 \method{rtopFitVariogram}{rtopVariogramCloud}(object, observations, dists = NULL, params=list(), mr = FALSE, ...) 
 }
 
@@ -37,6 +37,8 @@ it must have a column with name \code{area}.
 \item{mr}{logical; defining whether the function should return a list with 
           discretized elements and geostatistical distances, even if it was not
           called with an rtop-object as argument.}
+\item{aOver}{a matrix with the overlapping areas of the observations, used for computation of the nugget effect. 
+          It will normally be recomputed by the function if it is NULL and necessary}
 \item{...}{Other parameters to functions called from \code{rtopFitVarigoram}}
 } 
 

@@ -8,17 +8,26 @@ The function will create diagnostic plots for analysis of the variograms fitted
 to sample variograms of data with support
 }
 \usage{
-\method{checkVario}{rtop}(object, acor = 1, ...) 
-\method{checkVario}{rtopVariogramModel}(variogramModel = NULL, 
+\method{checkVario}{rtop}(object, acor = 1, log = "xy", cloud = FALSE, gDist = TRUE, ...) 
+
+\method{checkVario}{rtopVariogramModel}(object, 
            sampleVariogram = NULL, observations = NULL, areas = NULL, dists = NULL, acomp = NULL,
-           log = "xy", params = list(), compVars = list(), acor = 1,
+           params = list(), compVars = list(), acor = 1, log = "xy", 
            legx = NULL, legy = NULL, plotNugg = TRUE, ...) 
 }
 
 
+
 \arguments{
-\item{object}{ object of class \code{rtop} (see \code{\link{rtop-package}}) }
-\item{variogramModel}{variogram model of type rtopVariogram}
+\item{object}{either: object of class \code{rtop} (see \code{\link{rtop-package}}), or an object of type \code{rtopVariogram} }
+\item{acor}{unit correction factor in the key, e.g. to see numbers more easily 
+        interpretable for large areas. As an example, ucor = 0.000001 when area
+        is given in square meters and should rather be shown as square kilometers.
+        Note that this parameter also changes the value of the nugget to the new unit.}
+\item{log}{text variable for log-plots, default to log-log \code{"xy"}, can otherwise be set
+        to \code{"x"}, \code{"y"} or \code{""}}
+\item{cloud}{logical; whether to look at the cloud variogram instead of the binned variogram}
+\item{gDist}{logical; whether to use ghosh-distance for semivariogram regularization instead of full integration of the semivariogram}
 \item{sampleVariogram}{a sample variogram of the data}
 \item{observations}{a set of observations}
 \item{areas}{either an array of areas that should be used as examples, or 
@@ -32,17 +41,12 @@ to sample variograms of data with support
 \item{acomp}{either a matrix with the area bins that should be visualized, or a number 
         giving the number of pairs to show. If a sample variogram is given, the \code{acomp}
         pairs with highest number of pairs will be used}
-\item{log}{text variable for log-plots, default to log-log \code{"xy"}, can otherwise be set
-        to \code{"x"}, \code{"y"} or \code{""}}
 \item{params}{list of parameters to modify the standard parameters of rtopObj or 
         the default parameters found from \code{\link{getRtopParams}}}
 \item{compVars}{a list of variograms of \code{gstat}-type for comparison, see 
         \code{\link[gstat:vgm]{vgm}}. The names of the variograms in the list will
         be used in the key.}
-\item{acor}{unit correction factor in the key, e.g. to see numbers more easily 
-        interpretable for large areas. As an example, ucor = 0.000001 when area
-        is given in square meters and should rather be shown as square kilometers.
-        Note that this parameter also changes the value of the nugget to the new unit.}
+
 \item{legx}{x-coordinate of the legend for fine-tuning of position, see x-argument of 
 \code{\link[graphics]{legend}}}
 \item{legy}{y-coordinate of the legend for fine-tuning of position, see y-argument of

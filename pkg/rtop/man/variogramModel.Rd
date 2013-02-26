@@ -11,8 +11,8 @@ This gives an easier interface to the parameters of the variogram model
 rtopVariogramModel(model = "Ex1", sill = NULL, range = NULL, exp = NULL,
     nugget = NULL, exp0 = NULL,
     observations = NULL, formulaString = obs~1) 
-\method{updateRtopVariogram}{rtop}(rtopObject, ...)
-\method{updateRtopVariogram}{rtopVariogramModel}(variogramModel, action = "mult", ..., checkVario = FALSE, 
+\method{updateRtopVariogram}{rtop}(object, ...)
+\method{updateRtopVariogram}{rtopVariogramModel}(object, action = "mult", ..., checkVario = FALSE, 
 sampleVariogram = NULL, observations = NULL) 
 
 }
@@ -28,8 +28,7 @@ sampleVariogram = NULL, observations = NULL)
 \item{nugget}{nugget of point variogram}
 \item{formulaString}{formula that defines the dependent variable as a linear model 
       of independent variables, see e.g. \code{\link{createRtopObject}} for more details.}
-\item{rtopObject}{ object of class \code{rtop} (see \link{rtop-package}) }
-\item{variogramModel}{variogram model of type rtopVariogram}
+\item{object}{either: object of class \code{rtop} (see \link{rtop-package}), or an rtopVariogramModel. }
 \item{action}{character variable defining whether the new parameters should 
       be \code{add}(-ed), \code{mult}(-iplied) or \code{replace} the former parameters.
       Leaving the parameters equal to NULL will cause no change.}
