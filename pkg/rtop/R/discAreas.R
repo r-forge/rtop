@@ -129,15 +129,15 @@ rtopDisc.SpatialPolygons = function(object, params = list(), bb = bbox(object), 
 #}
 #
 
-pointsInSpatialPolygons_local <- function(pts, SpPolygons, pls, lb) {
-#    pls = slot(SpPolygons, "polygons")
-#    lb <- lapply(pls, function(x) as.double(bbox(x)))
-    cpts <- coordinates(pts)
-    storage.mode(cpts) <- "double"
-    mode.checked <- storage.mode(cpts) == "double"
-    cand0 <- .Call("pointsInBox", lb, cpts[,1], cpts[,2], PACKAGE="sp")
-    m <- length(pls)
-    cand <- .Call("tList", cand0, as.integer(m), PACKAGE="sp")
-    res <- sp:::pointsInPolys2(pls, cand, cpts, mode.checked=mode.checked)
-    res
-}
+#pointsInSpatialPolygons_local <- function(pts, SpPolygons, pls, lb) {
+##    pls = slot(SpPolygons, "polygons")
+##    lb <- lapply(pls, function(x) as.double(bbox(x)))
+#    cpts <- coordinates(pts)
+#    storage.mode(cpts) <- "double"
+#    mode.checked <- storage.mode(cpts) == "double"
+#    cand0 <- .Call("pointsInBox", lb, cpts[,1], cpts[,2], PACKAGE="sp")
+#    m <- length(pls)
+#    cand <- .Call("tList", cand0, as.integer(m), PACKAGE="sp")
+#    res <- sp:::pointsInPolys2(pls, cand, cpts, mode.checked=mode.checked)
+#    res
+#}
