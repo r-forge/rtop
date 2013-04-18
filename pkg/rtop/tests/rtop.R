@@ -11,12 +11,12 @@ options(error = recover)
   #Finding a few prediction locations of them
   
   observations = observations[1:30,]
-  predictionLocations = predictionLocations[1:20,]
+  predictionLocations = predictionLocations[1:2,]
   
   observations$obs = observations$QSUMMER_OB/observations$AREASQKM
   
   # Setting some parameters 
-  params = list(gDist = TRUE, cloud = TRUE)
+  params = list(gDist = TRUE, cloud = FALSE, rresol = 25, hresol = 3)
   # Build an object
   rtopObj = createRtopObject(observations,predictionLocations, params = params)
   # Fit a variogram (function also creates it)
@@ -46,7 +46,7 @@ options(error = recover)
   useRtopWithIntamap()
   library(intamap)
   output = interpolate(observations,predictionLocations,
-     optList = list(formulaString = obs~1, gDist = TRUE, cloud = TRUE, nmax = 10), 
+     optList = list(formulaString = obs~1, gDist = TRUE, cloud = FALSE, nmax = 10, rresol = 25, hresol = 3), 
         methodName = "rtop")
   
   print(all.equal(rtopObj4$predictions@data$var1.pred, output$predictions@data$var1.pred))
