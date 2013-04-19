@@ -68,73 +68,6 @@ findOverlap = function(areas1,areas2, debug.level = 1) {
 
 
 
-
-bfindOverlap = function(areas1,areas2) {
-  ndim = length(areas1@polygons)
-  t0 = proc.time()[[3]]
-  ptdim = 25
-  pts1 = SpatialPoints(coordinates(areas1))
-  if (!missing(areas2))  {
-    mdim = length(areas2@polygons)
-    pts2 = SpatialPoints(coordinates(areas2))
-    sym = FALSE
-  } else {
-    mdim = ndim
-    areas2 = areas1
-    pts2 = pts1
-    sym = TRUE
-  }
-  
-  plist2 = list()
-  for (ib in 1:mdim) {
-    poly2 = areas2@polygons[[ib]]
-    plist2[[ib]] = SpatialPolygons(list(poly2)) 
-  }
-  
-  nnover = 0
-  overlap = matrix(0,nrow = ndim,ncol = mdim)
-  t1 = proc.time()[[3]]
-  print(t1-t0)
-  ibbb = 0
-  for (ia in 1:(ndim-sym)) {
-    t1 = proc.time()[[3]]
-    poly1 = areas1@polygons[[ia]]
-    SP1 = SpatialPolygons(list(poly1))
-    a1 = SP1@polygons[[1]]@Polygons[[1]]@area
-
-    pt1 = pts1[ia,]
-    ifi = ifelse(sym,ia+1,1)
-    t2 = proc.time()[[3]]
-    for (ib in ifi:mdim) {
-      SP2 = plist2[[ib]]
-      if (max(unlist(commonArea(SP1,SP2))) > 0.1) {
-        ibbb = ibbb + 1
-        a2 = areas2@polygons[[ib]]@Polygons[[1]]@area
-        if (a2 < a1) {
-          pt2 = pts2[ib,]
-          nover = overlay(pt2,SP1)
-          if (!is.na(nover)) {
-            overlap[ia,ib] = min(a1,a2)
-            nnover = nnover + 1
-          }
-        } else {
-          nover = overlay(pt1,SP2)
-          if (!is.na(nover)) {
-            overlap[ia,ib] = min(a1,a2)
-            nnover = nnover + 1
-          }
-        }
-        if (sym) overlap[ib,ia] = overlap[ia,ib]
-      }
-    }
-    t3 = proc.time()[[3]]
-    print(paste(ia,round(sqrt(a1),2),round(t2-t1,3), round(t3-t2,3), round(t3-t0,3)))
-
-  }
-  print(paste("nnover",nnover, ibbb)) 
-  overlap
-}
-
 #Rprof()
 #aover = rtop:::findOverlap(hydro)
 #Rprof(NULL)
@@ -160,57 +93,6 @@ findVarioOverlap = function(vario) {
      cArea[[1]]*a1
    }
    mapply(FUN = overlap,vario$a1,vario$a2,vario$dist)
-}
-
-
-afindOverlap = function(areas1,areas2) {
-  ndim = length(areas1@polygons)
-  t0 = proc.time()[[3]]
-  ptdim = 25
-  pts1 = lapply(areas1@polygons,FUN = function(poly1) spsample(poly1,ptdim,"regular"))
-  if (!missing(areas2))  {
-    mdim = length(areas2@polygons)
-    pts2 = lapply(areas2@polygons,FUN = function(poly1) spsample(poly1,ptdim,"regular"))
-    sym = FALSE
-  } else {
-    mdim = ndim
-    areas2 = areas1
-    pts2 = pts1
-    sym = TRUE
-  }
-  overlap = matrix(0,nrow = ndim,ncol = mdim)
-  t1 = proc.time()[[3]]
-  print(t1-t0)
-  for (ia in 1:(ndim-sym)) {
-    t1 = proc.time()[[3]]
-    poly1 = areas1@polygons[[ia]]
-    SP1 = SpatialPolygons(list(poly1))
-    a1 = SP1@polygons[[1]]@Polygons[[1]]@area
-    a1pts = spsample(SP1,15,"regular")
-    pt1 = pts1[[ia]]
-    ifi = ifelse(sym,ia+1,1)
-    t2 = proc.time()[[3]]
-    for (ib in ifi:mdim) {
-      poly2 = areas2@polygons[[ib]]
-      SP2 = SpatialPolygons(list(poly2))
-      a2 = areas2@polygons[[ib]]@Polygons[[1]]@area
-      if (max(unlist(commonArea(SP1,SP2))) > 0.1) {
-        if (a2 < a1) {
-          pt2 = pts2[[ib]]
-          nover = overlay(pt2,SP1)
-          if (length(nover[!is.na(nover)]) > ptdim/2) overlap[ia,ib] = min(a1,a2)
-        } else {
-          nover = overlay(pt1,SP2)
-          if (length(nover[!is.na(nover)]) > ptdim/2) overlap[ia,ib] = min(a1,a2)
-        }
-        if (sym) overlap[ib,ia] = overlap[ia,ib]
-      }
-    }
-    t3 = proc.time()[[3]]
-    print(paste(ia,round(sqrt(a1),2),round(t2-t1,3), round(t3-t2,3), round(t3-t0,3)))
-
-  }
-  overlap
 }
 
 
