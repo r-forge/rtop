@@ -1,11 +1,11 @@
 Package: rtop
 Type: Package
 Title: Interpolation of data with variable spatial support
-Version: 0.3-37
-Date: 2013-04-19
+Version: 0.3-38
+Date: 2013-04-22
 Author: Jon Olav Skoien
-Maintainer: Jon Olav Skoien <jon.skoien@jrc.ec.europa.eu>
+Maintainer: Jon Olav Skoien <jon.skoien@gmail.com>
 Depends: sp, gstat
 Suggests: igraph, rgdal, intamap
-Description: Geostatistical methods for estimating when the support has an area
+Description: Package for geostatistical interpolation of data with irregular spatial support, such as runoff related data or some types of data from administrative units.
 License: GPL (>= 2)
