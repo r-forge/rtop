@@ -30,10 +30,20 @@ varMat.rtop = function(object, varMatUpdate = FALSE, ...) {
         gDistObs = object$gDistObs
       } else {
         dObs = object$dObs
-        object$gDistObs = gDistObs = gDist(dObs)
+        object$gDistObs = gDistObs = gDist(dObs, params = params)
       }
-      varMatObs = matrix(mapply(FUN = varioEx,gDistObs,MoreArgs=list(variogramModel)),
+      if (!is.null(params$nclus) && params$nclus > 1 && nObs > params$cnAreas && require(parallel)) {
+        cl = rtopCluster(params$nclus, type = params$clusType)
+        varMatObs = matrix(unlist(parLapply(cl, 1:nObs, fun = function(x, gDistObs, variogramModel) 
+          mapply(gDistObs[, x],
+                 FUN = function(y) varioEx(y, variogramModel)), 
+                           gDistObs = gDistObs, variogramModel = variogramModel)), 
+                           nrow = nObs, ncol = nObs)
+      } else {
+        varMatObs = matrix(mapply(gDistObs, FUN = varioEx, 
+                          MoreArgs=list(variogramModel)),
                           nrow = nObs,ncol = nObs)
+      }
       vDiagObs = diag(varMatObs)
       for (ia in 1:(nObs-1)) {
         for (ib in (ia+1):nObs) {
@@ -50,7 +60,8 @@ varMat.rtop = function(object, varMatUpdate = FALSE, ...) {
     attr(object$varMatObs, "variogramModel") = variogramModel
     obsComp = TRUE
   }
-  if (!params$cv && (!"varMatPredObs" %in% names(object) | varMatUpdate)) {
+  if (!params$cv && "predictionLocations" %in% names(object) && 
+        (!"varMatPredObs" %in% names(object) | varMatUpdate)) {
 #    ftype = ifelse(inherits(predictionLocations,"SpatialPolygons"),"polygons","lines")
     varMatObs = object$varMatObs
     vDiagObs = diag(varMatObs)
@@ -65,17 +76,28 @@ varMat.rtop = function(object, varMatUpdate = FALSE, ...) {
     if (lgDistPred) {
       if ("gDistPred" %in% names(object)) {
         gDistPred = object$gDistPred
-      } else object$gDistPred = gDistPred = gDist(dPred, diag=TRUE)
+      } else object$gDistPred = gDistPred = gDist(dPred, diag=TRUE, params = params)
       if ("gDistPredObs" %in% names(object)) {
         gDistPredObs = object$gDistPredObs
-      } else object$gDistPredObs = gDistPredObs = gDist(dObs,dPred)
+      } else object$gDistPredObs = gDistPredObs = gDist(dObs,dPred, params = params)
 
       print("Creating prediction semivariance matrix. This can take some time.")
       object$varMatPred = varMatPred = 
                 matrix(mapply(FUN = varioEx,gDistPred,MoreArgs=list(variogramModel)),
                           nrow = nPred,ncol = 1)
-      varMatPredObs = matrix(mapply(FUN = varioEx,gDistPredObs,MoreArgs=list(variogramModel)),
+      
+      if (!is.null(params$nclus) && params$nclus > 1 && nObs > params$cnAreas && require(parallel)) {
+        cl = rtopCluster(nclus = params$nclus, type = params$clusType)
+
+        varMatPredObs = matrix(unlist(parLapply(cl, 1:nPred, fun = function(x, gDistPredObs, variogramModel) 
+          mapply(gDistPredObs[, x],
+                 FUN = function(y) varioEx(y, variogramModel)), 
+          gDistPredObs = gDistPredObs, variogramModel = variogramModel)), 
+          nrow = nObs, ncol = nPred)      
+      } else {
+        varMatPredObs = matrix(mapply(FUN = varioEx,gDistPredObs,MoreArgs=list(variogramModel)),
                           nrow = nObs,ncol = nPred)
+      }
       if (is.null(dim(varMatPred)) || dim(varMatPred)[1] != dim(varMatPred)[2]) 
           vDiagPred = varMatPred else vDiagPred = diag(varMatPred)
       for (ia in 1:nObs) {
@@ -154,25 +176,25 @@ varMat.SpatialPolygons = function(object,object2 = NULL,variogramModel,
 varMatDefault = function(object1,object2 = NULL,variogramModel,
      overlapObs, overlapPredObs, ...) {
   params = getRtopParams(...)
-  d1 = rtopDisc(object1,params) 
-  if (!is.null(object2)) d2 = rtopDisc(object2,params) 
+  d1 = rtopDisc(object1, params) 
+  if (!is.null(object2)) d2 = rtopDisc(object2, params) 
   if (params$gDistPred) {
-    gDist1 = gDist(d1)
-    varMat1 = varMat(gDist1, variogramModel = variogramModel, ...)
+    gDist1 = gDist(d1, params = params)
+    varMat1 = varMat(gDist1, variogramModel = variogramModel, params = params, ...)
   } else {
-    varMat1 = varMat(d1, variogramModel = variogramModel, ...)
+    varMat1 = varMat(d1, variogramModel = variogramModel, params = params, ...)
   }  
   if (is.null(object2)) return(varMat1)
   varMatObs = varMat1
   
   if (params$gDistPred & !is.null(object2)) {
-    gDistPred = gDist(d2, diag = TRUE)
-    varMatPred = varMat(gDistPred, diag = TRUE, ...)
-    gDistPredObs = gDist(d1, d2)
-    varMatPredObs = varMat(gDist1,gDistPred,sub1 = diag(varMatObs),sub2 = varMatPred, ...)
+    gDistPred = gDist(d2, diag = TRUE, params = params)
+    varMatPred = varMat(gDistPred, diag = TRUE, params = params, ...)
+    gDistPredObs = gDist(d1, d2, params = params)
+    varMatPredObs = varMat(gDist1,gDistPred,sub1 = diag(varMatObs),sub2 = varMatPred, params = params, ...)
   } else {
-    varMatPred = varMat(d2,diag=TRUE)
-    varMatPredObs = varMat(d1,d2,sub1 = diag(varMatObs),sub2 = varMatPred)
+    varMatPred = varMat(d2,diag=TRUE, params = params)
+    varMatPredObs = varMat(d1,d2,sub1 = diag(varMatObs),sub2 = varMatPred, params = params)
   }
   if (params$nugget) {
     if (missing(overlapObs)) 
@@ -210,6 +232,7 @@ varMatDefault = function(object1,object2 = NULL,variogramModel,
 # coor1 and coor2 are coordinates of the areas, used for maximum distance
 varMat.list = function(object, object2=NULL, coor1, coor2, maxdist = Inf, 
               variogramModel, diag=FALSE, sub1, sub2, debug.level = 1, ...) {
+  params = getRtopParams(...)
   d1 = object
   d2 = object2
   if (is.null(d2)) {
@@ -226,36 +249,74 @@ varMat.list = function(object, object2=NULL, coor1, coor2, maxdist = Inf,
   mdim = length(d2)
   varMatrix = matrix(-999,nrow = ndim,ncol = mdim)
 
-  t0 = proc.time()[[3]]
-  for (ia in 1:ndim) {
-    t1 = proc.time()[[3]]
-    a1 = coordinates(d1[[ia]])
-    ip1 = dim(a1)[1]
-    first = ifelse(equal,ia,1)
-    lorder = c(first:mdim)
-    if (!missing(coor1) && ! missing(coor2) && maxdist < Inf) 
-         lorder = lorder[spDistsN1(coor2[first:mdim,],coor1[ia,]) < maxdist]
-    if (length(lorder) > 0) {
-      ld = d2[lorder]
-      lmat = mapply(vred,a2 = ld,MoreArgs = list(vredTyp="ind",a1 = a1,variogramModel = variogramModel))
-#      lmat = lvmat[[1]]
-      if (!equal) varMatrix[ia,] = lmat else {
-        varMatrix[ia,lorder] = lmat
-        varMatrix[lorder,ia] = lmat
+  if (!is.null(params$nclus) && params$nclus > 1 && length(d1) + length(d2) > params$cnAreas && require(parallel)) {
+#    cl = rtopCluster(params$nclus, {require(sp); vred = rtop:::vred}, type = params$clusType)
+    cl = rtopCluster(params$nclus, type = params$clusType)
+    if (missing(coor1)) coor1 = NULL
+    if (missing(coor2)) coor2 = NULL
+    idx = lapply(1:params$nclus, FUN = function(x) which(1:ndim %% params$nclus == x-1))
+    vml = foreach(i = 1:length(idx)) %dopar% {
+      d11 = d1[idx[[i]]]
+      lmats = list()
+      for (ib in 1:length(d11)) {
+        a1 = coordinates(d11[[ib]])
+        ia = idx[[i]][[ib]]
+        ip1 = dim(a1)[1]
+        first = ifelse(equal,ia,1)
+        lorder = c(first:mdim)
+        if (!is.null(coor1) && ! is.null(coor2) && maxdist < Inf) 
+          lorder = lorder[spDistsN1(coor2[first:mdim,],coor1[ia,]) < maxdist]
+        if (length(lorder) > 0) {
+          ld = d2[lorder]
+          lmat = mapply(vred,a2 = ld,MoreArgs = list(vredTyp="ind",a1 = a1,variogramModel = variogramModel))
+        } else lmat = -999  
+        lmats[[ib]] = list(lmat, lorder)
+      }
+      lmats
+    }
+    for (i in 1:length(idx)) {
+      for (ij in 1:length(idx[[i]])) {
+        ia = idx[[i]][ij]
+        lmat = vml[[i]][[ij]][[1]]
+        lorder = vml[[i]][[ij]][[2]]
+        if (!equal) varMatrix[ia,] = lmat else {
+          varMatrix[ia,lorder] = lmat
+          varMatrix[lorder,ia] = lmat
+        }
       }
     }
-#      print(acdf)
-    t2 = proc.time()[[3]]
-    if (debug.level > 0) print(paste("varMat - Finished element ",ia," out of ", ndim," in ", round(t2-t1,3),
-          "seconds - totally", round(t2-t0)," seconds"))
-  }
-  if (equal & variogramModel$model != "Gho") {
-    vDiag = diag(varMatrix)
-    for (ia in 1:(ndim-1)) {
-      for (ib in (ia+1):ndim) {
-        varMatrix[ia,ib] = varMatrix[ia,ib] - 0.5*(vDiag[ia] + vDiag[ib])
-        varMatrix[ib,ia] = varMatrix[ia,ib]
+  } else {
+    t0 = proc.time()[[3]]
+    for (ia in 1:ndim) {
+      t1 = proc.time()[[3]]
+      a1 = coordinates(d1[[ia]])
+      ip1 = dim(a1)[1]
+      first = ifelse(equal,ia,1)
+      lorder = c(first:mdim)
+      if (!missing(coor1) && ! missing(coor2) && maxdist < Inf) 
+           lorder = lorder[spDistsN1(coor2[first:mdim,],coor1[ia,]) < maxdist]
+      if (length(lorder) > 0) {
+        ld = d2[lorder]
+        lmat = mapply(vred,a2 = ld,MoreArgs = list(vredTyp="ind",a1 = a1,variogramModel = variogramModel))
+#        lmat = lvmat[[1]]
+        if (!equal) varMatrix[ia,] = lmat else {
+          varMatrix[ia,lorder] = lmat
+          varMatrix[lorder,ia] = lmat
+        }
       }
+#        print(acdf)
+      t2 = proc.time()[[3]]
+      if (debug.level > 0) print(paste("varMat - Finished element ",ia," out of ", ndim," in ", round(t2-t1,3),
+            "seconds - totally", round(t2-t0)," seconds"))
+    }
+  }
+    if (equal & variogramModel$model != "Gho") {
+      vDiag = diag(varMatrix)
+      for (ia in 1:(ndim-1)) {
+        for (ib in (ia+1):ndim) {
+          varMatrix[ia,ib] = varMatrix[ia,ib] - 0.5*(vDiag[ia] + vDiag[ib])
+          varMatrix[ib,ia] = varMatrix[ia,ib]
+        }
     }
   } else if (!missing(sub1) & !missing(sub2)) {  
     for (ia in 1:ndim) {

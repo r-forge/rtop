@@ -1,7 +1,7 @@
 
-R version 3.0.2 (2013-09-25) -- "Frisbee Sailing"
-Copyright (C) 2013 The R Foundation for Statistical Computing
-Platform: x86_64-redhat-linux-gnu (64-bit)
+R version 3.1.1 (2014-07-10) -- "Sock it to Me"
+Copyright (C) 2014 The R Foundation for Statistical Computing
+Platform: x86_64-w64-mingw32/x64 (64-bit)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
 You are welcome to redistribute it under certain conditions.
@@ -20,24 +20,24 @@ Type 'q()' to quit R.
 > library(rtop)
 Loading required package: sp
 > library(rgdal)
-rgdal: version: 0.8-10, (SVN revision 478)
+rgdal: version: 0.8-16, (SVN revision 498)
 Geospatial Data Abstraction Library extensions to R successfully loaded
-Loaded GDAL runtime: GDAL 1.8.1, released 2011/07/09
-Path to GDAL shared files: /usr/share/gdal
+Loaded GDAL runtime: GDAL 1.11.0, released 2014/04/16
+Path to GDAL shared files: F:/skoiejo/Documents/R/win-library/3.1/rgdal/gdal
 GDAL does not use iconv for recoding strings.
-Loaded PROJ.4 runtime: Rel. 4.8.0, 6 March 2012, [PJ_VERSION: 470]
-Path to PROJ.4 shared files: (autodetected)
+Loaded PROJ.4 runtime: Rel. 4.8.0, 6 March 2012, [PJ_VERSION: 480]
+Path to PROJ.4 shared files: F:/skoiejo/Documents/R/win-library/3.1/rgdal/proj
 > options(error = recover)
 >   # Read directly from shape-files in data directory
 > rpath = system.file("extdata",package="rtop")
 > observations = readOGR(rpath, "observations")
 OGR data source with driver: ESRI Shapefile 
-Source: "/net/netapp2/H05_Homes/skoiejo/rtop/rtop.Rcheck/rtop/extdata", layer: "observations"
+Source: "E:/RForge/rtop/pkg/rtop.Rcheck/rtop/extdata", layer: "observations"
 with 57 features and 7 fields
 Feature type: wkbPolygon with 2 dimensions
 > predictionLocations = readOGR(rpath, "predictionLocations")
 OGR data source with driver: ESRI Shapefile 
-Source: "/net/netapp2/H05_Homes/skoiejo/rtop/rtop.Rcheck/rtop/extdata", layer: "predictionLocations"
+Source: "E:/RForge/rtop/pkg/rtop.Rcheck/rtop/extdata", layer: "predictionLocations"
 with 235 features and 5 fields
 Feature type: wkbPolygon with 2 dimensions
 >   #Finding a few prediction locations of them
@@ -115,66 +115,11 @@ attr(,"SSErr")
 attr(,"criterion")
 [1] 0.09822283
 >   rtopObj2 = rtopKrige(rtopObj, cv = TRUE)
-[1] "Sampling from area number 1 containing 75 points"
-[1] "Sampling from area number 2 containing 90 points"
-[1] "Sampling from area number 3 containing 63 points"
-[1] "Sampling from area number 4 containing 40 points"
-[1] "Sampling from area number 5 containing 34 points"
-[1] "Sampling from area number 6 containing 44 points"
-[1] "Sampling from area number 7 containing 25 points"
-[1] "Sampling from area number 8 containing 42 points"
-[1] "Sampling from area number 9 containing 94 points"
-[1] "Sampling from area number 10 containing 35 points"
-[1] "Sampling from area number 11 containing 89 points"
-[1] "Sampling from area number 12 containing 51 points"
-[1] "Sampling from area number 13 containing 29 points"
-[1] "Sampling from area number 14 containing 26 points"
-[1] "Sampling from area number 15 containing 90 points"
-[1] "Sampling from area number 16 containing 98 points"
-[1] "Sampling from area number 17 containing 40 points"
-[1] "Sampling from area number 18 containing 26 points"
-[1] "Sampling from area number 19 containing 82 points"
-[1] "Sampling from area number 20 containing 46 points"
-[1] "Sampling from area number 21 containing 30 points"
-[1] "Sampling from area number 22 containing 31 points"
-[1] "Sampling from area number 23 containing 26 points"
-[1] "Sampling from area number 24 containing 35 points"
-[1] "Sampling from area number 25 containing 101 points"
-[1] "Sampling from area number 26 containing 26 points"
-[1] "Sampling from area number 27 containing 89 points"
-[1] "Sampling from area number 28 containing 38 points"
-[1] "Sampling from area number 29 containing 81 points"
-[1] "Sampling from area number 30 containing 50 points"
-[1] "Cross-validating location 1  out of  30  observation locations"
-[1] "Cross-validating location 2  out of  30  observation locations"
-[1] "Cross-validating location 3  out of  30  observation locations"
-[1] "Cross-validating location 4  out of  30  observation locations"
-[1] "Cross-validating location 5  out of  30  observation locations"
-[1] "Cross-validating location 6  out of  30  observation locations"
-[1] "Cross-validating location 7  out of  30  observation locations"
-[1] "Cross-validating location 8  out of  30  observation locations"
-[1] "Cross-validating location 9  out of  30  observation locations"
-[1] "Cross-validating location 10  out of  30  observation locations"
-[1] "Cross-validating location 11  out of  30  observation locations"
-[1] "Cross-validating location 12  out of  30  observation locations"
-[1] "Cross-validating location 13  out of  30  observation locations"
-[1] "Cross-validating location 14  out of  30  observation locations"
-[1] "Cross-validating location 15  out of  30  observation locations"
-[1] "Cross-validating location 16  out of  30  observation locations"
-[1] "Cross-validating location 17  out of  30  observation locations"
-[1] "Cross-validating location 18  out of  30  observation locations"
-[1] "Cross-validating location 19  out of  30  observation locations"
-[1] "Cross-validating location 20  out of  30  observation locations"
-[1] "Cross-validating location 21  out of  30  observation locations"
-[1] "Cross-validating location 22  out of  30  observation locations"
-[1] "Cross-validating location 23  out of  30  observation locations"
-[1] "Cross-validating location 24  out of  30  observation locations"
-[1] "Cross-validating location 25  out of  30  observation locations"
-[1] "Cross-validating location 26  out of  30  observation locations"
-[1] "Cross-validating location 27  out of  30  observation locations"
-[1] "Cross-validating location 28  out of  30  observation locations"
-[1] "Cross-validating location 29  out of  30  observation locations"
-[1] "Cross-validating location 30  out of  30  observation locations"
+[1] "Sampling points from  30 areas"
+[1] "Sampled on average 54.2 points from 30 areas"
+[1] "cross-validating 30 areas"
+> 
+> 
 >   print(attr(rtopObj2$varMatObs,"variogramModel"))
 $model
 [1] "Ex1"
@@ -190,48 +135,25 @@ attr(,"criterion")
 [1] 0.09822283
 >   
 >   rtopObj3 = rtopKrige(rtopObj)
-[1] "Sampling from area number 1 containing 75 points"
-[1] "Sampling from area number 2 containing 90 points"
-[1] "Sampling from area number 3 containing 63 points"
-[1] "Sampling from area number 4 containing 40 points"
-[1] "Sampling from area number 5 containing 34 points"
-[1] "Sampling from area number 6 containing 44 points"
-[1] "Sampling from area number 7 containing 25 points"
-[1] "Sampling from area number 8 containing 42 points"
-[1] "Sampling from area number 9 containing 94 points"
-[1] "Sampling from area number 10 containing 35 points"
-[1] "Sampling from area number 11 containing 89 points"
-[1] "Sampling from area number 12 containing 51 points"
-[1] "Sampling from area number 13 containing 29 points"
-[1] "Sampling from area number 14 containing 26 points"
-[1] "Sampling from area number 15 containing 90 points"
-[1] "Sampling from area number 16 containing 98 points"
-[1] "Sampling from area number 17 containing 40 points"
-[1] "Sampling from area number 18 containing 26 points"
-[1] "Sampling from area number 19 containing 82 points"
-[1] "Sampling from area number 20 containing 46 points"
-[1] "Sampling from area number 21 containing 30 points"
-[1] "Sampling from area number 22 containing 31 points"
-[1] "Sampling from area number 23 containing 26 points"
-[1] "Sampling from area number 24 containing 35 points"
-[1] "Sampling from area number 25 containing 101 points"
-[1] "Sampling from area number 26 containing 26 points"
-[1] "Sampling from area number 27 containing 89 points"
-[1] "Sampling from area number 28 containing 38 points"
-[1] "Sampling from area number 29 containing 81 points"
-[1] "Sampling from area number 30 containing 50 points"
-[1] "Sampling from area number 1 containing 75 points"
-[1] "Sampling from area number 2 containing 79 points"
+[1] "Sampling points from  30 areas"
+[1] "Sampled on average 54.2 points from 30 areas"
+[1] "Sampling points from  2 areas"
+[1] "Sampled on average 77 points from 2 areas"
 [1] "Creating prediction semivariance matrix. This can take some time."
-[1] "Predicting location  1  out of  2  prediction locations"
-[1] "Predicting location  2  out of  2  prediction locations"
+[1] "interpolating  2 areas"
 >   rtopObj4 = rtopKrige(rtopObj2)
-[1] "Sampling from area number 1 containing 75 points"
-[1] "Sampling from area number 2 containing 79 points"
+[1] "Sampling points from  2 areas"
+[1] "Sampled on average 77 points from 2 areas"
 [1] "Creating prediction semivariance matrix. This can take some time."
-[1] "Predicting location  1  out of  2  prediction locations"
-[1] "Predicting location  2  out of  2  prediction locations"
->   
+[1] "interpolating  2 areas"
+> 
+>   rtopObj5 = rtopKrige(rtopObj, params = list(cnAreas = 5, cDlim = 100, nclus = 2))
+[1] "Sampling points from  30 areas"
+[1] "Sampled on average 54.2 points from 30 areas"
+[1] "Sampling points from  2 areas"
+[1] "Sampled on average 77 points from 2 areas"
+[1] "Creating prediction semivariance matrix. This can take some time."
+[1] "interpolating  2 areas"
 >   
 >   print(summary(rtopObj2$predictions))
 Object of class SpatialPolygonsDataFrame
@@ -255,7 +177,7 @@ Data attributes:
  Min.   :458036   Min.   :0.1415   Min.   :0.005397   Min.   : 13643136  
  1st Qu.:475353   1st Qu.:0.3305   1st Qu.:0.009116   1st Qu.: 26471133  
  Median :487692   Median :0.4789   Median :0.011203   Median : 51143819  
- Mean   :489632   Mean   :0.5283   Mean   :0.011727   Mean   : 48574940  
+ Mean   :489633   Mean   :0.5283   Mean   :0.011727   Mean   : 48574940  
  3rd Qu.:500377   3rd Qu.:0.6475   3rd Qu.:0.012502   3rd Qu.: 62123200  
  Max.   :535299   Max.   :1.3004   Max.   :0.030287   Max.   :127900610  
    var1.pred           var1.var           sumWeights       observed       
@@ -345,17 +267,20 @@ Data attributes:
 >   print(cor(rtopObj2$predictions$observed,rtopObj2$predictions$var1.pred))
 [1] 0.1668735
 >   
->   
+> 
+> 
 > 
 >   set.seed(1501)
 >   useRtopWithIntamap()
 Loading optional package: intamap 
 
+Warning message:
+S3 method 'methodParameters.rtopVariogram' was declared in NAMESPACE but not found 
 >   library(intamap)
 >   output = interpolate(observations,predictionLocations,
 +      optList = list(formulaString = obs~1, gDist = TRUE, cloud = FALSE, nmax = 10, rresol = 25, hresol = 3), 
 +         methodName = "rtop")
-R 2013-11-20 17:45:27 interpolating 30 observations, 2 prediction locations
+R 2014-08-12 11:09:07 interpolating 30 observations, 2 prediction locations
 Checking object ... OK
 56 best 0.216 function convergence 200 parameter convergence 5107.141 
 89 best 0.182 function convergence 200 parameter convergence 4277.399 
@@ -401,39 +326,12 @@ Checking object ... OK
 1205 best 0.0982 function convergence 0 parameter convergence 1.335559 
 1230 best 0.0982 function convergence 0 parameter convergence 1.026866 
 1255 best 0.0982 function convergence 0 parameter convergence 0.6620199 
-[1] "Sampling from area number 1 containing 75 points"
-[1] "Sampling from area number 2 containing 90 points"
-[1] "Sampling from area number 3 containing 63 points"
-[1] "Sampling from area number 4 containing 40 points"
-[1] "Sampling from area number 5 containing 34 points"
-[1] "Sampling from area number 6 containing 44 points"
-[1] "Sampling from area number 7 containing 25 points"
-[1] "Sampling from area number 8 containing 42 points"
-[1] "Sampling from area number 9 containing 94 points"
-[1] "Sampling from area number 10 containing 35 points"
-[1] "Sampling from area number 11 containing 89 points"
-[1] "Sampling from area number 12 containing 51 points"
-[1] "Sampling from area number 13 containing 29 points"
-[1] "Sampling from area number 14 containing 26 points"
-[1] "Sampling from area number 15 containing 90 points"
-[1] "Sampling from area number 16 containing 98 points"
-[1] "Sampling from area number 17 containing 40 points"
-[1] "Sampling from area number 18 containing 26 points"
-[1] "Sampling from area number 19 containing 82 points"
-[1] "Sampling from area number 20 containing 46 points"
-[1] "Sampling from area number 21 containing 30 points"
-[1] "Sampling from area number 22 containing 31 points"
-[1] "Sampling from area number 23 containing 26 points"
-[1] "Sampling from area number 24 containing 35 points"
-[1] "Sampling from area number 25 containing 101 points"
-[1] "Sampling from area number 26 containing 26 points"
-[1] "Sampling from area number 27 containing 89 points"
-[1] "Sampling from area number 28 containing 38 points"
-[1] "Sampling from area number 29 containing 81 points"
-[1] "Sampling from area number 30 containing 50 points"
-[1] "Sampling from area number 1 containing 75 points"
-[1] "Sampling from area number 2 containing 79 points"
+[1] "Sampling points from  30 areas"
+[1] "Sampled on average 54.2 points from 30 areas"
+[1] "Sampling points from  2 areas"
+[1] "Sampled on average 77 points from 2 areas"
 [1] "Creating prediction semivariance matrix. This can take some time."
+[1] "interpolating  2 areas"
 Warning messages:
 1: In predictTime(nObs = dim(observations)[1], nPred = dim(coordinates(predictionLocations))[1],  :
   
@@ -448,10 +346,12 @@ Warning messages:
 4: In methodParameters.default(krigingObject) :
   Not able to create methodParameters for variogram of class rtopVariogramModel
 >   
->   print(all.equal(rtopObj4$predictions@data$var1.pred, output$predictions@data$var1.pred))
+> 
+> print(all.equal(rtopObj4$predictions@data$var1.pred, output$predictions@data$var1.pred))
 [1] TRUE
 >   print(all.equal(rtopObj4$predictions@data$var1.var, output$predictions@data$var1.var))
 [1] TRUE
+> 
 > 
 > # Updating variogramModel
 >   
@@ -461,6 +361,138 @@ Warning messages:
 [1] "Creating prediction semivariance matrix. This can take some time."
 > 
 > 
+> rtopObj10 = rtopSim(rtopObj, nsim = 5)
+[1] "Sampling points from  30 areas"
+[1] "Sampled on average 54.2 points from 30 areas"
+[1] "Sampling points from  2 areas"
+[1] "Sampled on average 77 points from 2 areas"
+[1] "Creating prediction semivariance matrix. This can take some time."
+[1] "varMat - Finished element  1  out of  2  in  0 seconds - totally 0  seconds"
+[1] "varMat - Finished element  2  out of  2  in  0 seconds - totally 0  seconds"
+[1] "1. simulation of 2 areas"
+[1] "2. simulation of 2 areas"
+[1] "3. simulation of 2 areas"
+[1] "4. simulation of 2 areas"
+[1] "5. simulation of 2 areas"
+> rtopObj11 = rtopObj
+> rtopObj11$predictionLocations = rtopObj11$observations
+> rtopObj11$observations = NULL
+> rtopObj12 = rtopSim(rtopObj11, nsim = 10, beta = 0.01)
+[1] "Sampling points from  30 areas"
+[1] "Sampled on average 54.2 points from 30 areas"
+[1] "1. simulation of 30 areas"
+[1] "2. simulation of 30 areas"
+[1] "3. simulation of 30 areas"
+[1] "4. simulation of 30 areas"
+[1] "5. simulation of 30 areas"
+[1] "6. simulation of 30 areas"
+[1] "7. simulation of 30 areas"
+[1] "8. simulation of 30 areas"
+[1] "9. simulation of 30 areas"
+[1] "10. simulation of 30 areas"
+> 
+> rtopObj10$simulations@data
+  ID EZGID AREASQKM XSTATION YSTATION     area       sim1        sim2
+0 76    76 35.98214   490602   523496 35982138 0.01165209 0.012015757
+1 77    77 38.48705   490602   523496 38487054 0.01001932 0.009725055
+        sim3       sim4        sim5
+0 0.01251537 0.01205491 0.012451050
+1 0.01012052 0.01115151 0.008900245
+> rtopObj12$simulations@data
+     ID EZGID  AREASQKM XSTATION YSTATION QSUMMER_OB         obs      area
+0    60    60  43.98384   444255   519555     0.3675 0.008355342  43983838
+1   113   113  13.64314   410740   471559     0.1676 0.012284566  13643136
+2   227   227  37.40618   507123   505187     0.4241 0.011337700  37406177
+3   550   550  22.76198   456944   464894     0.3044 0.013373178  22761980
+4   688   688  19.80010   425108   474095     0.2399 0.012116099  19800103
+5   752   752  27.56877   470975   496570     0.2940 0.010664241  27568769
+6   765   765  56.24196   434609   491830     0.4729 0.008408313  56241958
+7   849   849  26.10525   430218   486103     0.2442 0.009354439  26105254
+8   862   862  14.18088   420165   481802     0.1635 0.011529608  14180881
+9   863   863  19.93521   426344   482108     0.1415 0.007097994  19935211
+10  864   864  54.15802   410554   481291     0.6810 0.012574314  54158023
+11  992   992  29.85934   400882   475017     0.4808 0.016102163  29859343
+12 1221  1221  64.29535   486654   512168     0.5810 0.009036423  64295354
+13 1222  1222  16.68689   441490   535299     0.5054 0.030287242  16686894
+14 1632  1632  53.58798   429735   480468     0.5408 0.010091816  53587979
+15 1698  1698  59.46820   422167   489280     0.5666 0.009527782  59468196
+16 1939  1939  93.96073   486398   524930     1.1156 0.011873045  93960729
+17 1953  1953  61.58207   469348   507840     0.5490 0.008914933  61582069
+18 1960  1960  50.09929   445002   470803     0.4035 0.008054006  50099294
+19 2062  2062  28.31578   469204   507994     0.3181 0.011234018  28315781
+20 2067  2067  69.54509   454679   494878     0.4011 0.005767481  69545088
+21 2068  2068  75.91408   484016   497119     0.4097 0.005396891  75914078
+22 2196  2196  63.41038   421439   501348     0.9201 0.014510242  63410384
+23 2264  2264  82.43395   477861   478778     0.8103 0.009829688  82433948
+24 2269  2269  62.30358   442000   476361     0.6961 0.011172713  62303577
+25 2280  2280  58.43819   412619   458520     1.0167 0.017397869  58438193
+26 2284  2284  52.18834   428161   458036     0.6674 0.012788296  52188343
+27 2364  2364  23.47918   406824   470502     0.4770 0.020315869  23479183
+28 2384  2384  47.99382   431866   497177     0.5879 0.012249493  47993823
+29 2387  2387 127.90061   417931   497463     1.3004 0.010167270 127900610
+          sim1        sim2          sim3          sim4        sim5         sim6
+0  0.009999237 0.010002546  1.000086e-02  9.998415e-03 0.010002430  0.010005621
+1  0.014020049 0.017859760  1.682643e-03  1.268518e-02 0.012163125  0.007195913
+2  0.015788621 0.011178055  1.496449e-03  1.097780e-02 0.004427823  0.002212343
+3  0.005318758 0.017491536  3.390992e-04  1.533440e-03 0.008296489  0.012162923
+4  0.010279276 0.017924196  8.727050e-04  3.681667e-03 0.001066463  0.005014136
+5  0.014981124 0.011081273 -4.369414e-06  1.662430e-02 0.015402105  0.011511704
+6  0.013370108 0.015135251 -2.698278e-03  8.981154e-03 0.007609055  0.001115798
+7  0.020343438 0.015695033  8.058745e-03  7.894186e-03 0.004368687  0.007456288
+8  0.014994417 0.013069673  1.908513e-02  9.660634e-03 0.010193979  0.002369652
+9  0.017122501 0.011539655  5.692772e-03  9.770502e-03 0.010643546  0.003676555
+10 0.013459895 0.007175477  6.206294e-03  8.566809e-05 0.011881235 -0.000531101
+11 0.010759058 0.012552353  1.579827e-03  1.072848e-02 0.012702489  0.009112135
+12 0.013007705 0.010608855  8.049299e-03  1.575665e-02 0.009950642  0.007390313
+13 0.011479545 0.011695737 -3.272354e-03  1.453164e-02 0.010359510  0.005762194
+14 0.007533732 0.022919923  6.291552e-03  7.588561e-03 0.012652038  0.006027106
+15 0.012273664 0.020538089  5.207955e-03  2.008894e-02 0.008280049  0.010369644
+16 0.012291049 0.014286781  5.937696e-03  9.173980e-04 0.003531278  0.014862364
+17 0.019396690 0.012057813  3.761000e-03  8.079260e-03 0.014013096  0.010816251
+18 0.012751098 0.013974613  8.194926e-03  1.232820e-02 0.008349455  0.007863920
+19 0.016183505 0.022944028  6.774096e-03  6.257746e-03 0.011011573 -0.002798362
+20 0.015253815 0.012982760  1.423264e-02  1.018529e-02 0.009353805  0.005740567
+21 0.015867236 0.015114819  4.838780e-03  7.234990e-03 0.008951892  0.001428779
+22 0.012699041 0.012994383  1.233161e-02  9.991671e-03 0.006267253  0.002462951
+23 0.009907256 0.019759800 -4.781024e-03  1.520012e-02 0.011088802  0.012491748
+24 0.017196635 0.017999319  2.555450e-02 -3.647172e-03 0.008748842  0.004788079
+25 0.017071995 0.009607870  4.023037e-03  3.950904e-03 0.009629790  0.010132977
+26 0.012687426 0.009112282  6.126908e-03  4.126040e-03 0.007897851  0.006513711
+27 0.014283782 0.009054833  9.051342e-03  1.211901e-02 0.012576594  0.005695879
+28 0.005996709 0.018201023  1.529277e-02  1.390046e-02 0.005228232  0.010270946
+29 0.018410582 0.016624431 -1.783152e-03  1.272286e-02 0.006173633  0.012565994
+          sim7        sim8        sim9       sim10
+0  0.009999152 0.010002363 0.010002965 0.009997360
+1  0.023383255 0.014485694 0.007588533 0.011355560
+2  0.030782885 0.016285146 0.014133179 0.022925946
+3  0.007742269 0.021504469 0.014121645 0.004166242
+4  0.017081702 0.009369197 0.013731818 0.012193511
+5  0.013844316 0.009411330 0.011307281 0.012145986
+6  0.013794697 0.019693759 0.017998841 0.017151919
+7  0.009494491 0.006486132 0.010335561 0.006470232
+8  0.016384252 0.012046745 0.011972185 0.012588804
+9  0.013091369 0.012389590 0.019201961 0.007736328
+10 0.004970656 0.020269589 0.014955122 0.014939706
+11 0.013012685 0.017697688 0.013112599 0.009051456
+12 0.007476839 0.015131016 0.005574351 0.010723255
+13 0.028995011 0.014928641 0.016773954 0.014608970
+14 0.018285442 0.016237865 0.004940576 0.006386448
+15 0.016978854 0.013895338 0.013502520 0.008325175
+16 0.027814966 0.007285440 0.013914915 0.009231229
+17 0.003165174 0.013864015 0.008196568 0.013775459
+18 0.012729060 0.016689963 0.010921315 0.011806580
+19 0.017190746 0.013162144 0.010662670 0.022660537
+20 0.008904616 0.015546739 0.013338908 0.026328366
+21 0.030734708 0.016754856 0.018116008 0.014285774
+22 0.011082449 0.006884464 0.008996741 0.024573530
+23 0.033935510 0.020398357 0.016194509 0.016337409
+24 0.024202532 0.014477360 0.006616623 0.009616340
+25 0.017813580 0.016754419 0.007496635 0.024115605
+26 0.025872766 0.012363321 0.012503188 0.022642941
+27 0.025773999 0.010763139 0.011095379 0.008202154
+28 0.019306703 0.006076971 0.012900450 0.008646681
+29 0.013857739 0.016009550 0.012671683 0.019328468
+> 
 > proc.time()
    user  system elapsed 
- 10.947   0.119  12.557 
+  12.46    0.12   12.60 

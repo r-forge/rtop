@@ -23,11 +23,14 @@ predictionLocations = readOGR(rpath, "predictionLocations")
   #rtopObj = checkVario(rtopObj)
   rtopObj$variogramModel                                                                        
   rtopObj2 = rtopKrige(rtopObj, cv = TRUE)
+
+
   print(attr(rtopObj2$varMatObs,"variogramModel"))
   
   rtopObj3 = rtopKrige(rtopObj)
   rtopObj4 = rtopKrige(rtopObj2)
-  
+
+  rtopObj5 = rtopKrige(rtopObj, params = list(cnAreas = 5, cDlim = 100, nclus = 2))
   
   print(summary(rtopObj2$predictions))
   print(summary(rtopObj3$predictions))
@@ -39,7 +42,8 @@ predictionLocations = readOGR(rpath, "predictionLocations")
   #spplot(rtopObj2$predictions,col.regions = bpy.colors(), c("observed","var1.pred"))
   print(cor(rtopObj2$predictions$observed,rtopObj2$predictions$var1.pred))
   
-  
+
+
 
   set.seed(1501)
   useRtopWithIntamap()
@@ -48,8 +52,10 @@ predictionLocations = readOGR(rpath, "predictionLocations")
      optList = list(formulaString = obs~1, gDist = TRUE, cloud = FALSE, nmax = 10, rresol = 25, hresol = 3), 
         methodName = "rtop")
   
-  print(all.equal(rtopObj4$predictions@data$var1.pred, output$predictions@data$var1.pred))
+
+print(all.equal(rtopObj4$predictions@data$var1.pred, output$predictions@data$var1.pred))
   print(all.equal(rtopObj4$predictions@data$var1.var, output$predictions@data$var1.var))
+
 
 # Updating variogramModel
   
@@ -57,3 +63,12 @@ predictionLocations = readOGR(rpath, "predictionLocations")
   rtopObj6 = updateRtopVariogram(rtopObj5, exp = 1.5, action = "mult")
   rtopObj7 = varMat(rtopObj6)
 
+
+rtopObj10 = rtopSim(rtopObj, nsim = 5)
+rtopObj11 = rtopObj
+rtopObj11$predictionLocations = rtopObj11$observations
+rtopObj11$observations = NULL
+rtopObj12 = rtopSim(rtopObj11, nsim = 10, beta = 0.01)
+
+rtopObj10$simulations@data
+rtopObj12$simulations@data

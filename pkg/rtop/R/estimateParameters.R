@@ -12,7 +12,7 @@ spatialPredict.rtop = function(object, ...) {
   rtopKrige(object, ...)
 }
 
-methodParameters.rtop = function(object, ...) {
+methodParameters.rtopVariogramModel = function(object, ...) {
   if ("methodParameters" %in% names(object)) {
     methodParameters = object$methodParameters
   } else methodParameters = " "  

@@ -8,7 +8,7 @@
 rtopKrige perform spatial interpolation or cross validation of data with areal support.
 }
 \usage{
-\method{rtopKrige}{rtop}(object, varMatUpdate = FALSE, ...) 
+\method{rtopKrige}{rtop}(object, varMatUpdate = FALSE, params = list(), ...) 
 \method{rtopKrige}{SpatialPolygonsDataFrame}(object, predictionLocations = NULL,
     varMatObs, varMatPredObs, varMat, params = list(), formulaString, 
     sel, ...) 
@@ -80,7 +80,14 @@ data where the matrices have been created in other ways, e.g. based on distances
 in physiographical space or distances along a stream.
 
 The function returns the weights rather than the predictions if \code{wret = TRUE}.
-This is useful for batch processing of time series, e.g. if 
+This is useful for batch processing of time series, e.g. once the weights are 
+created, they can be used to compute the interpolated values for each time step.
+
+rtop is able to take some advantage of multiple cpus, which can be invoked with the 
+parameter nclus, setting this larger than one will start a cluster with nclus workers,
+if the \code{\link{parallel}}-package has been installed. 
+
+
 
 }
 
@@ -96,21 +103,29 @@ Hydrology and Earth System Sciences, 10:277-287, 2006.
 \examples{
 \dontrun{
 library(rgdal)
-rpath = system.file("extdata",package="rtop")
-setwd(rpath)
-observations = readOGR(".","observations")
-predictionLocations = readOGR(".","predictionLocations")
+# The following command will download  the complete example data set
+# downloadRtopExampleData() 
 
-# Setting some parameters 
-params = list(gDist = TRUE, cloud = FALSE)
+rpath = system.file("extdata",package="rtop")
+observations = readOGR(rpath,"observations")
+predictionLocations = readOGR(rpath,"predictionLocations")
+
+# Setting some parameters; nclus > 1 will start a cluster with nclus 
+# workers for parallel processing
+params = list(gDist = TRUE, cloud = FALSE, nclus = 1, rresol = 25)
+
 # Create a column with the specific runoff:
 observations$obs = observations$QSUMMER_OB/observations$AREASQKM
+
 # Build an object
 rtopObj = createRtopObject(observations,predictionLocations, params = params)
+
 # Fit a variogram (function also creates it)
 rtopObj = rtopFitVariogram(rtopObj)
+
 # Predicting at prediction locations
 rtopObj = rtopKrige(rtopObj)
+
 # Cross-validation
 rtopObj = rtopKrige(rtopObj,cv=TRUE)
 cor(rtopObj$predictions$observed,rtopObj$predictions$var1.pred)

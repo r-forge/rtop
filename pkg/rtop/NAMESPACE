@@ -11,9 +11,11 @@ export(checkVario,
 	readAreas,
 	rtopFitVariogram,
 	rtopKrige,
+  rtopSim,
   rtopVariogram,
 	rtopVariogramModel,
   rtopDisc,
+  rtopCluster,
   updateRtopVariogram,
   useRtopWithIntamap,
 	varMat
@@ -55,6 +57,9 @@ export(checkVario,
  S3method(rtopKrige, SpatialPolygonsDataFrame)
 # S3method(rtopKrige, SpatialLinesDataFrame)
  S3method(rtopKrige, rtop)
+
+ S3method(rtopSim, rtop)
+ S3method(rtopSim, default)
 
  S3method(rtopDisc, rtop)
  S3method(rtopDisc, SpatialPolygonsDataFrame)

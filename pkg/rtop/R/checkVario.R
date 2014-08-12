@@ -58,7 +58,6 @@ checkVario.rtop = function(object,  acor = 1, log = "xy", cloud = FALSE, gDist =
     } 
     clvar$np = clvar$ord  
     if (!"identify" %in% names(dots) | !dev.interactive()) dots$identify = FALSE
-#    print(gstat:::plot.variogramCloud(clvar, xlab = "distance", unlist(dots)))      
     print(plot(clvar, xlab = "distance", unlist(dots)))      
   }
   if (!is.null(varFit) & is(sampleVariogram, "rtopVariogram")) {
