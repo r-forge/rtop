@@ -63,7 +63,7 @@ rtopSim.rtop = function(object, varMatUpdate = FALSE, beta = NA, largeFirst = TR
       ips[1] = tmp
     }
     vpo = 1:length(predictions)
-    if (interactive()) {
+    if (interactive() & debug.level) {
       pb = txtProgressBar(1, length(ips), style = 3)
     }
     print(paste0(isim, ". simulation of ", length(ips), " areas"))
@@ -71,7 +71,7 @@ rtopSim.rtop = function(object, varMatUpdate = FALSE, beta = NA, largeFirst = TR
       inew = ips[ip]
       in2 = which(vpo == inew)
       nobs = length(obs)
-      if (interactive()) setTxtProgressBar(pb, ip)
+      if (interactive() & debug.level) setTxtProgressBar(pb, ip)
       newcor = coordinates(predictionLocations[inew,])
       unc0 = array(0,nobs)
       if (nobs == 0) {
@@ -103,7 +103,7 @@ rtopSim.rtop = function(object, varMatUpdate = FALSE, beta = NA, largeFirst = TR
       vPred = vPred[-in2, -in2, drop = FALSE]
       vpo = vpo[-in2]      
     }
-    if (interactive()) close(pb)
+    if (interactive() & debug.level) close(pb)
     predictions$sim = obs[(nobs0+1) : length(obs)]
     names(predictions)[dim(predictions)[2]] = paste0("sim", isim)
   }

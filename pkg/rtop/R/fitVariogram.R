@@ -107,14 +107,14 @@ rtopFitVariogram.rtopVariogramCloud = function(object, observations, dists = NUL
                debug.level = params$debug.level, ...)
   varFit = vf$varFit
   errSum = vf$errSum
-  variogramModel = list(model = params$model,params = bestPar)
+  variogramModel = list(model = params$model, params = bestPar)
   class(variogramModel) = "rtopVariogramModel"
-  attr(variogramModel,"SSErr") = errSum
+  attr(variogramModel, "SSErr") = errSum
   if (mr) {
     obj$variogramModel = variogramModel
     obj$varFit = varFit
     obj
-  } else list(variogramModel,varFit = varFit)
+  } else list(variogramModel ,varFit = varFit)
 }
 
 

@@ -2,6 +2,7 @@ rtopKrige.rtop = function(object, varMatUpdate = FALSE, params = list(), ...) {
   params = getRtopParams(object$params, params, ...)
   if (!is.null(params$nsim) && params$nsim > 0) return(rtopSim(object, varMatUpdate, params = params))
   observations = object$observations
+  
   predictionLocations = object$predictionLocations
   if (!all(c("varMatObs", "varMatPredObs") %in% names(object)) | varMatUpdate) 
     object = varMat(object, varMatUpdate, params = params,  ...)
@@ -45,9 +46,11 @@ rtopKrige.default = function(object, predictionLocations = NULL,
   wlimMethod = params$wlimMethod
   maxdist = params$maxdist
   debug.level = params$debug.level
+  lambda = params$lambda
+  if (!is.null(lambda)) BLUE = TRUE else BLUE = FALSE
   if (!missing(varMat)) {
     if (missing(varMatObs)) varMatObs = varMat$varMatObs
-    if (missing(varMatPredObs)) varMatPredObs = varMat$varMatPredObs
+    if (missing(varMatPredObs) && !cv) varMatPredObs = varMat$varMatPredObs
   }
   depVar = as.character(formulaString[[2]])
   observations = object
@@ -87,7 +90,7 @@ rtopKrige.default = function(object, predictionLocations = NULL,
   }
   #
   if (wret) weight = matrix(0,nrow = npred,ncol = nobs)
-  if (interactive()) {
+  if (interactive() & debug.level == 1) {
     pb = txtProgressBar(1, length(sel), style = 3)
   }
   print(paste(ifelse(cv, "cross-validating", "interpolating "), length(sel), "areas"))
@@ -95,8 +98,8 @@ rtopKrige.default = function(object, predictionLocations = NULL,
     inew = sel[inn]
     if (debug.level > 1) print("\n")
     #  for (inew in 1:20) {         
-    if (interactive() & debug.level <= 1) setTxtProgressBar(pb, inn)
-  
+    if (interactive() & debug.level == 1) setTxtProgressBar(pb, inn)
+                                          
     if (cv) {
       if (debug.level > 1) print(paste("Cross-validating location", inew, 
                                        " out of ",npred," observation locations"))
@@ -111,10 +114,12 @@ rtopKrige.default = function(object, predictionLocations = NULL,
     newcor = newcors[inew,]
     
     ret = rkrige(observations@data, obs0, obscors, newcor, varMatObs, varMatPredObs[,inew], nmax, inew, cv, 
-                 unc0, mdist, maxdist, singMat, varInv, wlim, debug.level, wlimMethod)
+                 unc0, mdist, maxdist, singMat, varInv, wlim, debug.level, wlimMethod, BLUE)
+
     predictions$var1.pred[inew] = ret$pred[1]
     predictions$var1.var[inew] = ret$pred[2]
     predictions$sumWeights[inew] = ret$pred[3]
+    
     nneigh = ret$nneigh
     lambda = ret$lambda
     neigh = ret$neigh
@@ -151,7 +156,7 @@ rtopKrige.default = function(object, predictionLocations = NULL,
       }
     }
   }  
-  if (interactive()) close(pb)
+  if (interactive() & debug.level == 1) close(pb)
   if ("data" %in% names(getSlots(class(predictionLocations)))) {
     predictionLocations@data = cbind(predictionLocations@data, predictions)
     predictions = predictionLocations

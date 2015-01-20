@@ -1,12 +1,12 @@
 rtopCluster = function(nclus, ..., action = "start", type) {
   cl = getOption("rtopCluster")
-  if (length(cl) > 0 && action != "start") {
+  if (length(cl) > 0 && (action == "stop" | action == "restart")) {
     stopCluster(cl)
     options(rtopCluster = NULL)
-    if (action == "stop") cl = NULL
-  } else if (length(cl) > 0 && action == "start") {
+  } 
+  if (length(cl) > 0 && action == "start") {
     if (length(list(...)) > 0) clusterEvalQ(cl, ...)
-  } else if (action != "stop") {
+  } else if (action == "start" | action == "restart") {
     require(doParallel)
     if (missing(type) || is.null(type)) {
       cl <- makeCluster(nclus) 
@@ -17,6 +17,6 @@ rtopCluster = function(nclus, ..., action = "start", type) {
     if (length(list(...)) > 0) clusterEvalQ(cl, ...)
     options(rtopCluster = cl)    
   }
-  cl
+  getOptions("rtopCluster")
 }
 

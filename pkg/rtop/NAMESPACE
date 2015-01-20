@@ -16,6 +16,7 @@ export(checkVario,
 	rtopVariogramModel,
   rtopDisc,
   rtopCluster,
+  tskrige,
   updateRtopVariogram,
   useRtopWithIntamap,
 	varMat
@@ -37,6 +38,7 @@ export(checkVario,
  S3method(gDist, SpatialPolygons)
  S3method(gDist, list)
          
+ S3method(rtopVariogram, STSDF)
  S3method(rtopVariogram, SpatialPointsDataFrame)
  S3method(rtopVariogram, SpatialPolygonsDataFrame)
 # S3method(rtopVariogram, SpatialLinesDataFrame)
@@ -69,11 +71,12 @@ export(checkVario,
  S3method(rtopDisc, rtopVariogram)
  S3method(rtopDisc, rtop)
  
- S3method(varMat,rtop)
- S3method(varMat,matrix)
- S3method(varMat,list)
- S3method(varMat,SpatialPolygonsDataFrame)
- S3method(varMat,SpatialPolygons)
+ S3method(varMat, rtop)
+ S3method(varMat, matrix)
+ S3method(varMat, list)
+ S3method(varMat, SpatialPolygonsDataFrame)
+ S3method(varMat, SpatialPolygons)
+ S3method(varMat, STS)
 # S3method(varMat,SpatialLinesDataFrame)
 # S3method(varMat,SpatialLines)
   

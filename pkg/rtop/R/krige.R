@@ -1,7 +1,7 @@
 
 rkrige = function(observations, obs0, obscors, newcor, vObs, c0arr, nmax, inew, cv, 
                   unc0, mdist, maxdist, singMat, varInv, wlim, debug.level,
-                  wlimMethod, simul = FALSE) {
+                  wlimMethod, simul = FALSE, BLUE = FALSE) {
 nobs = length(obs0)
 nneigh = nobs    
 neigh = c(1:nobs)
@@ -37,6 +37,7 @@ if (!singMat) {
     }
   }
   nneigh = length(c0arr)
+  if (BLUE) vInv = try(solve(vMat))
   vMat = rbind(vMat,1)
   vMat = cbind(vMat,1)
   
@@ -44,16 +45,22 @@ if (!singMat) {
   vMat[nneigh+1,nneigh+1] = 0
   
   varInv = try(solve(vMat))
-  if (is(varInv,"try-error")) stop(paste("Error in solve.default(vMat) : \n",
-                                         "system is computationally singular.\n",
-                                         #                  "Error most likely occured because two or more areas/lines being (almost) identical \n",
-                                         "Error most likely occured because two or more areas being (almost) identical \n",
-                                         "checking prediction location", inew, "\n neighbours",paste(neigh, collapse = " ")))
+  if (is(varInv,"try-error") || (BLUE && is(vInv, "try-error"))) {
+    emsg = paste("Error in solve.default(vMat) : \n",
+          "system is computationally singular.\n",
+          #                  "Error most likely occured because two or more areas/lines being (almost) identical \n",
+          "Error most likely occured because two or more areas being (almost) identical \n",
+          "checking prediction location", inew, "\n neighbours",paste(neigh, collapse = " "),"\n",
+          "variance matrix", "\n") 
+    for (irr in 1:dim(vMat)[1]) emsg = paste(emsg, paste(vMat[irr,], collapse = " "), "\n")
+    stop(emsg)                              
+  }
 }
 c0arr[nneigh+1] = 1
 lambda = varInv %*% c0arr
 krigingError = sum(lambda*c0arr) 
 slambda = sum(abs(lambda[1:nneigh]))
+if (BLUE) BLUE = sum(vInv %*% c0arr)/sum(vInv)
 while (slambda > wlim) {
   if (wlimMethod == "all") {
     oslambda = slambda
@@ -95,5 +102,5 @@ if (debug.level >1) {
 
 list(pred = c(sum(lambda[1:nneigh] * obs), krigingError, slambda ),
            lambda = lambda, c0arr = c0arr, obs = obs, unc = unc, nneigh = nneigh, 
-           neigh = neigh)
+           neigh = neigh, mu = BLUE)
 }

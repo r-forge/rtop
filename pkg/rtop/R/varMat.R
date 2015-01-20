@@ -4,8 +4,10 @@
 varMat.rtop = function(object, varMatUpdate = FALSE, ...) {
   params = getRtopParams(object$params,  ...)
   observations = object$observations
+  if (is(observations, "STSDF")) observations = observations@sp
   nObs = dim(observations@data)[1]
   predictionLocations = object$predictionLocations
+  if (is(predictionLocations, "STSDF")) predictionLocations = predictionLocations@sp
   variogramModel = object$variogramModel
   lgDistPred = params$gDistPred
   maxDist = params$maxDist
@@ -328,3 +330,11 @@ varMat.list = function(object, object2=NULL, coor1, coor2, maxdist = Inf,
 }
   
 
+
+varMat.STS = function(object, object2 = NULL, variogramModel, overlapObs, overlapPredObs, ...) {
+  if (is(object2,"STS")) object2 = object2@sp
+  object = object@sp
+  if (!is(object, "SpatialPolygons") || (!is.null(object2) && !inherits(object2, "SpatialPolygons")))
+    stop(paste("Cannot create covariance matrix from objects of class", class(object), class(object2))) 
+  varMat(object, object2, variogramModel, overlapObs, overlapPredObs, ...)
+}
