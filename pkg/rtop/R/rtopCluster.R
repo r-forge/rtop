@@ -17,6 +17,6 @@ rtopCluster = function(nclus, ..., action = "start", type) {
     if (length(list(...)) > 0) clusterEvalQ(cl, ...)
     options(rtopCluster = cl)    
   }
-  getOptions("rtopCluster")
+  getOption("rtopCluster")
 }
 
