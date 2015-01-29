@@ -90,15 +90,15 @@ rtopKrige.default = function(object, predictionLocations = NULL,
   }
   #
   if (wret) weight = matrix(0,nrow = npred,ncol = nobs)
-  if (interactive() & debug.level == 1) {
+  if (interactive() & debug.level == 1 & length(sel) > 1) {
     pb = txtProgressBar(1, length(sel), style = 3)
   }
-  print(paste(ifelse(cv, "cross-validating", "interpolating "), length(sel), "areas"))
+  if (debug.level >= 1) print(paste(ifelse(cv, "cross-validating", "interpolating "), length(sel), "areas"))
   for (inn in 1:length(sel)) {
     inew = sel[inn]
     if (debug.level > 1) print("\n")
     #  for (inew in 1:20) {         
-    if (interactive() & debug.level == 1) setTxtProgressBar(pb, inn)
+    if (interactive() & debug.level == 1 & length(sel) > 1) setTxtProgressBar(pb, inn)
                                           
     if (cv) {
       if (debug.level > 1) print(paste("Cross-validating location", inew, 
@@ -156,7 +156,7 @@ rtopKrige.default = function(object, predictionLocations = NULL,
       }
     }
   }  
-  if (interactive() & debug.level == 1) close(pb)
+  if (interactive() & debug.level == 1 & length(sel) > 1) close(pb)
   if ("data" %in% names(getSlots(class(predictionLocations)))) {
     predictionLocations@data = cbind(predictionLocations@data, predictions)
     predictions = predictionLocations
