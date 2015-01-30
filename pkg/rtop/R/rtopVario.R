@@ -186,6 +186,7 @@ rtopVariogram.STSDF = function(object, formulaString, params = list(), cloud, ab
   } 
   vario = data.frame(vario)
   names(vario) = c("dist", "gamma", "a1", "a2", "acl1", "acl2", "np")
+  vario = vario[!is.na(vario$gamma),]
   
   if (cloud) {
     var3d = vario
