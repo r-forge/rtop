@@ -28,7 +28,13 @@ predictionLocations = readOGR(rpath, "predictionLocations")
   print(attr(rtopObj2$varMatObs,"variogramModel"))
   
   rtopObj3 = rtopKrige(rtopObj)
-  rtopObj4 = rtopKrige(rtopObj2)
+
+
+ varmat = varMat(observations, predictionLocations, variogramModel = rtopObj$variogramModel, 
+                 gDistEst = TRUE, gDistPred = TRUE, rresol = 25, hresol = 3)
+
+all.equal(varmat$varMatObs, rtopObj2$varMatObs)
+rtopObj4 = rtopKrige(rtopObj2)
 
   rtopObj5 = rtopKrige(rtopObj, params = list(cnAreas = 5, cDlim = 100, nclus = 2))
   
@@ -72,3 +78,5 @@ rtopObj12 = rtopSim(rtopObj11, nsim = 10, beta = 0.01)
 
 rtopObj10$simulations@data
 rtopObj12$simulations@data
+
+

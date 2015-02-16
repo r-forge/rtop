@@ -50,7 +50,7 @@ rtopKrige.default = function(object, predictionLocations = NULL,
   if (!is.null(lambda)) BLUE = TRUE else BLUE = FALSE
   if (!missing(varMat)) {
     if (missing(varMatObs)) varMatObs = varMat$varMatObs
-    if (missing(varMatPredObs) && !cv) varMatPredObs = varMat$varMatPredObs
+    if ((missing(varMatPredObs) | is.null(varMatPredObs)) && !cv) varMatPredObs = varMat$varMatPredObs
   }
   depVar = as.character(formulaString[[2]])
   observations = object

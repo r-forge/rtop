@@ -151,11 +151,19 @@ varMat.rtop = function(object, varMatUpdate = FALSE, ...) {
 }
     
 
-varMat.matrix = function(object, variogramModel,  ...) {
+varMat.matrix = function(object, variogramModel, diag = FALSE, sub1, sub2, ...) {
   ndim = dim(object)[1] 
   mdim = dim(object)[2]
-  matrix(mapply(FUN = varioEx,object,MoreArgs=list(variogramModel)),
+  varMatrix = matrix(mapply(FUN = varioEx,object,MoreArgs=list(variogramModel)),
                           nrow = ndim,ncol = mdim)
+  if (diag) sub1 = sub2 = diag(varMatrix)
+  if (!missing(sub1) & !missing(sub2)) {  
+    for (ia in 1:ndim) {
+      for (ib in 1:mdim) if (!(diag & ia == ib)) varMatrix[ia,ib] = varMatrix[ia,ib] - 0.5*(sub1[ia] + sub2[ib])
+    }
+  }     
+  varMatrix
+  
 }
 
 
@@ -182,21 +190,26 @@ varMatDefault = function(object1,object2 = NULL,variogramModel,
   if (!is.null(object2)) d2 = rtopDisc(object2, params) 
   if (params$gDistPred) {
     gDist1 = gDist(d1, params = params)
-    varMat1 = varMat(gDist1, variogramModel = variogramModel, params = params, ...)
+# calling varMat.matrix
+    varMatObs = varMat(gDist1, variogramModel = variogramModel, params = params, diag = TRUE, ...)
   } else {
-    varMat1 = varMat(d1, variogramModel = variogramModel, params = params, ...)
+    varMatObs = varMat(d1, variogramModel = variogramModel, params = params, ...)
   }  
-  if (is.null(object2)) return(varMat1)
-  varMatObs = varMat1
+
+  if (is.null(object2)) return(varMatObs)
   
   if (params$gDistPred & !is.null(object2)) {
     gDistPred = gDist(d2, diag = TRUE, params = params)
-    varMatPred = varMat(gDistPred, diag = TRUE, params = params, ...)
+# Calling varMat.matrix
+    varMatPred = varMat(gDistPred, params = params, variogramModel = variogramModel, ...)
     gDistPredObs = gDist(d1, d2, params = params)
-    varMatPredObs = varMat(gDist1,gDistPred,sub1 = diag(varMatObs),sub2 = varMatPred, params = params, ...)
+    varMatPredObs = varMat(gDistPredObs,sub1 = diag(varMatObs),sub2 = varMatPred, params = params, 
+                           variogramModel = variogramModel, ...)
   } else {
-    varMatPred = varMat(d2,diag=TRUE, params = params)
-    varMatPredObs = varMat(d1,d2,sub1 = diag(varMatObs),sub2 = varMatPred, params = params)
+# Calling varMat.list
+    varMatPred = varMat(d2,diag=TRUE, params = params, variogramModel = variogramModel, )
+    varMatPredObs = varMat(d1,d2,sub1 = diag(varMatObs),sub2 = varMatPred, params = params, 
+                           variogramModel = variogramModel, ...)
   }
   if (params$nugget) {
     if (missing(overlapObs)) 

@@ -114,7 +114,7 @@ rtopVariogram.rtop = function(object,... ) {
 
 
 rtopVariogram.STSDF = function(object, formulaString, params = list(), cloud, abins, 
-                               dbins, ...) {
+                               dbins, data.table = FALSE, ...) {
   if (!inherits(params, "rtopParams")) 
     params = getRtopParams(params, ...)
   amul = params$amul
@@ -152,15 +152,35 @@ rtopVariogram.STSDF = function(object, formulaString, params = list(), cloud, ab
   diffsN1 = function(x, y) y-x
   
   nspace = dim(observations)[1]
+  observations@sp$vindex = 1:nspace
   ntime = dim(observations)[2]
   observations@sp$vindex = vindex = 1:nspace
+  obsdf = as.data.frame(observations)[,c("timeIndex","vindex",depvar)]
   vmat = matrix(0, nrow = nspace, ncol = nspace)
   indmat = vmat
   if (interactive() & debug.level) pb <- txtProgressBar(1, ntime, style = 3)
-  for (ind in 1:ntime) {
-    ppq = observations[,ind]
-    nspace1 = dim(ppq)[1]
-    ff = matrix(unlist(lapply(ppq@data[,depvar],  FUN = function(x) diffsN1(x, ppq@data[,depvar]))), 
+  if(data.table){
+    require(data.table)
+    message("Converting STSDF class to data.table class")
+    observationsDT <- data.table(as.data.frame(observations)[,c("timeIndex","vindex",depvar)],key=c("timeIndex"))
+    message(paste("Observations successfully converted to",class(observationsDT)[1])," with keys on ",paste(key(observationsDT),collapse=" and "))
+    for (ind in 1:ntime) {
+      ppq <- observationsDT[list(ind)]	
+      nspace1 <-  dim(ppq)[1]
+      ff <-  matrix(unlist(lapply(ppq[[depvar]],  FUN = function(x) diffsN1(x, ppq[[depvar]]))), 
+                    byrow = TRUE, ncol = nspace1)
+      ff <-  (ff^2)/2
+      findx <-  ppq[,vindex]
+      vmat[findx,findx] <-  vmat[findx,findx] + ff
+      if (any(is.na(ff))) stop("na-values in covariance matrix")
+      indmat[findx,findx] <-  indmat[findx,findx] + 1
+      if (interactive() & debug.level) setTxtProgressBar(pb, ind)
+    }
+  }else{
+    for (ind in 1:ntime) {
+      ppq = obsdf[obsdf$timeIndex == ind,]
+      nspace1 = dim(ppq)[1]
+    ff = matrix(unlist(lapply(ppq[,depvar],  FUN = function(x) diffsN1(x, ppq[,depvar]))), 
                 byrow = TRUE, ncol = nspace1)
     ff = (ff^2)/2
     findx = ppq$vindex
@@ -168,6 +188,7 @@ rtopVariogram.STSDF = function(object, formulaString, params = list(), cloud, ab
     if (any(is.na(ff))) stop("na-values in covariance matrix")
     indmat[findx,findx] = indmat[findx,findx] + 1
     if (interactive() & debug.level) setTxtProgressBar(pb, ind)
+  }
   }
   if (interactive() & debug.level) close(pb)
   vmat = vmat/indmat

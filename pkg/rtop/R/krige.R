@@ -24,11 +24,13 @@ if (!singMat) {
       distm = spDistsN1(obscors,newcor)
       neigh = which(distm < maxdist)
     }
-    if (cv) neigh = neigh[-inew]
+    if (cv) neigh = neigh[!neigh%in%inew]
     if (nobs > nmax) {
       cOrder = order(c0arr)   
       neigh = cOrder[cOrder %in% neigh][1:nmax]
     }
+    neigh = neigh[!is.na(neigh)]
+    if (length(neigh) < 1) stop(paste("No neighbours for area", inew, "within maxdist"))
     if (length(neigh) < nobs) {
       c0arr = c0arr[neigh]
       vMat = vObs[neigh,neigh]
