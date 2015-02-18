@@ -21,6 +21,8 @@ tskrige = function(object, predictionLocations, varMatObs, varMatPredObs,
   if (cv) {
     predictionLocations = object
     plags = olags
+
+    varMatPredObs = varMatObs
   }
   ntime = dim(object)[2]
   nspace = dim(object)[1]
@@ -31,6 +33,12 @@ tskrige = function(object, predictionLocations, varMatObs, varMatPredObs,
   ptime = dim(predictionLocations)[2]
   tms = rep(0, nspace)
   pfull = if (prod(dim(predictionLocations)) == dim(predictionLocations@data)[1]) TRUE else FALSE
+  if (is(predictionLocations, "STSDF")) {
+    predictionLocations@data = cbind(predictionLocations@data, 
+                                   data.frame(var1.pred = NA, var1.var = NA, var1.yam = NA))
+  } else if (is(predictionLocations, "STS")) {
+    predictionLocations = STSDF(predictionLocations, data = data.frame(var1.pred = NA, var1.var = NA, var1.yam = NA))
+  }
   if (is.null(olags) & prod(dim(object)) == dim(object@data)[1]) { # if all stations have obs from all time steps
     obj1 = object[,1]
     if (is(predictionLocations, "STSDF")) {
@@ -48,7 +56,6 @@ tskrige = function(object, predictionLocations, varMatObs, varMatPredObs,
  #   obs$timeIndex = object@index[,2]
     obs = reshape(obs, v.names = as.character(formulaString[[2]]),
                   idvar = "sp.ID", timevar = "timeIndex", direction = "wide")
-    predictionLocations@data = cbind(predictionLocations@data, data.frame(var1.pred = NA, var1.var = NA))
     if (interactive() & debug.level == 1 & length(sinds) > 1) pb = txtProgressBar(1, length(sinds), style = 3)
     for (istat in 1:length(sinds)) {
       isind = sinds[istat]
@@ -73,37 +80,62 @@ tskrige = function(object, predictionLocations, varMatObs, varMatPredObs,
   } else { 
     object@sp$sindex = sindex = 1:nspace
     object@time$tindex = tindex = 1:ntime
-    
     predictionLocations@sp$sindex = 1:pspace
     predictionLocations@time$tindex = 1:ptime
-    spobs = NULL
+    obs = as.data.frame(object)
     depVar = as.character(formulaString[[2]])
-    predictionLocations@data = cbind(predictionLocations@data, data.frame(var1.pred = NA, var1.var = NA, var1.yam = NA))
+    obs = obs[,c("sp.ID", "timeIndex", depVar)]
+    #   obs$timeIndex = object@index[,2]
+    obs = dcast(obs, sp.ID ~ timeIndex)
+    #        reshape(obs, v.names = as.character(formulaString[[2]]),
+    #                    idvar = "sp.ID", timevar = "timeIndex", direction = "wide")
+    obs = obs[order(as.numeric(as.character(obs$sp.ID))), ]
+    obs = as.matrix(obs[,2:(ntime+1)])
+    
+    if (!cv | !is.null(olags)) {
+      ploc = as.data.frame(predictionLocations)
+      ploc = cbind(ploc, var = 1)
+      ploc = ploc[,c("sp.ID", "timeIndex", "var")]
+      ploc$sp.ID = as.numeric(as.character(ploc$sp.ID))
+      ploc = dcast(ploc, sp.ID ~ timeIndex)
+      ploc = as.matrix(ploc)
+    #    spobs = NULL
+    }
     if (interactive() & debug.level == 1 & ntime >  1) pb = txtProgressBar(1, ntime, style = 3)
-    spPredLoc = predictionLocations@sp
+    spPredLoc = if (!cv) predictionLocations@sp else NULL
     if (is.null(olags)) {
+      oldind = NULL
+      newkrige = 0
       for (itime in 1:ptime) {
-        ppq = object[,itime]
-        
-        if (is.null(spobs) || !isTRUE(all.equal(ppq$sindex, spobs))) {
-          spobs = ppq$sindex
-          vmat = varMatObs[spobs, spobs]
-          vpredobs = varMatPredObs[spobs,]
-          ret = rtop:::rtopKrige.default(object = ppq, predictionLocations = spPredLoc, varMatObs = vmat,
+        newind = which(!is.na(obs[,itime]))
+        if (length(newind) == 0) next
+        #    print(paste(1, istat, itime, length(newind)))
+        if (is.null(oldind) || !isTRUE(all.equal(newind, oldind))) {
+          oldind = newind
+          newkrige = newkrige + 1
+          ppq = object[,itime]
+          vmat = varMatObs[newind, newind]
+          if (cv) {
+            vpredobs = NULL 
+          } else {       
+            vpredobs = varMatPredObs[newind,]
+          }
+          ret = rtopKrige.default(object = ppq, predictionLocations = spPredLoc, varMatObs = vmat,
                                          varMatPredObs = vpredobs, params = params, 
                                          formulaString = formulaString, wret = TRUE, debug.level = 0)#,
           weight = ret$weight
           wvar = ret$predictions$var1.var
         }
-        obs = ppq@data[[depVar]]
-        preds = weight %*% obs
-        diffs = obs - preds
+        ob = obs[,itime]
+        ob = ob[!is.na(ob)]
+        preds = weight %*% ob
+        diffs = ob - preds
         var1.yam = t(weight) %*% (diffs^2)
         
         itind = tinds[itime]
         ttinds = which(indx[,2] == itind)
         
-        if (!pfull) {
+        if (!pfull & FALSE) {
           ptinds = indx[ttinds,1]
           preds = preds[ptinds]
           var1.yam = var1.yam[ptinds]
@@ -115,27 +147,13 @@ tskrige = function(object, predictionLocations, varMatObs, varMatPredObs,
         if (interactive() & debug.level == 1 & ntime > 1) setTxtProgressBar(pb, itime)
       }
     } else {
-      obs = as.data.frame(object)
-      obs = obs[,c("sp.ID", "timeIndex", as.character(formulaString[[2]]))]
-      #   obs$timeIndex = object@index[,2]
-      obs = dcast(obs, sp.ID ~ timeIndex)
-#        reshape(obs, v.names = as.character(formulaString[[2]]),
-#                    idvar = "sp.ID", timevar = "timeIndex", direction = "wide")
-      obs = obs[order(as.numeric(as.character(obs$sp.ID))), ]
-      obs = as.matrix(obs[,2:(ntime+1)])
-      obs2 = obs
-
-      ploc = as.data.frame(predictionLocations)
-      ploc = cbind(ploc, var = 1)
-      ploc = ploc[,c("sp.ID", "timeIndex", "var")]
-      ploc$sp.ID = as.numeric(as.character(ploc$sp.ID))
-      ploc = dcast(ploc, sp.ID ~ timeIndex)
-      ploc = as.matrix(ploc)
       ntot = dim(predictionLocations@data)[1]
       if (interactive() & debug.level == 1 & ntime >  1) pb = txtProgressBar(1, ntot, style = 3)
       itot = 0
       objsp = object@sp
       objsp = SpatialPointsDataFrame(SpatialPoints(objsp), data = objsp@data)
+      newkrige = 0
+      obs2 = obs
       for (istat in 1:pspace) {
  #       neigh = which(distm < maxdist)
         
@@ -143,25 +161,25 @@ tskrige = function(object, predictionLocations, varMatObs, varMatPredObs,
         pxts = as.data.frame(predictionLocations[istat,])
         stpred = predictionLocations@sp[istat,]
         distm = spDistsN1(coordinates(observations@sp),coordinates(stpred))
-        ppred = if (!cv) SpatialPoints(stpred) else NULL
+        ppred = SpatialPoints(stpred) 
         rolags = olags - plags[istat] # longer lags will be positive, i.e., use future observations
         nbefore = -floor(min(rolags))
         nafter = ceiling(max(c(rolags, 1)))
         naadd1 = matrix(NA, nrow = nspace, ncol = nbefore)#, dimnames = list(as.character(1:nbefore), names(obs)))
         naadd2 = matrix(NA, nrow = nspace, ncol = nafter)#, dimnames = list(names(obs)as.character(1:nafter)))
         obsb = cbind(naadd1, cbind(obs2, naadd2))
-        obs2[,] = NA
+        obs[,] = NA
         if (!lagExact) {
           rolags = round(rolags, 0)
           for (jstat in 1:nspace) {
-            obs2[jstat, ] = obsb[jstat, (nbefore + 1 + rolags[jstat]) : (nbefore + ntime + rolags[jstat])]
+            obs[jstat, ] = obsb[jstat, (nbefore + 1 + rolags[jstat]) : (nbefore + ntime + rolags[jstat])]
           }
         } else {
           rdiff = rolags - floor(rolags)
           for (jstat in 1:nspace) {
             nf = (nbefore + 1 + floor(rolags[jstat])) : (nbefore + ntime + floor(rolags[jstat]))
             nl = (nbefore + 1 + ceiling(rolags[jstat])) : (nbefore + ntime + ceiling(rolags[jstat]))
-            obs2[jstat, ] = obsb[jstat, nf] * (1-rdiff[jstat]) + obsb[jstat, nl] * rdiff[jstat]
+            obs[jstat, ] = obsb[jstat, nf] * (1-rdiff[jstat]) + obsb[jstat, nl] * rdiff[jstat]
           }
         }
         oldind = NULL
@@ -173,19 +191,24 @@ tskrige = function(object, predictionLocations, varMatObs, varMatPredObs,
         for (itime in seq_along(tms)) {
           jtime = tms[itime]
           tp = ploc[istat, jtime]
+          if (is.na(tp)) next
           newind = which(!is.na(obs[,jtime]))
           if (cv) newind = newind[-which(newind == istat)]
-          print(paste(1, istat, itime, length(newind)))
+          if (length(newind) == 0) next
+          #    print(paste(1, istat, itime, length(newind)))
           if (is.null(oldind) || !isTRUE(all.equal(newind, oldind))) {
             oldind = newind
-            print(paste(2, istat, itime, length(newind)))
+            newkrige = newkrige + 1
+      #      print(paste(2, istat, itime, length(newind), newkrige))
             ppq = objsp[newind, ]
+            ppq$intvar = obs[newind, itime]
             vmat = varMatObs[newind, newind]
-            vpredobs = if (!cv) varMatPredObs[newind, istat, drop = FALSE] else NULL
-            fmstring = as.formula(paste(names(ppq)[1], "~1"))
+            vpredobs = varMatPredObs[newind, istat, drop = FALSE]
+        #    fmstring = as.formula(paste(names(ppq)[1], "~1"))
             ret = rtopKrige.default(object = ppq, ppred, varMatObs = vmat,
                                            varMatPredObs = vpredobs, params = params, 
-                                           formulaString = fmstring, wret = TRUE, debug.level = 0)#,
+                                           formulaString = intvar~1, wret = TRUE, 
+                                           debug.level = 0, cv = FALSE)#,
             weight = ret$weight
             wvar = ret$predictions$var1.var
           }
@@ -196,6 +219,8 @@ tskrige = function(object, predictionLocations, varMatObs, varMatPredObs,
           itot = itot + 1
           if (interactive() & debug.level == 1 & ntime > 1) setTxtProgressBar(pb, itot)
         }
+#        print(paste(1, istat, itime, length(newind), newkrige))
+      
         itind = tinds[itime]
         ttinds = which(indx[,1] == ispace)
         

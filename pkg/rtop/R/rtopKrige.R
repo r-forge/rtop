@@ -33,7 +33,7 @@ rtopKrige.SpatialPolygonsDataFrame = function(object, predictionLocations = NULL
 
 rtopKrige.default = function(object, predictionLocations = NULL,
                              varMatObs, varMatPredObs, varMat, params = list(), formulaString,  
-                             sel, wret = FALSE, ...) {
+                             sel, wret = FALSE, stopsign = FALSE, ...) {
   params = getRtopParams(params, ...)
   if (!is.null(params$nsim) && params$nsim > 0) 
     return(rtopSim(object, predictionLocations,
@@ -79,7 +79,8 @@ rtopKrige.default = function(object, predictionLocations = NULL,
     predictionLocations = observations
     varMatPredObs = varMatObs
   }
-  #  
+  # 
+  
   predictions = data.frame(var1.pred = rep(0,npred),var1.var = 0,sumWeights = 0)
   if (cv) {
     predictions = cbind(predictions,observed = observations[[depVar]], residual=0, zscore = 0)
@@ -89,10 +90,12 @@ rtopKrige.default = function(object, predictionLocations = NULL,
     cvInfo = list()
   }
   #
+  
   if (wret) weight = matrix(0,nrow = npred,ncol = nobs)
   if (interactive() & debug.level == 1 & length(sel) > 1) {
     pb = txtProgressBar(1, length(sel), style = 3)
   }
+  
   if (debug.level >= 1) print(paste(ifelse(cv, "cross-validating", "interpolating "), length(sel), "areas"))
   for (inn in 1:length(sel)) {
     inew = sel[inn]
@@ -115,7 +118,7 @@ rtopKrige.default = function(object, predictionLocations = NULL,
     
     ret = rkrige(observations@data, obs0, obscors, newcor, varMatObs, varMatPredObs[,inew], nmax, inew, cv, 
                  unc0, mdist, maxdist, singMat, varInv, wlim, debug.level, wlimMethod, BLUE)
-
+    
     predictions$var1.pred[inew] = ret$pred[1]
     predictions$var1.var[inew] = ret$pred[2]
     predictions$sumWeights[inew] = ret$pred[3]
@@ -155,6 +158,7 @@ rtopKrige.default = function(object, predictionLocations = NULL,
         print(cbind(predictionLocations@data[inew,],predictions[inew,]))
       }
     }
+    
   }  
   if (interactive() & debug.level == 1 & length(sel) > 1) close(pb)
   if ("data" %in% names(getSlots(class(predictionLocations)))) {
@@ -167,6 +171,7 @@ rtopKrige.default = function(object, predictionLocations = NULL,
   ret = list(predictions = predictions)
   if (wret) ret$weight = weight
   if (cv) ret$cvInfo = cvInfo
+  if (stopsign) stop()
   ret
 }
 

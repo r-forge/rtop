@@ -57,6 +57,10 @@ if (!singMat) {
     for (irr in 1:dim(vMat)[1]) emsg = paste(emsg, paste(vMat[irr,], collapse = " "), "\n")
     stop(emsg)                              
   }
+} else {
+  vMat = vObs
+  obs = obs0
+  unc = unc0
 }
 c0arr[nneigh+1] = 1
 lambda = varInv %*% c0arr
