@@ -30,8 +30,14 @@ if (!singMat) {
       neigh = cOrder[cOrder %in% neigh][1:nmax]
     }
     neigh = neigh[!is.na(neigh)]
-    if (length(neigh) < 1) stop(paste("No neighbours for area", inew, "within maxdist"))
-    if (length(neigh) < nobs) {
+    if (length(neigh) < 1) {
+      warning(paste("No neighbours for area", inew, "within maxdist", maxdist))
+      return(list(pred = c(NA, krigingError=NA, slambda=NA ),
+                  lambda = NA, c0arr = NA, obs = NA, unc = NA, nneigh = NA, 
+                  neigh = NA, mu = BLUE))
+    }
+    
+    if (length(neigh) <= nobs) {
       c0arr = c0arr[neigh]
       vMat = vObs[neigh,neigh]
       obs = obs0[neigh]

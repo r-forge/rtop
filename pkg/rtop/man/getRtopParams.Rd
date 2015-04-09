@@ -8,7 +8,8 @@ to be included in the object described in \code{\link{rtop-package}}}
 }
 \arguments{
 \item{params}{An existing set of parameters for the interpolation process, 
-              of class \code{IntamapParams} or a list of parameters for modification
+              of class \cr
+              \code{intamapParams} or a list of parameters for modification
               of the default parameters}
 \item{newPar}{A \code{list} of parameters for updating \code{params} or for
               modification of the default parameters. 
@@ -53,8 +54,10 @@ to be included in the object described in \code{\link{rtop-package}}}
      \item{fit.method = 8}{ - defines the type of Least Square method for fitting of variogram. 
                   The methods 1-7 correspond to the similar methods in \code{\link{gstat}}.
        \itemize{
-        \item{1}{ - weighted least squares with number of pairs per bin: err = n * (yobs-ymod)^2}
-        \item{2}{ - weighted least squares difference according to Cressie (1985): err2=abs(yobs/ymod-1)}
+        \item{1}{ - weighted least squares with number of pairs per bin: \cr 
+                    err = n * (yobs-ymod)^2}
+        \item{2}{ - weighted least squares difference according to Cressie (1985): \cr
+                    err2 = abs(yobs/ymod-1)}
         \item{6}{ - ordinary least squares difference: err = (yobs-ymod)^2}
         \item{7}{ - similar to default of gstat, where higher weights are given to shorter distances err = n/h^2 * (yobs-mod)^2}
         \item{8}{ - Opposite of weighted least squares difference according to Cressie (1985): err3=abs(ymod/yobs-1)}
@@ -78,7 +81,8 @@ to be included in the object described in \code{\link{rtop-package}}}
      \item{cnAreas = 100}{- limit whether parallel processing should be applied; the minimum number
                        of areas in \code{\link{varMat}}, and also controlling when to use parallel 
                        processing in
-                       \code{\link{rtopDisc}} (when \code{nAreas*params$rresol/100 > cnAreas}) }
+                       \code{\link{rtopDisc}}, when \cr
+                       \code{nAreas*params$rresol/100 > cnAreas} }
      \item{clusType = NULL}{- the cluster type to be started for parallel processing; uses the default 
                        type of the system when clusType = NULL}
      \item{wlim = 1.5}{ - an upper limit for the norm of the weights in kriging, see \code{\link{rtopKrige}}}
@@ -141,8 +145,9 @@ Hydrology and Earth System Sciences, 10:277-287, 2006
 # Create a new set of intamapParameters, with default parameters:
 params = getRtopParams()
 # Make modifications to the default list of parameters
-params = getRtopParams(newPar=list(gDist = TRUE,nugget = FALSE))
+params = getRtopParams(newPar = list(gDist = TRUE, nugget = FALSE))
 # Make modifications to an existing list of parameters
-params = getRtopParams(params = params,newPar = list(gDist = TRUE,nugget = FALSE))
+params = getRtopParams(params = params, newPar = list(gDist = TRUE,
+         nugget = FALSE))
 }
 \keyword{spatial}

@@ -1,5 +1,5 @@
-rtopSim.rtop = function(object, varMatUpdate = FALSE, beta = NA, largeFirst = TRUE, ...) {
-  params = getRtopParams(object$params, ...)
+rtopSim.rtop = function(object, varMatUpdate = FALSE, beta = NA, largeFirst = TRUE, params = list(), ...) {
+  params = getRtopParams(object$params, newPar = params, ...)
   nmax = params$nmax
   cv = params$cv
   maxdist = params$maxdist

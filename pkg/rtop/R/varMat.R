@@ -1,8 +1,8 @@
 
 # varMat.rtop hardly uses the functions further below, should be shortened
 
-varMat.rtop = function(object, varMatUpdate = FALSE, ...) {
-  params = getRtopParams(object$params,  ...)
+varMat.rtop = function(object, varMatUpdate = FALSE, params = list(), ...) {
+  params = getRtopParams(object$params,  newPar = params, ...)
   observations = object$observations
   if (is(observations, "STSDF")) observations = observations@sp
   nObs = dim(observations@data)[1]
@@ -34,9 +34,9 @@ varMat.rtop = function(object, varMatUpdate = FALSE, ...) {
         dObs = object$dObs
         object$gDistObs = gDistObs = gDist(dObs, params = params)
       }
-      if (!is.null(params$nclus) && params$nclus > 1 && nObs > params$cnAreas && require(parallel)) {
+      if (!is.null(params$nclus) && params$nclus > 1 && nObs > params$cnAreas && requireNamespace("parallel")) {
         cl = rtopCluster(params$nclus, type = params$clusType)
-        varMatObs = matrix(unlist(parLapply(cl, 1:nObs, fun = function(x, gDistObs, variogramModel) 
+        varMatObs = matrix(unlist(parallel::parLapply(cl, 1:nObs, fun = function(x, gDistObs, variogramModel) 
           mapply(gDistObs[, x],
                  FUN = function(y) varioEx(y, variogramModel)), 
                            gDistObs = gDistObs, variogramModel = variogramModel)), 
@@ -88,10 +88,10 @@ varMat.rtop = function(object, varMatUpdate = FALSE, ...) {
                 matrix(mapply(FUN = varioEx,gDistPred,MoreArgs=list(variogramModel)),
                           nrow = nPred,ncol = 1)
       
-      if (!is.null(params$nclus) && params$nclus > 1 && nObs > params$cnAreas && require(parallel)) {
+      if (!is.null(params$nclus) && params$nclus > 1 && nObs > params$cnAreas && requireNamespace("parallel")) {
         cl = rtopCluster(nclus = params$nclus, type = params$clusType)
 
-        varMatPredObs = matrix(unlist(parLapply(cl, 1:nPred, fun = function(x, gDistPredObs, variogramModel) 
+        varMatPredObs = matrix(unlist(parallel::parLapply(cl, 1:nPred, fun = function(x, gDistPredObs, variogramModel) 
           mapply(gDistPredObs[, x],
                  FUN = function(y) varioEx(y, variogramModel)), 
           gDistPredObs = gDistPredObs, variogramModel = variogramModel)), 
@@ -184,7 +184,7 @@ varMat.SpatialPolygons = function(object,object2 = NULL,variogramModel,
 
 
 varMatDefault = function(object1,object2 = NULL,variogramModel,
-     overlapObs, overlapPredObs, ...) {
+     overlapObs, overlapPredObs,  ...) {
   params = getRtopParams(...)
   d1 = rtopDisc(object1, params) 
   if (!is.null(object2)) d2 = rtopDisc(object2, params) 
@@ -264,40 +264,37 @@ varMat.list = function(object, object2=NULL, coor1, coor2, maxdist = Inf,
   mdim = length(d2)
   varMatrix = matrix(-999,nrow = ndim,ncol = mdim)
 
-  if (!is.null(params$nclus) && params$nclus > 1 && length(d1) + length(d2) > params$cnAreas && require(parallel)) {
+  if (!is.null(params$nclus) && params$nclus > 1 && length(d1) + length(d2) > params$cnAreas && requireNamespace("parallel")) {
 #    cl = rtopCluster(params$nclus, {require(sp); vred = rtop:::vred}, type = params$clusType)
     cl = rtopCluster(params$nclus, type = params$clusType)
     if (missing(coor1)) coor1 = NULL
     if (missing(coor2)) coor2 = NULL
-    idx = lapply(1:params$nclus, FUN = function(x) which(1:ndim %% params$nclus == x-1))
-    vml = foreach(i = 1:length(idx)) %dopar% {
-      d11 = d1[idx[[i]]]
-      lmats = list()
-      for (ib in 1:length(d11)) {
-        a1 = coordinates(d11[[ib]])
-        ia = idx[[i]][[ib]]
-        ip1 = dim(a1)[1]
-        first = ifelse(equal,ia,1)
-        lorder = c(first:mdim)
-        if (!is.null(coor1) && ! is.null(coor2) && maxdist < Inf) 
+
+    
+    fun = function(ia, d1, d2, coor1, coor2, equal, maxdist) {    
+      ndim = length(d1)
+      mdim = length(d2)
+      a1 = coordinates(d1[[ia]])
+      ip1 = dim(a1)[1]
+      first = ifelse(equal,ia,1)
+      lorder = c(first:mdim)
+      if (!is.null(coor1) && ! is.null(coor2) && maxdist < Inf) 
           lorder = lorder[spDistsN1(coor2[first:mdim,],coor1[ia,]) < maxdist]
         if (length(lorder) > 0) {
           ld = d2[lorder]
           lmat = mapply(vred,a2 = ld,MoreArgs = list(vredTyp="ind",a1 = a1,variogramModel = variogramModel))
         } else lmat = -999  
-        lmats[[ib]] = list(lmat, lorder)
-      }
-      lmats
-    }
-    for (i in 1:length(idx)) {
-      for (ij in 1:length(idx[[i]])) {
-        ia = idx[[i]][ij]
-        lmat = vml[[i]][[ij]][[1]]
-        lorder = vml[[i]][[ij]][[2]]
-        if (!equal) varMatrix[ia,] = lmat else {
-          varMatrix[ia,lorder] = lmat
-          varMatrix[lorder,ia] = lmat
-        }
+      list(lmat, lorder)
+    }    
+    vmll = parallel::clusterApply(cl, 1:length(d1), d1 = d1, d2 = d2, coor1 = coor1, coor2 = coor2, 
+                       equal = equal, maxdist = maxdist, fun = fun)
+
+    for (ia in 1:length(vmll)) {
+      lmat = vmll[[ia]][[1]]
+      lorder = vmll[[ia]][[2]]
+      if (!equal) varMatrix[ia,] = lmat else {
+        varMatrix[ia,lorder] = lmat
+        varMatrix[lorder,ia] = lmat
       }
     }
   } else {

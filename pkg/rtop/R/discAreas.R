@@ -44,8 +44,8 @@ rtopDisc.rtopVariogram = function(object, params = list(), ...) {
 
 
 
-rtopDisc.rtop = function(object,params = list(), ...) {
-  object$params = getRtopParams(object$params,params, ...)
+rtopDisc.rtop = function(object, params = list(), ...) {
+  object$params = getRtopParams(object$params, newPar = params, ...)
   observations = object$observations
   if ("predictionLocations" %in% names(object)){
     predictionLocations = object$predictionLocations
@@ -122,23 +122,16 @@ rtopDisc.SpatialPolygons = function(object, params = list(), bb = bbox(object), 
 
     if (!is.null(params$nclus) && params$nclus > 1 && 
           length(object@polygons)*params$rresol/100 > params$cnAreas) {
-      if (!suppressMessages(suppressWarnings(require(doParallel))))
-        stop("nclus is > 1, but package doParallel is not available")    
+      if (!suppressMessages(suppressWarnings(requireNamespace("parallel"))))
+        stop("nclus is > 1, but package parallel is not available")    
       nclus = params$nclus
       
       cl = rtopCluster(nclus, type = params$clusType)
 #      cl = rtopCluster(nclus, {require(rtop); bbArea = rtop:::bbArea}, type = params$clusType)
-      i = 1 # To avoid R CMD check complain about missing i
+      
+      spp = parallel::clusterApply(cl, object@polygons, fun = function(x) lfun(x, resol, ires0, bbdia, small))
 
-      splt = rep(1:nclus, each = ceiling(nps/nclus), length.out = nps)
-      plst = lapply(as.list(1:nclus), function(w) object@polygons[splt == w])
-#      writeLines(c(""), "log.txt")      
-      spp2 <- foreach(i = 1:nclus) %dopar% {
-       lfuns(plst[[i]], resol, ires0, bbdia, small)
-      }    
-      #       spp2 = clusterApply(cl, object@polygons, lfun, resol, ires0, bbdia, small)
-       spp = do.call("c", spp2)
-      } else {
+    } else {
       if (interactive() & debug.level <= 1) {
         pb = txtProgressBar(1, nps, style = 3)
       }

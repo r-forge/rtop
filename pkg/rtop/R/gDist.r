@@ -1,6 +1,6 @@
 
-gDist.rtop = function(object, ...) {
-  params = getRtopParams(object$params, ...)
+gDist.rtop = function(object, params = list(), ...) {
+  params = getRtopParams(object$params, newPar = params, ...)
   if (params$debug.level > 1) debug.level = params$debug.level else debug.level = 0
   if (!"dObs" %in% names(object)) object$dObs = rtopDisc(object$observations, params = params, ...)
   if (!"dPred" %in% names(object)) object$dPred = rtopDisc(object$predictionLocations, params = params, ...)

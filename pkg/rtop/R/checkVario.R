@@ -7,8 +7,8 @@ errorBar <- function(x, y, upper, lower=upper, length=0.1,...){
  arrows(x,y+upper, x, y-lower, angle=90, code=3, length=length, ...)
 }
 
-checkVario.rtop = function(object,  acor = 1, log = "xy", cloud = FALSE, gDist = TRUE, ...) {
-  params = getRtopParams(object$params, ...)
+checkVario.rtop = function(object,  acor = 1, log = "xy", cloud = FALSE, gDist = TRUE, params = list(), ...) {
+  params = getRtopParams(object$params, newPar = params, ...)
   dots = list(...)
   askpar = par("ask")
   if (dev.interactive()) par("ask" = TRUE) else par("ask" = FALSE)

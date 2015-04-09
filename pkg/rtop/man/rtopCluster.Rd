@@ -25,7 +25,8 @@ rtopCluster(nclus, ..., action = "start", type)
 
 \value{ 
 If the function is called with action equal to "start" or "restart", the result is a cluster with nclus workers.
-The cluster is also added to the global options with the name rtopCluster (\code{getOption("rtopCluster")}).
+The cluster is also added to the global options with the name rtopCluster \cr
+(\code{getOption("rtopCluster")}).
 
 If the function is called with action equal to "stop", the function stops the cluster, sets the rtopCluster of options to NULL and returns NULL to the user.
 

@@ -1,5 +1,5 @@
 rtopKrige.rtop = function(object, varMatUpdate = FALSE, params = list(), ...) {
-  params = getRtopParams(object$params, params, ...)
+  params = getRtopParams(object$params, newPar = params, ...)
   if (!is.null(params$nsim) && params$nsim > 0) return(rtopSim(object, varMatUpdate, params = params))
   observations = object$observations
   
@@ -33,7 +33,7 @@ rtopKrige.SpatialPolygonsDataFrame = function(object, predictionLocations = NULL
 
 rtopKrige.default = function(object, predictionLocations = NULL,
                              varMatObs, varMatPredObs, varMat, params = list(), formulaString,  
-                             sel, wret = FALSE, stopsign = FALSE, ...) {
+                             sel, wret = FALSE, ...) {
   params = getRtopParams(params, ...)
   if (!is.null(params$nsim) && params$nsim > 0) 
     return(rtopSim(object, predictionLocations,
@@ -171,7 +171,6 @@ rtopKrige.default = function(object, predictionLocations = NULL,
   ret = list(predictions = predictions)
   if (wret) ret$weight = weight
   if (cv) ret$cvInfo = cvInfo
-  if (stopsign) stop()
   ret
 }
 

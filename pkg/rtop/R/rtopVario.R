@@ -98,14 +98,14 @@ rtopVariogram.SpatialPointsDataFrame = function(object, formulaString, params=li
 
 
 ###############################
-rtopVariogram.rtop = function(object,... ) {
+rtopVariogram.rtop = function(object, params = list(), ... ) {
+  params = getRtopParams(object$params, newPar = params, ...)
   observations = object$observations
   formulaString = object$formulaString
-  params = object$params
   
   #calling rtopVariogram.SpatialPolygonsDataFrame
-  var3d = rtopVariogram(observations,formulaString,params,...)
-  if(inherits(var3d,"rtopVariogramCloud"))object$variogramCloud = var3d else object$variogram = var3d
+  var3d = rtopVariogram(observations, formulaString, params,...)
+  if (inherits(var3d, "rtopVariogramCloud")) object$variogramCloud = var3d else object$variogram = var3d
   object
 }
 
@@ -115,8 +115,9 @@ rtopVariogram.rtop = function(object,... ) {
 
 rtopVariogram.STSDF = function(object, formulaString, params = list(), cloud, abins, 
                                dbins, data.table = FALSE, ...) {
+  if (!requireNamespace("spacetime")) stop("spacetime not available")
   if (!inherits(params, "rtopParams")) 
-    params = getRtopParams(params, ...)
+  params = getRtopParams(params, ...)
   amul = params$amul
   dmul = params$dmul
   if (missing(cloud)) 
@@ -159,11 +160,13 @@ rtopVariogram.STSDF = function(object, formulaString, params = list(), cloud, ab
   vmat = matrix(0, nrow = nspace, ncol = nspace)
   indmat = vmat
   if (interactive() & debug.level) pb <- txtProgressBar(1, ntime, style = 3)
+  if (data.table && !requireNamespace(data.table)) {
+    warning("data.table not available, continuing without")
+    data.table = FALSE
+  }
   if(data.table){
-    require(data.table)
     message("Converting STSDF class to data.table class")
-    observationsDT <- data.table(as.data.frame(observations)[,c("timeIndex","vindex",depvar)],key=c("timeIndex"))
-    message(paste("Observations successfully converted to",class(observationsDT)[1])," with keys on ",paste(key(observationsDT),collapse=" and "))
+    observationsDT <- data.table(obsdf,key=c("timeIndex"))
     for (ind in 1:ntime) {
       ppq <- observationsDT[list(ind)]	
       nspace1 <-  dim(ppq)[1]

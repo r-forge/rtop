@@ -8,18 +8,22 @@ The function will create diagnostic plots for analysis of the variograms fitted
 to sample variograms of data with support
 }
 \usage{
-\method{checkVario}{rtop}(object, acor = 1, log = "xy", cloud = FALSE, gDist = TRUE, ...) 
+\method{checkVario}{rtop}(object, acor = 1, log = "xy", cloud = FALSE, 
+                          gDist = TRUE, params = list(), ...) 
 
 \method{checkVario}{rtopVariogramModel}(object, 
-           sampleVariogram = NULL, observations = NULL, areas = NULL, dists = NULL, acomp = NULL,
-           params = list(), compVars = list(), acor = 1, log = "xy", 
-           legx = NULL, legy = NULL, plotNugg = TRUE, ...) 
+           sampleVariogram = NULL, observations = NULL, 
+           areas = NULL, dists = NULL, acomp = NULL,
+           params = list(), compVars = list(), acor = 1, 
+           log = "xy", legx = NULL, legy = NULL, 
+           plotNugg = TRUE, ...) 
 }
 
 
 
 \arguments{
-\item{object}{either: object of class \code{rtop} (see \code{\link{rtop-package}}), or an object of type \code{rtopVariogram} }
+\item{object}{either: object of class \code{rtop} (see \code{\link{rtop-package}}), or an object of type \cr
+\code{rtopVariogram} }
 \item{acor}{unit correction factor in the key, e.g. to see numbers more easily 
         interpretable for large areas. As an example, ucor = 0.000001 when area
         is given in square meters and should rather be shown as square kilometers.
@@ -47,9 +51,9 @@ to sample variograms of data with support
         \code{\link[gstat:vgm]{vgm}}. The names of the variograms in the list will
         be used in the key.}
 
-\item{legx}{x-coordinate of the legend for fine-tuning of position, see x-argument of 
+\item{legx}{x-coordinate of the legend for fine-tuning of position, see x-argument of \cr
 \code{\link[graphics]{legend}}}
-\item{legy}{y-coordinate of the legend for fine-tuning of position, see y-argument of
+\item{legy}{y-coordinate of the legend for fine-tuning of position, see y-argument of \cr
 \code{\link[graphics]{legend}}}
 \item{plotNugg}{logical; whether the nugget effect should be added to the plot or not}
 \item{...}{arguments to lower level functions}
@@ -80,12 +84,20 @@ observations = readOGR(".","observations")
 observations$obs = observations$QSUMMER_OB/observations$AREASQKM
 predictionLocations = readOGR(".","predictionLocations")
 params = list(cloud = TRUE, gDist = TRUE)
-rtopObj = createRtopObject(observations,predictionLocations, params = params)
- # Fit a variogram (function also creates it)
+rtopObj = createRtopObject(observations, predictionLocations, 
+                           params = params)
+
+# Fit a variogram (function also creates it)
 rtopObj = rtopFitVariogram(rtopObj)
-checkVario(rtopObj, compVar = list(first = vgm(5e-6, "Sph", 30000,5e-8), second = vgm(2e-6, "Sph", 30000,5e-8)))
-rtopObj = checkVario(rtopObj, acor = 0.000001, acomp = data.frame(acl1 = c(2,2,2,2,3,3,3,4,4), acl2 = c(2,3,4,5,3,4,5,4,5)))
-rtopObj = checkVario(rtopObj, cloud = TRUE, identify = TRUE, acor = 0.000001)
+checkVario(rtopObj, 
+    compVar = list(first = vgm(5e-6, "Sph", 30000,5e-8), 
+                   second = vgm(2e-6, "Sph", 30000,5e-8)))
+
+rtopObj = checkVario(rtopObj, acor = 0.000001, 
+          acomp = data.frame(acl1 = c(2,2,2,2,3,3,3,4,4), 
+          acl2 = c(2,3,4,5,3,4,5,4,5)))
+rtopObj = checkVario(rtopObj, cloud = TRUE, identify = TRUE, 
+          acor = 0.000001)
 }
 }
 \keyword{spatial}

@@ -1,7 +1,7 @@
 
-rtopFitVariogram.rtop = function(object,...) {
+rtopFitVariogram.rtop = function(object, params = list(), ...) {
 
-  params = getRtopParams(object$params, ...)
+  params = getRtopParams(object$params, newPar = params, ...)
   if (params$cloud && !"variogramCloud" %in% names(object) ||
      !params$cloud && !"variogram" %in% names(object))
     object = rtopVariogram(object,...)

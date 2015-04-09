@@ -36,7 +36,8 @@ predictionLocations = readOGR(rpath, "predictionLocations")
 all.equal(varmat$varMatObs, rtopObj2$varMatObs)
 rtopObj4 = rtopKrige(rtopObj2)
 
-  rtopObj5 = rtopKrige(rtopObj, params = list(cnAreas = 5, cDlim = 100, nclus = 2))
+#debug(rtop:::rtopDisc.SpatialPolygons)
+  rtopObj5 = rtopKrige(rtopObj, params = list(cnAreas = 5, cDlim = 10, nclus = 2))
   
   print(summary(rtopObj2$predictions))
   print(summary(rtopObj3$predictions))

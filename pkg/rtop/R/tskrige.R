@@ -1,7 +1,8 @@
-tskrige = function(object, predictionLocations, varMatObs, varMatPredObs,
-                   varMat, params = list(), formulaString, sel, wret = TRUE, 
+
+rtopKrige.STSDF = function(object, predictionLocations = NULL, varMatObs, varMatPredObs,
+                   varMat, params = list(), formulaString, sel,  
                    olags = NULL, plags = NULL, lagExact = TRUE, ...) {
-  
+  if (!require("spacetime")) stop("spacetime not available")
   params = getRtopParams(params, ...)
   cv = params$cv
   debug.level = params$debug.level
@@ -31,13 +32,12 @@ tskrige = function(object, predictionLocations, varMatObs, varMatPredObs,
   tinds = sort(unique(indx[,2]))
   pspace = dim(predictionLocations)[1]
   ptime = dim(predictionLocations)[2]
-  tms = rep(0, nspace)
   pfull = if (prod(dim(predictionLocations)) == dim(predictionLocations@data)[1]) TRUE else FALSE
   if (is(predictionLocations, "STSDF")) {
     predictionLocations@data = cbind(predictionLocations@data, 
                                    data.frame(var1.pred = NA, var1.var = NA, var1.yam = NA))
   } else if (is(predictionLocations, "STS")) {
-    predictionLocations = STSDF(predictionLocations, data = data.frame(var1.pred = NA, var1.var = NA, var1.yam = NA))
+    predictionLocations = spacetime::STSDF(predictionLocations, data = data.frame(var1.pred = NA, var1.var = NA, var1.yam = NA))
   }
   if (is.null(olags) & prod(dim(object)) == dim(object@data)[1]) { # if all stations have obs from all time steps
     obj1 = object[,1]
@@ -46,7 +46,7 @@ tskrige = function(object, predictionLocations, varMatObs, varMatPredObs,
     } else {
       predLoc = predictionLocations
     }
-    ret = rtop:::rtopKrige.default(obj1, predLoc, varMatObs,
+    ret = rtopKrige.default(obj1, predLoc, varMatObs,
                                    varMatPredObs, varMat, params, formulaString, wret = TRUE)#,
     #sel, ...)
     weight = ret$weight
@@ -86,7 +86,8 @@ tskrige = function(object, predictionLocations, varMatObs, varMatPredObs,
     depVar = as.character(formulaString[[2]])
     obs = obs[,c("sp.ID", "timeIndex", depVar)]
     #   obs$timeIndex = object@index[,2]
-    obs = dcast(obs, sp.ID ~ timeIndex)
+    if (!require(reshape2)) stop("reshape2 not available")
+    obs = reshape2::dcast(obs, sp.ID ~ timeIndex)
     #        reshape(obs, v.names = as.character(formulaString[[2]]),
     #                    idvar = "sp.ID", timevar = "timeIndex", direction = "wide")
     obs = obs[order(as.numeric(as.character(obs$sp.ID))), ]
@@ -97,7 +98,7 @@ tskrige = function(object, predictionLocations, varMatObs, varMatPredObs,
       ploc = cbind(ploc, var = 1)
       ploc = ploc[,c("sp.ID", "timeIndex", "var")]
       ploc$sp.ID = as.numeric(as.character(ploc$sp.ID))
-      ploc = dcast(ploc, sp.ID ~ timeIndex)
+      ploc = reshape2::dcast(ploc, sp.ID ~ timeIndex)
       ploc = as.matrix(ploc)
     #    spobs = NULL
     }
@@ -129,8 +130,12 @@ tskrige = function(object, predictionLocations, varMatObs, varMatPredObs,
         ob = obs[,itime]
         ob = ob[!is.na(ob)]
         preds = weight %*% ob
-        diffs = ob - preds
-        var1.yam = t(weight) %*% (diffs^2)
+        
+        var1.yam = rep(NA, dim(weight)[1])
+        for (istat in 1:dim(weight)[1]) {
+          diffs = ob - preds[istat]
+          var1.yam[istat] = sum(weight[istat,] * t(diffs^2))  
+        }
         
         itind = tinds[itime]
         ttinds = which(indx[,2] == itind)
@@ -160,7 +165,7 @@ tskrige = function(object, predictionLocations, varMatObs, varMatPredObs,
         ispace = predictionLocations@sp@data$sindex[istat]
         pxts = as.data.frame(predictionLocations[istat,])
         stpred = predictionLocations@sp[istat,]
-        distm = spDistsN1(coordinates(observations@sp),coordinates(stpred))
+        distm = spDistsN1(coordinates(objects@sp),coordinates(stpred))
         ppred = SpatialPoints(stpred) 
         rolags = olags - plags[istat] # longer lags will be positive, i.e., use future observations
         nbefore = -floor(min(rolags))
@@ -188,13 +193,17 @@ tskrige = function(object, predictionLocations, varMatObs, varMatPredObs,
         var1.yam = rep(NA, ntl)
         var1.var = rep(NA, ntl)
         tms = as.numeric(as.character(pxts$tindex))
+        if (cv) vorder = order(varMatObs[istat,]) else vorder = order(varMatPredObs[istat])
         for (itime in seq_along(tms)) {
           jtime = tms[itime]
           tp = ploc[istat, jtime]
           if (is.na(tp)) next
-          newind = which(!is.na(obs[,jtime]))
+          newind = vorder[vorder %in% which(!is.na(obs[,jtime]))]
           if (cv) newind = newind[-which(newind == istat)]
+          if (is.numeric(params$nmax) && length(newind) > params$nmax) newind = newind[1:params$nmax]
           if (length(newind) == 0) next
+           
+          newind = newind[newind %in% vorder]          
           #    print(paste(1, istat, itime, length(newind)))
           if (is.null(oldind) || !isTRUE(all.equal(newind, oldind))) {
             oldind = newind

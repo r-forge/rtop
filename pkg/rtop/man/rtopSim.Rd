@@ -9,7 +9,8 @@ rtopSim will conditionally or unconditionally simulate data with areal support.
 \usage{
 
   
-\method{rtopSim}{rtop}(object, varMatUpdate = FALSE, beta = NA, largeFirst = TRUE, ...) 
+\method{rtopSim}{rtop}(object, varMatUpdate = FALSE, beta = NA, 
+      largeFirst = TRUE, params = list(), ...) 
 \method{rtopSim}{default}(object = NULL, predictionLocations,
     varMatObs,  varMatPredObs, varMatPred, variogramModel, ...) 
 }
@@ -23,6 +24,9 @@ rtopSim will conditionally or unconditionally simulate data with areal support.
 \item{largeFirst}{Although the simulation method follows a random path around the 
             predictionLocations, simulating the largest area first will assure
             that the true mean of the simulated values will be closer to beta}
+\item{params}{a set of parameters, used to modify the standard parameters for 
+      the \code{rtop} package, set in \code{\link{getRtopParams}}. The argument params can also be used
+      for the other methods, through the ...-argument.}
 \item{predictionLocations}{\code{\link[sp]{SpatialPolygons}} or \code{\link[sp]{SpatialPolygonsDataFrame}}
      with locations for simulations. }
 \item{varMatObs}{covariance matrix of possible observations, where diagonal must consist 
@@ -39,10 +43,12 @@ rtopSim will conditionally or unconditionally simulate data with areal support.
 
 \value{ 
 If called with \code{\link[sp]{SpatialPolygons}} as predictionLocations
-and either \code{\link[sp]{SpatialPolygonsDataFrame}} or \code{NULL} for
-observations, the function returns 
-a \code{\link[sp]{SpatialPolygonsDataFrame}} with simulations at the 
-locations defined in \code{predictionLocations}
+and either \cr
+\code{\link[sp]{SpatialPolygonsDataFrame}} or \code{NULL} for
+observations, the function returns a\cr
+\code{\link[sp]{SpatialPolygonsDataFrame}} with simulations at the 
+locations defined in \cr
+\code{predictionLocations}
 
 If called with an rtop-object, the function returns the same object with the
 simulations added to the object.
@@ -89,7 +95,8 @@ params = list(gDist = TRUE, cloud = FALSE, nclus = 1, rresol = 25)
 observations$obs = observations$QSUMMER_OB/observations$AREASQKM
 
 # Build an object
-rtopObj = createRtopObject(observations,predictionLocations, params = params)
+rtopObj = createRtopObject(observations, predictionLocations, 
+                           params = params)
 
 # Fit a variogram (function also creates it)
 rtopObj = rtopFitVariogram(rtopObj)
@@ -104,7 +111,8 @@ rtopObj11$predictionLocations = rtopObj11$observations
 rtopObj11$observations = NULL
 # Setting varMatUpdate to TRUE, to make sure that covariance
 # matrices are recomputed
-rtopObj12 = rtopSim(rtopObj11, nsim = 10, beta = 0.01, varMatUpdate = TRUE)
+rtopObj12 = rtopSim(rtopObj11, nsim = 10, beta = 0.01, 
+                    varMatUpdate = TRUE)
 
 rtopObj10$simulations@data
 rtopObj12$simulations@data
