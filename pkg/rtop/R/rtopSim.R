@@ -77,7 +77,7 @@ rtopSim.rtop = function(object, varMatUpdate = FALSE, beta = NA, largeFirst = TR
       unc0 = array(0,nobs)
       if (nobs == 0) {
         if (is.na(beta)) stop("No observations found, beta (expected mean) has to be given")
-        c0 = varioEx(sqrt(bbArea(bbox(predictionLocations[ip,]))), variogramModel)
+        c0 = varioEx(sqrt(bbArea(bbox(predictionLocations[in2,]))), variogramModel)
         inewvar = varMatPred[inew,inew]
         obs = rnorm(1, beta, c0-inewvar)
         vObs = matrix(inewvar, nrow = 1, ncol = 1)
