@@ -23,6 +23,7 @@ rtopSim.rtop = function(object, varMatUpdate = FALSE, beta = NA, largeFirst = TR
   }
   varMatPredObs = object$varMatPredObs
   varMatObs = object$varMatObs
+  varMatPred = object$varMatPred
   predictions = object$predictionLocations
   observations = object$observations
   nobs = length(observations)
@@ -84,20 +85,30 @@ rtopSim.rtop = function(object, varMatUpdate = FALSE, beta = NA, largeFirst = TR
       } else {
         
         mdist = sqrt(diff(range(obscors[,1]))^2 + diff(range(obscors[,2]))^2)
-        ret = rkrige(obsall, obs, obscors, newcor, vObs, vPredObs[,in2, drop = FALSE], nmax, inew, cv, 
-                     unc0, mdist, maxdist, singMat, varInv, wlim, debug.level, 
-                     wlimMethod, simul = TRUE)
-        nneigh = ret$nneigh
-        lambda = ret$lambda
-        neigh = ret$neigh
+        wlim0 = wlim
+        while (TRUE) {
+          wlim0 = wlim0/1.05
+          ret <- try(rkrige(obsall, obs, obscors, newcor, vObs, vPredObs[,in2, drop = FALSE], nmax, inew, cv, 
+                     unc0, mdist, maxdist, singMat, varInv, wlim0, debug.level, 
+                     wlimMethod, simul = TRUE), silent = TRUE)
+          if (is(ret, "try-error")) print(ip)
+          if (wlim0 < 1.05 || (!is(ret, "try-error") && ret$pred[2] <= 0)) break
+        }
+        if (!is(ret, "try-error")) {
+          nneigh = ret$nneigh
+          lambda = ret$lambda
+          neigh = ret$neigh
         
-        pred = ret$pred
-        newval = rnorm(1, pred[1], sqrt(pred[2]))
-        obs = c(obs, newval)
-        vObs = rbind(vObs, vPredObs[,in2])
-        vObs = cbind(vObs, c(vPredObs[,in2], 0))
-        vPredObs = vPredObs[,-in2, drop = FALSE]
-        vPredObs = rbind(vPredObs, vPred[in2, -in2])
+          pred = ret$pred
+          newval = rnorm(1, pred[1], sqrt(pred[2]))
+          obs = c(obs, newval)
+        } else {
+          obs = c(obs, NA)
+        }
+          vObs = rbind(vObs, vPredObs[,in2])
+          vObs = cbind(vObs, c(vPredObs[,in2], 0))
+          vPredObs = vPredObs[,-in2, drop = FALSE]
+          vPredObs = rbind(vPredObs, vPred[in2, -in2])
       }
       obscors = rbind(obscors, newcor)        
       vPred = vPred[-in2, -in2, drop = FALSE]

@@ -2,6 +2,16 @@
 rkrige = function(observations, obs0, obscors, newcor, vObs, c0arr, nmax, inew, cv, 
                   unc0, mdist, maxdist, singMat, varInv, wlim, debug.level,
                   wlimMethod, simul = FALSE, BLUE = FALSE) {
+
+naobs = which(is.na(obs0))  
+if (length(naobs) > 0) {
+  observations = observations[-naobs]
+  obs0 = obs0[-naobs]
+  obscors = obscors[-naobs,]
+  vObs = vObs[-naobs,-naobs]
+  c0arr = c0arr[-naobs]
+  unc0 = unc0[-naobs]
+}
 nobs = length(obs0)
 nneigh = nobs    
 neigh = c(1:nobs)
@@ -70,7 +80,6 @@ if (!singMat) {
 }
 c0arr[nneigh+1] = 1
 lambda = varInv %*% c0arr
-krigingError = sum(lambda*c0arr) 
 slambda = sum(abs(lambda[1:nneigh]))
 if (BLUE) BLUE = sum(vInv %*% c0arr)/sum(vInv)
 while (slambda > wlim) {
@@ -93,6 +102,7 @@ while (slambda > wlim) {
   if (debug.level >1) 
     print(paste("optimizing lambdas",oslambda, slambda,sum(lambda[1:nneigh]),lambda[nneigh+1]))
 }
+krigingError = sum(lambda*c0arr) 
 
 if (debug.level >1) {
   distm = spDistsN1(obscors,newcor)[neigh]

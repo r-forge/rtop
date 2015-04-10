@@ -160,13 +160,13 @@ rtopVariogram.STSDF = function(object, formulaString, params = list(), cloud, ab
   vmat = matrix(0, nrow = nspace, ncol = nspace)
   indmat = vmat
   if (interactive() & debug.level) pb <- txtProgressBar(1, ntime, style = 3)
-  if (data.table && !requireNamespace(data.table)) {
+  if (data.table && !requireNamespace("data.table")) {
     warning("data.table not available, continuing without")
     data.table = FALSE
   }
   if(data.table){
     message("Converting STSDF class to data.table class")
-    observationsDT <- data.table(obsdf,key=c("timeIndex"))
+    observationsDT <- data.table::data.table(obsdf,key=c("timeIndex"))
     for (ind in 1:ntime) {
       ppq <- observationsDT[list(ind)]	
       nspace1 <-  dim(ppq)[1]

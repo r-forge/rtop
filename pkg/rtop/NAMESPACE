@@ -55,6 +55,7 @@ export(checkVario,
 # S3method(rtopVariogram, SpatialLinesDataFrame)
  S3method(rtopVariogram, rtop)
 
+ S3method(rtopKrige, STSDF)
  S3method(rtopKrige, SpatialPolygonsDataFrame)
 # S3method(rtopKrige, SpatialLinesDataFrame)
  S3method(rtopKrige, rtop)

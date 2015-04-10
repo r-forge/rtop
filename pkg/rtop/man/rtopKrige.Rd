@@ -134,6 +134,7 @@ Skoien, J. O. and G. Bloschl. Spatio-Temporal Top-Kriging of Runoff Time Series.
 library(rgdal)
 # The following command will download  the complete example data set
 # downloadRtopExampleData() 
+# observations$obs = observations$QSUMMER_OB/observations$AREASQKM
 
 rpath = system.file("extdata",package="rtop")
 observations = readOGR(rpath,"observations")

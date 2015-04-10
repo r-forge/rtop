@@ -22,16 +22,16 @@ createRtopObject = function(observations, predictionLocations,
     stop("ainfo and areas cannot be given as arguments together with observations and/or predictionLocations, please check documentation")
   } else {
     if (!inherits(observations,"SpatialPolygonsDataFrame") && "obs" %in% names(dots)) 
-      observations = SpatialPolygonsDataFrame(observations,data = dots$obs)
+      if (!inherits(observations, "STS")) observations = SpatialPolygonsDataFrame(observations,data = dots$obs)
     if (!missing(predictionLocations) && !inherits(predictionLocations,"SpatialPolygonsDataFrame") && "pred" %in% names(dots)) 
-      predictionLocations = SpatialPolygonsDataFrame(predictionLocations,data = dots$pred)
+      if (!inherits(predictionLocations, "STS"))predictionLocations = SpatialPolygonsDataFrame(predictionLocations,data = dots$pred)
   }
   if (missing(observations)) stop("Observations are missing")
 #  if (missing(predictionLocations)) stop("predictionLocations are missing")
   if (!"area" %in% names(observations) && inherits(observations,"SpatialPolygons")) {
      observations$area = sapply(slot(observations, "polygons"), function(i) slot(i, "area"))
-#  } else if (!"length" %in% names(observations) && inherits(observations,"SpatialLines")) {
-#     observations$length = SpatialLinesLengths(observations)
+  } else if (inherits(observations, "STS") && !"area" %in% names(observations@sp)) {
+    observations@sp$area = sapply(slot(observations@sp, "polygons"), function(i) slot(i, "area"))
   }
   object$observations = observations
   if (!missing(predictionLocations)) {
@@ -45,6 +45,8 @@ createRtopObject = function(observations, predictionLocations,
           data = data.frame(area = areas), match.ID = TRUE)  
 #    } else if (!"length" %in% names(observations) && inherits(predictionLocations,"SpatialLines")) {
 #       predictionLocations$length = SpatialLinesLengths(predictionLocations)
+    } else if (inherits(predictionLocations, "STS") && !"area" %in% names(predictionLocations@sp)) {
+      predictionLocations@sp$area = sapply(slot(predictionLocations@sp, "polygons"), function(i) slot(i, "area"))      
     } 
     object$predictionLocations = predictionLocations
   }
@@ -213,11 +215,18 @@ findParInitDefault = function(model) {
 
 #########################################
 findParInit = function(formulaString,observations,model) {
-  vario = variogram (formulaString, observations)
+  if (inherits(observations, "STS")) {
+    ntime = dim(observations)[2]
+    observations = observations[sample(1:ntime, 20),]
+    vario = rtopVariogram(observations, formulaString = formulaString)
+    aObs = sapply(slot(observations@sp, "polygons"), function(i) slot(i, "area"))
+  } else {
+    vario = variogram (formulaString, observations)
+    aObs = sapply(slot(observations, "polygons"), function(i) slot(i, "area"))
+  }
   parInit = data.frame(parl=c(1:5),paru=1,par0 = 1)
   parInit[1,1] = min(vario$gamma)/10
   parInit[1,2] = max(vario$gamma)*500 
-  aObs = sapply(slot(observations, "polygons"), function(i) slot(i, "area"))
   parInit[2,1] = sqrt(min(aObs))/4
   parInit[2,2] = max(vario$dist)*10
   minla = min(aObs)

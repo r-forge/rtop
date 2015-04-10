@@ -2,7 +2,7 @@
 rtopKrige.STSDF = function(object, predictionLocations = NULL, varMatObs, varMatPredObs,
                    varMat, params = list(), formulaString, sel,  
                    olags = NULL, plags = NULL, lagExact = TRUE, ...) {
-  if (!require("spacetime")) stop("spacetime not available")
+  if (!requireNamespace("spacetime")) stop("spacetime not available")
   params = getRtopParams(params, ...)
   cv = params$cv
   debug.level = params$debug.level
@@ -86,7 +86,7 @@ rtopKrige.STSDF = function(object, predictionLocations = NULL, varMatObs, varMat
     depVar = as.character(formulaString[[2]])
     obs = obs[,c("sp.ID", "timeIndex", depVar)]
     #   obs$timeIndex = object@index[,2]
-    if (!require(reshape2)) stop("reshape2 not available")
+    if (!requireNamespace("reshape2")) stop("reshape2 not available")
     obs = reshape2::dcast(obs, sp.ID ~ timeIndex)
     #        reshape(obs, v.names = as.character(formulaString[[2]]),
     #                    idvar = "sp.ID", timevar = "timeIndex", direction = "wide")
@@ -165,7 +165,7 @@ rtopKrige.STSDF = function(object, predictionLocations = NULL, varMatObs, varMat
         ispace = predictionLocations@sp@data$sindex[istat]
         pxts = as.data.frame(predictionLocations[istat,])
         stpred = predictionLocations@sp[istat,]
-        distm = spDistsN1(coordinates(objects@sp),coordinates(stpred))
+        distm = spDistsN1(coordinates(object@sp),coordinates(stpred))
         ppred = SpatialPoints(stpred) 
         rolags = olags - plags[istat] # longer lags will be positive, i.e., use future observations
         nbefore = -floor(min(rolags))
@@ -210,7 +210,7 @@ rtopKrige.STSDF = function(object, predictionLocations = NULL, varMatObs, varMat
             newkrige = newkrige + 1
       #      print(paste(2, istat, itime, length(newind), newkrige))
             ppq = objsp[newind, ]
-            ppq$intvar = obs[newind, itime]
+            ppq$intvar = obs[newind, jtime]
             vmat = varMatObs[newind, newind]
             vpredobs = varMatPredObs[newind, istat, drop = FALSE]
         #    fmstring = as.formula(paste(names(ppq)[1], "~1"))
@@ -240,6 +240,6 @@ rtopKrige.STSDF = function(object, predictionLocations = NULL, varMatObs, varMat
     }
     if (interactive() & debug.level == 1 & ntime >  1) close(pb)
   }
-  predictionLocations
+  list(predictions = predictionLocations)
 }
 
