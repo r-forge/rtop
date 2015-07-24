@@ -53,6 +53,7 @@ rtopObj4 = rtopKrige(rtopObj2)
 
 
   set.seed(1501)
+  library(intamap)
   useRtopWithIntamap()
   library(intamap)
   output = interpolate(observations,predictionLocations,

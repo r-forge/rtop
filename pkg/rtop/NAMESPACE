@@ -1,6 +1,14 @@
 useDynLib(rtop)
+import(graphics)
 import(gstat)
 import(sp)
+import(grDevices)
+import(stats)
+import(methods)
+import(utils)
+#importFrom(graphics, hist, polygon, par, polypath, lines, strheight, 
+#  text, contour, axTicks, axis, rasterImage, image, box, plot.new, 
+#  plot.window, rect, segments, points, locator, identify, title)
 export(checkVario,
   createRtopObject,
   downloadRtopExampleData,
@@ -16,6 +24,7 @@ export(checkVario,
 	rtopVariogramModel,
   rtopDisc,
   rtopCluster,
+  sceua,
   updateRtopVariogram,
   useRtopWithIntamap,
 	varMat

@@ -237,7 +237,10 @@ findParInit = function(formulaString,observations,model) {
   parInit[4,2] = 1.5
   parInit[5,1] = 0.1
   parInit[5,2] = 1.7
-
+  if (model == "Ex1") {
+    parInit[4,2] = 1
+    parInit[5,2] = 1  
+  }
   
 
   parInit[,3] = sqrt(parInit[,1]*parInit[,2])
