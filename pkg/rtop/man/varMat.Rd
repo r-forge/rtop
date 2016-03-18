@@ -13,7 +13,7 @@ locations (observations or prediction locations) or semivariogram matrices
 between all the supports in one or two sets of locations, and also between them.
 }
 \usage{
-\method{varMat}{rtop}(object, varMatUpdate = FALSE, params = list(), ...) 
+\method{varMat}{rtop}(object, varMatUpdate = FALSE, fullPred = FALSE, params = list(), ...) 
 \method{varMat}{SpatialPolygonsDataFrame}(object, object2 = NULL,...) 
 \method{varMat}{SpatialPolygons}(object, object2 = NULL, variogramModel,
      overlapObs, overlapPredObs, ...) 
@@ -35,6 +35,8 @@ between all the supports in one or two sets of locations, and also between them.
          or 4) a \code{\link{list}} with discretized supports}
 \item{varMatUpdate}{logical; if TRUE, also existing variance matrices will 
             be recomputed, if FALSE, only missing variance matrices will be computed}
+\item{fullPred}{logical; whether to create the full covariance matrix also for the predictions, 
+                mainly used for simulations}
 \item{params}{a set of parameters, used to modify the standard parameters for 
       the \code{rtop} package, set in \code{\link{getRtopParams}}. }
 \item{object2}{if \code{object} is not an object of class \code{rtop}; 

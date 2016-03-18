@@ -8,9 +8,11 @@ rtopSim will conditionally or unconditionally simulate data with areal support.
 }
 \usage{
 
+
   
 \method{rtopSim}{rtop}(object, varMatUpdate = FALSE, beta = NA, 
-      largeFirst = TRUE, params = list(), ...) 
+      largeFirst = TRUE, replace = FALSE, params = list(), 
+      dump = NULL, logdist = FALSE, ...) 
 \method{rtopSim}{default}(object = NULL, predictionLocations,
     varMatObs,  varMatPredObs, varMatPred, variogramModel, ...) 
 }
@@ -24,9 +26,15 @@ rtopSim will conditionally or unconditionally simulate data with areal support.
 \item{largeFirst}{Although the simulation method follows a random path around the 
             predictionLocations, simulating the largest area first will assure
             that the true mean of the simulated values will be closer to beta}
+\item{replace}{logical; if observation locations are also present as predictions, should they be replaced?
+               This is particularly when doing conditional simulations for a set of observations 
+               with uncertainty.}
 \item{params}{a set of parameters, used to modify the standard parameters for 
       the \code{rtop} package, set in \code{\link{getRtopParams}}. The argument params can also be used
       for the other methods, through the ...-argument.}
+\item{dump}{file name for saving the updated object, after adding variance matrices. Useful if there
+      are problems with the simulation, particularly if it for some reason crashes.}
+\item{logdist}{logical; whether to sample from a lognormal distribution}
 \item{predictionLocations}{\code{\link[sp]{SpatialPolygons}} or \code{\link[sp]{SpatialPolygonsDataFrame}}
      with locations for simulations. }
 \item{varMatObs}{covariance matrix of possible observations, where diagonal must consist 

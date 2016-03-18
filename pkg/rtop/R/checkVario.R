@@ -7,7 +7,7 @@ errorBar <- function(x, y, upper, lower=upper, length=0.1,...){
  arrows(x,y+upper, x, y-lower, angle=90, code=3, length=length, ...)
 }
 
-checkVario.rtop = function(object,  acor = 1, log = "xy", cloud = FALSE, gDist = TRUE, params = list(), ...) {
+checkVario.rtop = function(object,  acor = 1, log = "xy", cloud = FALSE, gDist = TRUE, curveSmooth = FALSE, params = list(), ...) {
   params = getRtopParams(object$params, newPar = params, ...)
   dots = list(...)
   askpar = par("ask")
@@ -84,21 +84,22 @@ checkVario.rtop = function(object,  acor = 1, log = "xy", cloud = FALSE, gDist =
        by = list(gammar$group), FUN = var))
     xmax = max(c(ngammar$gamma, ngammar$gammar))
     plot(gammar ~ gamma, ngammar, 
-      xlab = "regularized gamma", ylab = "gamma", xlim = c(0,xmax), ylim = c(0,xmax), pch = 16)
+      xlab = "regularized gamma", ylab = "gamma", xlim = c(0,xmax), ylim = c(0,xmax), 
+      pch = 16, log = log)
     errorBar(ngammar$gammar, ngammar$gamma, upper = sqrt(ngammar$gammav))
     abline(0,1)
   }
   if (is.null(variogramModel)) {
     if (is.null(sampleVariogram)) sampleVariogram = rtopVariogram(observations)
-    checkVario(sampleVariogram, observations, params = object$params, log = log, ...)    
+    checkVario(sampleVariogram, observations, params = params, log = log, curveSmooth = curveSmooth, ...)    
   } else {
     if (is.null(sampleVariogram)) {
       object$checkVario = checkVario(object$variogramModel, observations = object$observations, 
-           params = object$params, acor = acor, log = log, ...)
+           params = params, acor = acor, log = log, curveSmooth = curveSmooth, ...)
     } else {
       object$checkVario = checkVario(object$variogramModel, sampleVariogram = sampleVariogram, 
-          observations = object$observations, params = object$params, acor = acor, 
-          log = log, ...) 
+          observations = object$observations, params = params, acor = acor, 
+          log = log, curveSmooth = curveSmooth, ...) 
     }
   }
   par(ask = askpar)
@@ -113,7 +114,7 @@ checkVario.rtop = function(object,  acor = 1, log = "xy", cloud = FALSE, gDist =
 checkVario.rtopVariogramModel = function(object, 
            sampleVariogram = NULL, observations = NULL, areas = NULL, dists = NULL, acomp = NULL, 
            params = list(), compVars = list(), acor = 1, log = "xy", legx = NULL, legy = NULL, 
-           plotNugg = TRUE, ...) {
+           plotNugg = TRUE, curveSmooth = FALSE,  ...) {
 variogramModel = object
 params = getRtopParams(params, ...)
 askpar = par("ask")
@@ -239,7 +240,14 @@ for (iplot in 1:dim(acomp)[1]) {
     lt = 2
     lcol = cols2[iplot]
   }
-  lines(adists,vmats[iplot,1:ld],lty = lt, lwd = 2, col = lcol)
+  
+  xx = adists
+  yy = vmats[iplot,1:ld]
+  if (curveSmooth) {
+    xx = sort(c(xx, seq(min(xx), max(xx), length.out = 1000)))
+    yy = predict(smooth.spline(adists, yy), xx)$y
+  }
+  lines(xx, yy, lty = lt, lwd = 2, col = lcol)
   legende$text = c(legende$text, paste(aavg[i1]*acor, "vs", aavg[i2]*acor))
   legende$col = c(legende$col, lcol)
   legende$lty = c(legende$lty, lt)
@@ -254,12 +262,14 @@ for (iplot in 1:dim(acomp)[1]) {
 if (length(compVars) > 0) {
   for (ic in 1: length(compVars)) {
     cvar = compVars[ic]
-    clines = variogramLine(cvar[[1]], dist_vector = adists)
+    xx = adists
+    if (curveSmooth) xx = sort(c(xx, seq(min(xx), max(xx), length.out = 1000)))
+    clines = variogramLine(cvar[[1]], dist_vector = xx)
     lines(clines, lty = 3, lwd = 2, col = cols2[ic])
     legende$text = c(legende$text,names(cvar))
     legende$col = c(legende$col, cols2[ic])
     legende$lty = c(legende$lty, 3)
-    legende$pch = c(legende$pch, 26)
+    legende$pch = c(legende$pch, 16)
   }
 }
 if (is.null(legx)) legx = ifelse(length(grep("x", log)) > 0, max(adists)/log(xmax/xmin,5), max(adists)*0.7)

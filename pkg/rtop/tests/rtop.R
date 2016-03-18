@@ -37,7 +37,7 @@ all.equal(varmat$varMatObs, rtopObj2$varMatObs)
 rtopObj4 = rtopKrige(rtopObj2)
 
 #debug(rtop:::rtopDisc.SpatialPolygons)
-  rtopObj5 = rtopKrige(rtopObj, params = list(cnAreas = 5, cDlim = 10, nclus = 2))
+#  rtopObj5 = rtopKrige(rtopObj, params = list(cnAreas = 5, cDlim = 10, nclus = 2))
   
   print(summary(rtopObj2$predictions))
   print(summary(rtopObj3$predictions))
@@ -75,8 +75,9 @@ print(all.equal(rtopObj4$predictions@data$var1.pred, output$predictions@data$var
 rtopObj10 = rtopSim(rtopObj, nsim = 5)
 rtopObj11 = rtopObj
 rtopObj11$predictionLocations = rtopObj11$observations
-rtopObj11$observations = NULL
-rtopObj12 = rtopSim(rtopObj11, nsim = 10, beta = 0.01)
+#rtopObj11$observations = NULL
+rtopObj11$observations$unc = 0.1
+rtopObj12 = rtopSim(rtopObj11, nsim = 10)
 
 rtopObj10$simulations@data
 rtopObj12$simulations@data

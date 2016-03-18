@@ -9,14 +9,14 @@ to sample variograms of data with support
 }
 \usage{
 \method{checkVario}{rtop}(object, acor = 1, log = "xy", cloud = FALSE, 
-                          gDist = TRUE, params = list(), ...) 
+                          gDist = TRUE, curveSmooth = FALSE, params = list(), ...) 
 
 \method{checkVario}{rtopVariogramModel}(object, 
            sampleVariogram = NULL, observations = NULL, 
-           areas = NULL, dists = NULL, acomp = NULL,
+           areas = NULL, dists = NULL, acomp = NULL,  
            params = list(), compVars = list(), acor = 1, 
            log = "xy", legx = NULL, legy = NULL, 
-           plotNugg = TRUE, ...) 
+           plotNugg = TRUE, curveSmooth = FALSE, ...) 
 }
 
 
@@ -45,6 +45,7 @@ to sample variograms of data with support
 \item{acomp}{either a matrix with the area bins that should be visualized, or a number 
         giving the number of pairs to show. If a sample variogram is given, the \code{acomp}
         pairs with highest number of pairs will be used}
+\item{curveSmooth}{logical; describing whether the curves in the last plot should be smoothed or not.}
 \item{params}{list of parameters to modify the standard parameters of rtopObj or 
         the default parameters found from \code{\link{getRtopParams}}}
 \item{compVars}{a list of variograms of \code{gstat}-type for comparison, see 
@@ -77,6 +78,7 @@ of pairs in each group.
 \examples{
 \dontrun{
 library(rgdal)
+library(gstat)
 rpath = system.file("extdata",package="rtop")
 setwd(rpath)
 observations = readOGR(".","observations")

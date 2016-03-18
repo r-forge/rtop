@@ -85,6 +85,8 @@ to be included in the object described in \code{\link{rtop-package}}}
                        \code{nAreas*params$rresol/100 > cnAreas} }
      \item{clusType = NULL}{- the cluster type to be started for parallel processing; uses the default 
                        type of the system when clusType = NULL}
+     \item{outfile = NULL}{file where output can be printed during parallel execution}
+     \item{varClean = FALSE}{logical; if TRUE it will remove highly correlated areas from the covariance matrix during simulation }
      \item{wlim = 1.5}{ - an upper limit for the norm of the weights in kriging, see \code{\link{rtopKrige}}}
      \item{wlimMethod = "all"}{which method to use for reducing the norm of the weights if necessary. Either "all", which modifies all weights equally or "neg" which reduces negative weights and large weights more than the smallest weights }
      \item{cv = FALSE}{ - logical; for cross-validation of observations}
