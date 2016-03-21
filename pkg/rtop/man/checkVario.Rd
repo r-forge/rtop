@@ -45,7 +45,8 @@ to sample variograms of data with support
 \item{acomp}{either a matrix with the area bins that should be visualized, or a number 
         giving the number of pairs to show. If a sample variogram is given, the \code{acomp}
         pairs with highest number of pairs will be used}
-\item{curveSmooth}{logical; describing whether the curves in the last plot should be smoothed or not.}
+\item{curveSmooth}{logical or numerical; describing whether the curves in the last plot should be smoothed or not. If numeric,
+        it gives the degrees of freedom (df) for the splines used for smoothing. See also \code{\link[stats]{smooth.spline}}}
 \item{params}{list of parameters to modify the standard parameters of rtopObj or 
         the default parameters found from \code{\link{getRtopParams}}}
 \item{compVars}{a list of variograms of \code{gstat}-type for comparison, see 
